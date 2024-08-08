@@ -44,6 +44,35 @@ namespace Hublog.API.Controllers
         }
         #endregion
 
+        #region UserLogout
+        [AllowAnonymous]
+        [HttpPost("UserLogout")]
+        public async Task<IActionResult> UserLogout([FromBody] LoginModels model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Model state is not valid");
+            }
+
+            try
+            {
+                var (user, token) = await _loginService.UserLogout(model);
+                if (user != null)
+                {
+                    return Ok(new { user, token });
+                }
+                else
+                {
+                    return NotFound("Invalid Username & Password");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An error occurred while processing your request");
+            }
+        }
+        #endregion 
+
         #region AdminLogin
         [AllowAnonymous]
         [HttpPost("AdminLogin")]

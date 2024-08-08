@@ -6,6 +6,6 @@ namespace Hublog.Repository.Interface
 {
     public interface IScreenshotRepository
     {
-        Task<List<UserScreenShotModels>> GetUserScreenShots(int userId, int organizationId, DateTime date);
+        Task<List<UserScreenShot>> GetUserScreenShots(int userId, int organizationId, DateTime date);
     }
 }

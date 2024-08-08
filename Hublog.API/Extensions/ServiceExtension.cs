@@ -28,6 +28,9 @@ namespace Hublog.API.Extensions
 
             services.AddScoped<ITeamRepository, TeamRepository>();
             services.AddScoped<ITeamService, TeamService>();
+
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

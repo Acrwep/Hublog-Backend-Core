@@ -9,5 +9,7 @@ namespace Hublog.Repository.Interface
         Task<Team> CreateTeam(Team team);
 
         Task<Team> UpdateTeam(int id, Team team);
+
+        Task<string> DeleteTeam(int id);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Interface;
+using Microsoft.Data.SqlClient;
 
 namespace Hublog.Repository.Repositories
 {
@@ -76,6 +77,26 @@ namespace Hublog.Repository.Repositories
             catch (Exception ex)
             {
                 throw new Exception("Error fetching the Team", ex);
+            }
+        }
+        #endregion
+
+        #region DeleteTeam
+        public async Task<string> DeleteTeam(int id)
+        {
+            try
+            {
+                string query = @"DELETE FROM Team WHERE Id = @Id";
+                var result = await _dapper.ExecuteAsync(query, new { Id = id });
+                return result > 0 ? "Team Deleted Successfully" : "Team cannot be deleted user exist in Team";
+            }
+            catch (SqlException sqlex)
+            {
+                throw new Exception("This team mapping some users", sqlex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error Deleteing Team", ex);
             }
         }
         #endregion

@@ -11,7 +11,7 @@ namespace Hublog.Repository.Repositories
         {
             _dapper = dapper;
         }
-        public async Task<List<UserScreenShotModels>> GetUserScreenShots(int userId, int organizationId, DateTime date)
+        public async Task<List<UserScreenShot>> GetUserScreenShots(int userId, int organizationId, DateTime date)
         {
             var query = @"
             SELECT uss.[Id]
@@ -30,7 +30,7 @@ namespace Hublog.Repository.Repositories
                 AND uss.[UserId] = @UserId
                 AND uss.[OrganizationId] = @OrganizationId";
 
-            return await _dapper.GetAllAsync<UserScreenShotModels>(query, new
+            return await _dapper.GetAllAsync<UserScreenShot>(query, new
             {
                 UserId = userId,
                 OrganizationId = organizationId,

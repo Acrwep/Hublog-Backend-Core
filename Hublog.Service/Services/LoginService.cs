@@ -89,6 +89,20 @@ namespace Hublog.Service.Services
         }
         #endregion
 
+        #region UserLogout
+        public async Task<(Users user, string token)> UserLogout(LoginModels model)
+        {
+            var users = await _loginRepository.Login(model.UserName, model.Password);
+            if (users != null)
+            {
+                var token = CreateToken(users); 
+                return (users, token);
+            }
+
+            return (null, null);
+        }
+        #endregion 
+
         #region CreateToken
 
         private string CreateToken(Users user)

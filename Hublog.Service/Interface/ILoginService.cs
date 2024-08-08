@@ -9,6 +9,8 @@ namespace Hublog.Service.Interface
 
         Task<(Users, string)> UserLogin(string email, string password);
 
-        Task<(Users, string)> AdminLogin(string email, string password);    
+        Task<(Users, string)> AdminLogin(string email, string password);
+
+        Task<(Users user, string token)> UserLogout(LoginModels model);
     }
 }

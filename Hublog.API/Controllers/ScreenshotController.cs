@@ -1,5 +1,4 @@
 ﻿using Hublog.Service.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.API.Controllers

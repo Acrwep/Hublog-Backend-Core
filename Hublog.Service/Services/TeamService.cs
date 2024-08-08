@@ -21,6 +21,11 @@ namespace Hublog.Service.Services
             return await _teamRepository.CreateTeam(team);
         }
 
+        public async Task<string> DeleteTeam(int id)
+        {
+            return await _teamRepository.DeleteTeam(id);
+        }
+
         public async Task<List<Team>> GetTeams(int organizationId)
         {
             return await _teamRepository.GetTeams(organizationId);

@@ -3,6 +3,7 @@ using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace Hublog.API.Controllers
 {
@@ -123,6 +124,31 @@ namespace Hublog.API.Controllers
         //        return BadRequest("Model state is not valid");
         //    }
         //}
+        #endregion
+
+        #region DeleteTeam
+        [HttpDelete("DeleteTeam")]
+        public async Task<IActionResult> DeleteTeam(int id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Model state is not valid");
+            }
+            try
+            {
+                var result = await _teamService.DeleteTeam(id);
+                if (result.Contains("Error"))
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, result);
+                }
+                return Ok(result);
+            }
+
+            catch (Exception ex)
+            {
+                return BadRequest($"{ex.Message}");
+            }
+        }
         #endregion
     }
 }

@@ -10,5 +10,7 @@ namespace Hublog.Service.Interface
         Task<Team> CreateTeam (Team team);
 
         Task<Team> UpdateTeam (int id, TeamDTO teamDto);
+
+        Task<string> DeleteTeam (int id);
     }
 }
