@@ -148,5 +148,26 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
+
+        #region GetUsersByOrganizationId
+        [HttpGet("GetUsersByOrganizationId")]
+        public async Task<IActionResult> GetUsersByOrganizationId(int organizationId)
+        {
+            try
+            {
+                var result = await _userService.GetUsersByOrganizationId(organizationId);
+                if (result.Any())
+                {
+                    return Ok(result);
+                }
+
+                return NotFound("No data found");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("An error occurred while processing your request");
+            }
+        }
+        #endregion 
     }
 }

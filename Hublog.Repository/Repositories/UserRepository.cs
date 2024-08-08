@@ -159,6 +159,21 @@ namespace Hublog.Repository.Repositories
 
             return await _dapper.GetAllAsync<Users>(query, new { TeamId = teamId });
         }
-        #endregion  
+        #endregion
+
+        #region GetUsersByOrganizationId
+        public async Task<List<Users>> GetUsersByOrganizationId(int organizationId)
+        {
+            try
+            {
+                string query = @"SELECT * FROM Users WHERE OrganizationId = @OrganizationId AND Active = 1";
+                return await _dapper.GetAllAsync<Users>(query, new { OrganizationId = organizationId });
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("Error fetching the data", ex);
+            }
+        }
+        #endregion 
     }
 }

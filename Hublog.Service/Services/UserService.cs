@@ -26,6 +26,11 @@ namespace Hublog.Service.Services
             return await _userRepository.InsertBreak(model);
         }
 
+        public async Task<List<Users>> GetUsersByOrganizationId(int organizationId)
+        {
+            return await _userRepository.GetUsersByOrganizationId(organizationId);
+        }
+
         #region SaveUserScreenShot
         public async Task SaveUserScreenShot(UserScreenshotDTO userScreenshotDTO)   
         {
@@ -157,6 +162,7 @@ namespace Hublog.Service.Services
                 }
             };
         }
-        #endregion  
+        #endregion
+
     }
 }

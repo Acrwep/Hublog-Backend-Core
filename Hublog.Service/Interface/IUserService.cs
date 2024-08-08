@@ -14,5 +14,7 @@ namespace Hublog.Service.Interface
         Task<(List<UserAttendanceDetailModel> Records, AttendanceSummaryModel Summary)> GetUserAttendanceDetails(int userId, DateTime? startDate, DateTime? endDate);
 
         Task<object> GetUsersByTeamId(int teamId);  
+
+        Task<List<Users>> GetUsersByOrganizationId(int organizationId);
     }
 }

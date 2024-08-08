@@ -6,7 +6,7 @@ namespace Hublog.Repository.Interface
     public interface IUserRepository
     {
         Task<int> InsertAttendanceAsync(UserAttendanceModel userAttendanceModel);
-
+           
         Task<ResultModel> InsertBreak(List<UserBreakModel> userBreakModels);
 
         Task SaveUserScreenShot(UserScreenShot userScreenShot);
@@ -14,5 +14,7 @@ namespace Hublog.Repository.Interface
         Task<List<UserAttendanceDetailModel>> GetUserAttendanceDetails(int userId, DateTime startDate, DateTime endDate);
 
         Task<List<Users>> GetUsersByTeamId(int teamId); 
+
+        Task<List<Users>> GetUsersByOrganizationId(int organizationId);
     }
 }
