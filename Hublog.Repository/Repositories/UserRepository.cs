@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Login;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -96,5 +97,68 @@ namespace Hublog.Repository.Repositories
             await _dapper.ExecuteAsync("SP_InsertScreenShot", parameters, CommandType.StoredProcedure);
         }
         #endregion
+
+        #region GetUserAttendanceDetails
+        public async Task<List<UserAttendanceDetailModel>> GetUserAttendanceDetails(int userId, DateTime startDate, DateTime endDate)   
+        {
+            var query = @"
+            SELECT 
+                U.First_Name AS FirstName, 
+                U.Email, 
+                U.EmployeeID AS EmployeeId, 
+                U.Active, 
+                A.AttendanceDate, 
+                A.Start_Time, 
+                A.End_Time, 
+                A.Total_Time, 
+                A.Late_Time, 
+                A.Status 
+            FROM Users U
+                INNER JOIN Attendance A ON U.Id = A.UserId
+                WHERE U.Id = @UserId
+                  AND A.AttendanceDate BETWEEN @StartDate AND @EndDate";
+
+            var parameters = new { UserId = userId, StartDate = startDate, EndDate = endDate };
+
+            return await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
+        }
+        #endregion
+
+        #region GetUsersByTeamId
+        public async Task<List<Users>> GetUsersByTeamId(int teamId) 
+        {
+            var query = @"
+            SELECT 
+                u.[Id],
+                u.[First_Name],
+                u.[Last_Name],
+                u.[Email],
+                u.[DOB],
+                u.[DOJ],
+                u.[Phone],
+                u.[UsersName],
+                u.[Password],
+                u.[Gender],
+                u.[OrganizationId],
+                u.[RoleId],
+                u.[DesignationId],
+                u.[TeamId],
+                u.[Active],
+                u.[EmployeeID],
+                t.[Name] AS TeamName
+            FROM 
+                [dbo].[Users] u
+            INNER JOIN 
+                [dbo].[Team] t
+            ON 
+                u.[TeamId] = t.[Id]
+            WHERE 
+                u.[TeamId] = @TeamId
+        "
+            ;
+
+            return await _dapper.GetAllAsync<Users>(query, new { TeamId = teamId });
+        }
+        #endregion  
     }
 }

@@ -59,6 +59,104 @@ namespace Hublog.Service.Services
 
             await _userRepository.SaveUserScreenShot(userScreenShot);
         }
+        #endregion
+
+        #region GetUserAttendanceDetails
+        public async Task<(List<UserAttendanceDetailModel> Records, AttendanceSummaryModel Summary)> GetUserAttendanceDetails(int userId, DateTime? startDate, DateTime? endDate)
+        {
+            if (!startDate.HasValue || !endDate.HasValue)
+            {
+                DateTime today = DateTime.Today;
+                int diff = today.DayOfWeek - DayOfWeek.Monday;
+                DateTime startOfWeek = today.AddDays(-diff).Date;
+                DateTime endOfWeek = startOfWeek.AddDays(6);
+
+                startDate = startOfWeek;
+                endDate = endOfWeek;
+            }
+
+            var records = await _userRepository.GetUserAttendanceDetails(userId, startDate.Value, endDate.Value);
+
+            var allDates = Enumerable.Range(0, 1 + endDate.Value.Subtract(startDate.Value).Days)
+                .Select(offset => startDate.Value.AddDays(offset))
+                .ToList();
+
+            int daysPresent = 0;
+            int daysAbsent = 0;
+
+            foreach (var date in allDates)
+            {
+                if (date.DayOfWeek == DayOfWeek.Sunday) continue;
+
+                var record = records.FirstOrDefault(r => r.AttendanceDate.Date == date.Date);
+
+                if (record != null)
+                {
+                    daysPresent++;
+                }
+                else
+                {
+                    daysAbsent++;
+                }
+            }
+
+            var summary = new AttendanceSummaryModel
+            {
+                DaysPresent = daysPresent,
+                DaysLeave = daysAbsent
+            };
+
+            return (records, summary);
+        }
+        #endregion
+
+        #region GetUsersByTeamId
+        public async Task<object> GetUsersByTeamId(int teamId)  
+        {
+            var result = await _userRepository.GetUsersByTeamId(teamId);
+            var teamData = result.FirstOrDefault();
+
+            if (teamData == null)
+            {
+                return new
+                {
+                    Team = new
+                    {
+                        TeamId = teamId,
+                        TeamName = string.Empty,
+                        Users = new List<object>()
+                    }
+                };
+            }
+
+            return new
+            {
+                Team = new
+                {
+                    TeamId = teamData.TeamId,
+                    TeamName = teamData.TeamName,
+                    Users = result.Select(u => new
+                    {
+                        UserId = u.Id,
+                        FirstName = u.First_Name,
+                        LastName = u.Last_Name,
+                        Email = u.Email,
+                        DOB = u.DOB,
+                        DOJ = u.DOJ,
+                        Phone = u.Phone,
+                        UsersName = u.UsersName,
+                        Password = u.Password,
+                        Gender = u.Gender,
+                        OrganizationId = u.OrganizationId,
+                        RoleId = u.RoleId,
+                        DesignationId = u.DesignationId,
+                        TeamId = u.TeamId,
+                        Active = u.Active,
+                        EmployeeID = u.EmployeeID
+                    }).ToList()
+                }
+            };
+        }
         #endregion  
     }
 }

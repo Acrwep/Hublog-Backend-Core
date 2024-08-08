@@ -1,4 +1,5 @@
-﻿using Hublog.Repository.Entities.Model;
+﻿using Hublog.Repository.Entities.Login;
+using Hublog.Repository.Entities.Model;
 
 namespace Hublog.Repository.Interface
 {
@@ -8,6 +9,10 @@ namespace Hublog.Repository.Interface
 
         Task<ResultModel> InsertBreak(List<UserBreakModel> userBreakModels);
 
-        Task SaveUserScreenShot(UserScreenShot userScreenShot); 
+        Task SaveUserScreenShot(UserScreenShot userScreenShot);
+
+        Task<List<UserAttendanceDetailModel>> GetUserAttendanceDetails(int userId, DateTime startDate, DateTime endDate);
+
+        Task<List<Users>> GetUsersByTeamId(int teamId); 
     }
 }

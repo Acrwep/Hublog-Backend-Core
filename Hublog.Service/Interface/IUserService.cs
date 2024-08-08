@@ -9,6 +9,10 @@ namespace Hublog.Service.Interface
 
         Task<ResultModel> InsertBreak(List<UserBreakModel> model);
 
-        Task SaveUserScreenShot(UserScreenshotDTO userScreenshotDTO);       
+        Task SaveUserScreenShot(UserScreenshotDTO userScreenshotDTO);
+
+        Task<(List<UserAttendanceDetailModel> Records, AttendanceSummaryModel Summary)> GetUserAttendanceDetails(int userId, DateTime? startDate, DateTime? endDate);
+
+        Task<object> GetUsersByTeamId(int teamId);  
     }
 }

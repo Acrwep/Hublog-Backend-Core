@@ -104,5 +104,49 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
+
+        #region GetUserAttendanceDetails
+        [HttpGet("GetUserAttendanceDetails")]
+        public async Task<IActionResult> GetUserAttendanceDetails([FromQuery] int userId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
+        {
+            try
+            {
+                var (records, summary) = await _userService.GetUserAttendanceDetails(userId, startDate, endDate);
+
+                var responseModel = new
+                {
+                    AttendanceDetails = records,
+                    AttendanceSummary = summary
+                };
+
+                return Ok(responseModel);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
+        #endregion
+
+        #region GetUsersByTeamId
+        [HttpGet("GetUsersByTeamId")]
+        public async Task<IActionResult> GetUsersByTeamId([FromQuery] int teamId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Model state is not valid");
+            }
+
+            try
+            {
+                var result = await _userService.GetUsersByTeamId(teamId);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
     }
 }
