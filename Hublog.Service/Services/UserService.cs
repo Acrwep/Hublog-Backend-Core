@@ -31,6 +31,16 @@ namespace Hublog.Service.Services
             return await _userRepository.GetUsersByOrganizationId(organizationId);
         }
 
+        public async Task<List<BreakMaster>> GetAvailableBreak(GetModels model)
+        {
+            return await _userRepository.GetAvailableBreak(model.OrganizationId, model.CDate, model.UserId);
+        }
+
+        public async Task<BreakMaster> GetBreakMasterById(int id)
+        {
+            return await _userRepository.GetBreakMasterById(id);
+        }
+
         #region SaveUserScreenShot
         public async Task SaveUserScreenShot(UserScreenshotDTO userScreenshotDTO)   
         {

@@ -168,6 +168,51 @@ namespace Hublog.API.Controllers
                 return BadRequest("An error occurred while processing your request");
             }
         }
-        #endregion 
+        #endregion
+
+        #region GetAvailableBreak
+        [HttpPost("GetAvailableBreak")]
+        public async Task<IActionResult> GetAvailableBreak([FromBody] GetModels model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Model State is Not Valid");
+            }
+
+            try
+            {
+                var result = await _userService.GetAvailableBreak(model);
+
+                if (result.Count > 0)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("No Data Found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error");
+            }
+        }
+        #endregion
+
+        #region GetBreakMasterById
+        [HttpGet("GetBreakMasterById")]
+        public async Task<IActionResult> GetBreakMasterById(int id)
+        {
+            try
+            {
+                var result = await _userService.GetBreakMasterById(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("error fetching data"); ;
+            }
+        }
+        #endregion
     }
 }

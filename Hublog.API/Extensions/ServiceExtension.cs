@@ -66,7 +66,7 @@ namespace Hublog.API.Extensions
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hoblog API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Hublog API", Version = "v1" });
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {

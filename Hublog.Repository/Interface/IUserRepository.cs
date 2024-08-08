@@ -16,5 +16,9 @@ namespace Hublog.Repository.Interface
         Task<List<Users>> GetUsersByTeamId(int teamId); 
 
         Task<List<Users>> GetUsersByOrganizationId(int organizationId);
+
+        Task<List<BreakMaster>> GetAvailableBreak(int organizationId, DateTime cDate, int userId); 
+
+        Task<BreakMaster> GetBreakMasterById(int id);
     }
 }

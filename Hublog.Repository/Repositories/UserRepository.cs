@@ -174,6 +174,49 @@ namespace Hublog.Repository.Repositories
                 throw new Exception("Error fetching the data", ex);
             }
         }
+        #endregion
+
+        #region GetAvailableBreak
+        public async Task<List<BreakMaster>> GetAvailableBreak(int organizationId, DateTime CDate, int userId)
+        {
+            string sqlQuery = @"
+            SELECT * 
+            FROM BreakMaster B WITH (NOLOCK)
+            WHERE B.OrganizationId = @OrganizationId
+              AND B.Active = 1
+              AND B.Id NOT IN (
+                  SELECT DISTINCT Id
+                  FROM BreakEntry BE
+                  WHERE BE.Start_Time = @CDate
+                    AND BE.UserId = @UserId
+                    AND BE.OrganizationId = @OrganizationId
+            )";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("@OrganizationId", organizationId);
+            parameters.Add("@CDate", CDate);
+            parameters.Add("@UserId", userId);
+
+            var result = await _dapper.GetAllAsync<BreakMaster>(sqlQuery, parameters);
+            return result;
+        }
+        #endregion
+
+        #region GetBreakMasterById
+        public async Task<BreakMaster> GetBreakMasterById(int id)
+        {
+            try
+            {
+                var query = @"SELECT * FROM BreakMaster WHERE Id = @Id";
+                var parameters = new { Id = id };
+                return await _dapper.GetAsync<BreakMaster>(query, parameters);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"{ex.Message}", ex);
+            }
+        }
         #endregion 
     }
 }
