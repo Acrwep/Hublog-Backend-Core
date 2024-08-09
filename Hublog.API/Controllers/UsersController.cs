@@ -236,7 +236,7 @@ namespace Hublog.API.Controllers
         }
         #endregion
 
-        #region CRUD
+        #region  User CRUD Operation
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
