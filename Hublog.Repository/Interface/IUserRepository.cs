@@ -24,5 +24,11 @@ namespace Hublog.Repository.Interface
         Task<List<UserBreakRecordModel>> GetUserBreakRecordDetails(int userId, DateTime startDate, DateTime endDate);
 
         Task<List<Users>> GetAllUser();
+
+        Task<int> InsertUser(Users user);
+
+        Task<int> UpdateUser(Users user); 
+        
+        Task<int> DeleteUser(int userId);
     }
 }

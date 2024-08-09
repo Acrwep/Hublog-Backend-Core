@@ -41,6 +41,12 @@ namespace Hublog.Service.Services
             return await _userRepository.GetBreakMasterById(id);
         }
 
+        public async Task<bool> DeleteUser(int userId)
+        {
+            var result = await _userRepository.DeleteUser(userId);
+            return result > 0;
+        }
+
         #region SaveUserScreenShot
         public async Task SaveUserScreenShot(UserScreenshotDTO userScreenshotDTO)   
         {
@@ -203,6 +209,36 @@ namespace Hublog.Service.Services
 
             return new List<Users>();
         }
-        #endregion 
+        #endregion
+
+        #region  InsertUser
+        public async Task<Users> InsertUser(Users user)
+        {
+            var userId = await _userRepository.InsertUser(user);
+            if (userId > 0)
+            {
+                user.Id = userId;
+                return user;
+            }
+            else
+            {
+                throw new Exception("Could not create user");
+            }
+        }
+        #endregion
+
+        #region UpdateUser
+        public async Task<Users> UpdateUser(Users user)
+        {
+            var rowsAffected = await _userRepository.UpdateUser(user);  
+
+            if (rowsAffected > 0)
+            {
+                return user;
+            }
+
+            return null;
+        }
+        #endregion
     }
 }

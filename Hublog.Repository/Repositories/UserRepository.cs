@@ -264,6 +264,46 @@ namespace Hublog.Repository.Repositories
             var query = "SELECT * FROM Users WITH (NOLOCK)";
             return await _dapper.GetAllAsync<Users>(query);
         }
+        #endregion
+
+        #region InsertUser
+        public async Task<int> InsertUser(Users user)
+        {
+            string query = @"
+            INSERT INTO Users (First_Name, Last_Name, Email, DOB, DOJ, Phone, UsersName, Password, 
+            Gender, OrganizationId, RoleId, DesignationId, TeamId, Active, EmployeeID) 
+            VALUES (@First_Name, @Last_Name, @Email, @DOB, @DOJ, @Phone, @UsersName, @Password,
+            @Gender, @OrganizationId, @RoleId, @DesignationId, @TeamId, @Active, @EmployeeID);
+            SELECT CAST(SCOPE_IDENTITY() as int)";
+
+            user.Active = true;
+
+            return await _dapper.ExecuteAsync(query, user);
+        }
+        #endregion
+
+        #region UpdateUser
+        public async Task<int> UpdateUser(Users user)
+        {
+            string query = @"
+            UPDATE Users 
+            SET First_Name = @First_Name, Last_Name = @Last_Name, Email = @Email, DOB = @DOB, DOJ = @DOJ, Phone = @Phone, 
+                UsersName = @UsersName, Password = @Password, Gender = @Gender, OrganizationId = @OrganizationId, 
+                RoleId = @RoleId, DesignationId = @DesignationId, TeamId = @TeamId, Active = @Active, EmployeeID = @EmployeeID 
+            WHERE Id = @Id";
+
+            return await _dapper.ExecuteAsync(query, user);
+        }
+        #endregion
+
+        #region DeleteUser
+        public async Task<int> DeleteUser(int userId)
+        {
+            var query = @"DELETE FROM Users WHERE Id = @Id";
+            var parameter = new { Id = userId };
+
+            return await _dapper.ExecuteAsync(query, parameter);
+        }
         #endregion 
     }
 }

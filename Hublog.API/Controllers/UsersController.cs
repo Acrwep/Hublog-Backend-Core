@@ -262,7 +262,75 @@ namespace Hublog.API.Controllers
             }
         }
 
+        [HttpPost("InsertUser")]
+        public async Task<IActionResult> InsertUser([FromBody] Users user)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var createdUser = await _userService.InsertUser(user);
+                    return CreatedAtAction(nameof(InsertUser), new { id = createdUser.Id }, createdUser);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Model State is Not Valid");
+            }
+        }
 
+        [HttpPut("UpdateUser")]
+        public async Task<IActionResult> UpdateUser(Users user)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("Model State is Not Valid");
+            }
+
+            try
+            {
+                var updatedUser = await _userService.UpdateUser(user);
+
+                if (updatedUser != null)
+                {
+                    return Ok(updatedUser);
+                }
+                else
+                {
+                    return NotFound("User not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error updating user");
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            try
+            {
+                bool isDeleted = await _userService.DeleteUser(id);
+
+                if (isDeleted)
+                {
+                    return Ok($"User with Id {id} deleted successfully");
+                }
+                else
+                {
+                    return NotFound($"User with Id {id} not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting user");
+            }
+        }
         #endregion
     }
 }
