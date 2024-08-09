@@ -2,6 +2,7 @@
 using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Hublog.API.Controllers
 {
@@ -213,6 +214,55 @@ namespace Hublog.API.Controllers
                 return BadRequest("error fetching data"); ;
             }
         }
+        #endregion
+
+        #region GetUserBreakRecordDetails
+        [HttpGet("GetUserBreakRecordDetails")]
+        public async Task<IActionResult> GetUserBreakRecordDetails([FromQuery] int userId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
+        {
+            try
+            {
+                var result = await _userService.GetUserBreakRecordDetails(userId, startDate, endDate);
+                if (result.Count > 0)
+                {
+                    return Ok(result);
+                }
+                return NotFound(new List<UserBreakRecordModel>());
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region CRUD
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                var claimsPrincipal = User as ClaimsPrincipal;
+                var loggedInUserEmail = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+                var result = await _userService.GetAllUser(loggedInUserEmail);
+
+                if (result != null && result.Any())
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("No Data Found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
         #endregion
     }
 }

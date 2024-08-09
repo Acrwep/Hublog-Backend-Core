@@ -124,6 +124,45 @@ namespace Hublog.Repository.Repositories
         }
         #endregion
 
+        #region GetUserBreakRecordDetails
+        public async Task<List<UserBreakRecordModel>> GetUserBreakRecordDetails(int userId, DateTime startDate, DateTime endDate)
+        {
+            var query = @"
+                    SELECT 
+                        BE.UserId, 
+                        BE.OrganizationId, 
+                        BE.BreakDate, 
+                        BE.Start_Time, 
+                        BE.End_Time, 
+                        BE.BreakEntryId, 
+                        BE.Status,
+                        BE.BreakDuration,
+                        BM.Name as BreakType, 
+                        BM.Active, 
+                        BM.Max_Break_Time, 
+                        U.First_Name as firstName, 
+                        U.Email
+                    FROM BreakEntry BE 
+                    INNER JOIN BreakMaster BM ON BE.BreakEntryId = BM.Id
+                    INNER JOIN Users U ON U.Id = BE.UserId
+                    WHERE BE.UserId = @UserId
+                    AND (
+                        (BE.BreakDate BETWEEN @StartDate AND @EndDate)
+                        OR (BE.Start_Time <= @EndDateTime AND BE.End_Time >= @StartDate)
+                    )";
+
+            var parameters = new
+            {
+                UserId = userId,
+                StartDate = startDate,
+                EndDate = endDate,
+                EndDateTime = endDate.AddDays(1)
+            };
+
+            return await _dapper.GetAllAsync<UserBreakRecordModel>(query, parameters);
+        }
+        #endregion
+
         #region GetUsersByTeamId
         public async Task<List<Users>> GetUsersByTeamId(int teamId) 
         {
@@ -216,6 +255,14 @@ namespace Hublog.Repository.Repositories
             {
                 throw new Exception($"{ex.Message}", ex);
             }
+        }
+        #endregion
+
+        #region GetAllUser
+        public async Task<List<Users>> GetAllUser() 
+        {
+            var query = "SELECT * FROM Users WITH (NOLOCK)";
+            return await _dapper.GetAllAsync<Users>(query);
         }
         #endregion 
     }

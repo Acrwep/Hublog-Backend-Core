@@ -20,5 +20,9 @@ namespace Hublog.Repository.Interface
         Task<List<BreakMaster>> GetAvailableBreak(int organizationId, DateTime cDate, int userId); 
 
         Task<BreakMaster> GetBreakMasterById(int id);
+
+        Task<List<UserBreakRecordModel>> GetUserBreakRecordDetails(int userId, DateTime startDate, DateTime endDate);
+
+        Task<List<Users>> GetAllUser();
     }
 }

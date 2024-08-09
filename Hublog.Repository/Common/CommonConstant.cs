@@ -6,12 +6,14 @@
         {
             public const string EmployeePolicy = "EmployeePolicy";
             public const string AdminPolicy = "AdminPolicy";
+            public const string SuperAdminPolicy = "SuperAdminPolicy";
         }
 
         public static class Role
         {
             public const string Employee = "EMPLOYEE";
             public const string Admin = "ADMIN";
+            public const string SuperAdmin = "SUPER_ADMIN";
         }
     }
 }

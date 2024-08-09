@@ -4,7 +4,9 @@ namespace Hublog.Service.Interface
 {
     public interface IAdminService
     {
-        Task<List<Users>> GetAllUser();
+        //Task<List<Users>> GetAllUser();
+
+        Task<List<Users>> GetAllUser(string loggedInUserEmail); 
 
         Task<List<BreakMaster>> GetBreakMasters();
 

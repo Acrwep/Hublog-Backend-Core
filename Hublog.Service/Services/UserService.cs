@@ -174,5 +174,35 @@ namespace Hublog.Service.Services
         }
         #endregion
 
+        #region GetUserBreakRecordDetails
+        public async Task<List<UserBreakRecordModel>> GetUserBreakRecordDetails(int userId, DateTime? startDate, DateTime? endDate) 
+        {
+            if (!startDate.HasValue || !endDate.HasValue)
+            {
+                DateTime today = DateTime.Today;
+                int diff = today.DayOfWeek - DayOfWeek.Monday;
+                startDate = today.AddDays(-diff).Date;
+                endDate = startDate.Value.AddDays(6);
+            }
+
+            DateTime endDateTime = endDate.Value.Date.AddDays(1);
+
+            return await _userRepository.GetUserBreakRecordDetails(userId, startDate.Value, endDate.Value);
+        }
+        #endregion
+
+        #region GetAllUser
+        public async Task<List<Users>> GetAllUser(string loggedInUserEmail)
+        {
+            var users = await _userRepository.GetAllUser();
+
+            if (users != null && users.Any())
+            {
+                return users.OrderByDescending(u => u.Email == loggedInUserEmail).ToList();
+            }
+
+            return new List<Users>();
+        }
+        #endregion 
     }
 }

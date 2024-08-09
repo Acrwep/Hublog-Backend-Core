@@ -1,8 +1,10 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
+using Hublog.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Hublog.API.Controllers
 {
@@ -94,21 +96,32 @@ namespace Hublog.API.Controllers
                 return StatusCode(500, "Internal server error.");
             }
         }
-        #endregion 
+        #endregion
 
         #region GetAllUser
         [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUser()
+        public async Task<IActionResult> GetAllUsers()
         {
             try
             {
-                var users = await _adminService.GetAllUser();
-                return Ok(users);
+                var claimsPrincipal = User as ClaimsPrincipal;
+                var loggedInUserEmail = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+                var result = await _adminService.GetAllUser(loggedInUserEmail);
+
+                if (result != null && result.Any())
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("No Data Found");
+                }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                _logger.LogError(ex, "An error occurred while getting user.");
-                return StatusCode(500, "Internal server error.");
+                _logger.LogError(ex, "Error in GetAllUsers");
+                return BadRequest(ex.Message);
             }
         }
         #endregion

@@ -17,6 +17,7 @@ namespace Hublog.API.Extensions
         public static void ConfigureScope(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddSingleton<Dapperr>();
+
             services.AddScoped<ILoginRepository, LoginRepository>();
             services.AddScoped<ILoginService, LoginService>();
 
@@ -71,7 +72,7 @@ namespace Hublog.API.Extensions
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
-                    Description = "Enter 'Bearer' [space] and then your token",
+                    Description = "Enter your token",
                     Name = "Authorization",
                     Type = SecuritySchemeType.Http,
                     BearerFormat = "JWT",
