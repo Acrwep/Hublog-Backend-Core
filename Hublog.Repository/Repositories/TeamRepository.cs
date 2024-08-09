@@ -47,20 +47,30 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region CreateTeam
-        public async Task<Team> CreateTeam(Team team)
+        public async Task<(bool IsSuccessful, string Message, Team CreatedTeam)> CreateTeam(Team team)
         {
             try
             {
-                string query = @"INSERT INTO Team (Name, Active, Description, OrganizationId, Parentid) 
-                                 VALUES (@Name, @Active, @Description, @OrganizationId, @Parentid)
-                                 SELECT CAST(SCOPE_IDENTITY() as int)";
+                string checkQuery = @"SELECT COUNT(1) 
+                                      FROM Team 
+                                      WHERE Name = @Name AND OrganizationId = @OrganizationId";
 
-                var createdTeam = await _dapper.ExecuteAsync(query, team);
-                team.Id = createdTeam;
-                return team;
+                var teamExists = await _dapper.ExecuteScalarAsync<int>(checkQuery, new { team.Name, team.OrganizationId });
 
+                if (teamExists > 0)
+                {
+                    return (false, "Team name already exist", null);
+                }
+
+                string insertQuery = @"INSERT INTO Team (Name, Active, Description, OrganizationId, Parentid) 
+                                       VALUES (@Name, @Active, @Description, @OrganizationId, @Parentid)
+                                       SELECT CAST(SCOPE_IDENTITY() as int)";
+
+                var createdTeamId = await _dapper.ExecuteScalarAsync<int>(insertQuery, team);
+                team.Id = createdTeamId;
+                return (true, "Team created successfully.", team);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("Error creating Team", ex);
             }

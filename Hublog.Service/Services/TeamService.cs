@@ -16,7 +16,7 @@ namespace Hublog.Service.Services
             _mapper = mapper;
         }
 
-        public async Task<Team> CreateTeam(Team team)
+        public async Task<(bool IsSuccessful, string Message, Team CreatedTeam)> CreateTeam(Team team)
         {
             return await _teamRepository.CreateTeam(team);
         }

@@ -5,9 +5,9 @@ namespace Hublog.Service.Interface
 {
     public interface ITeamService
     {
-        Task<List<Team>> GetTeams(int organizationId);  
+        Task<List<Team>> GetTeams(int organizationId);
 
-        Task<Team> CreateTeam (Team team);
+        Task<(bool IsSuccessful, string Message, Team CreatedTeam)> CreateTeam(Team team);
 
         Task<Team> UpdateTeam (int id, TeamDTO teamDto);
 

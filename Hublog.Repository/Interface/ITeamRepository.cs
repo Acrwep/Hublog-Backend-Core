@@ -6,7 +6,9 @@ namespace Hublog.Repository.Interface
     {
         Task<List<Team>> GetTeams(int organizationId);
 
-        Task<Team> CreateTeam(Team team);
+        //Task<Team> CreateTeam(Team team);
+
+        Task<(bool IsSuccessful, string Message, Team CreatedTeam)> CreateTeam(Team team);
 
         Task<Team> UpdateTeam(int id, Team team);
 

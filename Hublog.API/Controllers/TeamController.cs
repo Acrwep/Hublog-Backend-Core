@@ -53,21 +53,15 @@ namespace Hublog.API.Controllers
         [HttpPost("CreateTeam")]
         public async Task<IActionResult> CreateTeam([FromBody] Team team)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Model State is Not Valid");
-            }
+            var result = await _teamService.CreateTeam(team);
 
-            try
+            if (result.IsSuccessful)
             {
-                team.Active = true;
-
-                var createdTeam = await _teamService.CreateTeam(team);
-                return CreatedAtAction(nameof(CreateTeam), new { id = createdTeam.Id }, createdTeam);
+                return Ok(result.CreatedTeam);
             }
-            catch (Exception ex)
+            else
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error creating team");
+                return BadRequest(result.Message);
             }
         }
         #endregion
