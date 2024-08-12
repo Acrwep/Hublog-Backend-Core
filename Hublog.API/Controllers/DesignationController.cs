@@ -1,6 +1,7 @@
 ﻿using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Hublog.API.Controllers
 {
@@ -131,7 +132,7 @@ namespace Hublog.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting designation");
+                return StatusCode(StatusCodes.Status200OK, "Error deleting designation");
             }
         }
         #endregion

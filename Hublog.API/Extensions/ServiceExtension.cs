@@ -35,6 +35,9 @@ namespace Hublog.API.Extensions
 
             services.AddScoped<IDesignationRepository, DesignationRepository>();
             services.AddScoped<IDesignationService, DesignationService>();
+
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IRoleService, RoleService>();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
