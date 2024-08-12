@@ -1,15 +1,4 @@
 using Hublog.API.Extensions;
-using Hublog.Repository.Common;
-using Hublog.Repository.Entities.Login;
-using Hublog.Repository.Interface;
-using Hublog.Repository.Repositories;
-using Hublog.Service.Interface;
-using Hublog.Service.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using System.Security.Claims;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +20,13 @@ builder.Services.ConfigureScope(configuration);
 builder.Services.ConfigureServices(configuration);
 
 var app = builder.Build();
+
+app.UseCors(options =>
+{
+    options.WithOrigins("http://localhost:3000")
+           .AllowAnyHeader()
+           .AllowAnyMethod();
+});
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
