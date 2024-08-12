@@ -75,7 +75,7 @@ namespace Hublog.API.Controllers
             try
             {
                 var createdDesignation = await _designationService.InsertDesignation(designation);
-                return CreatedAtAction(nameof(InsertDesignation), new { id = createdDesignation.Id }, createdDesignation);
+                return Ok(createdDesignation);
             }
             catch (Exception ex)
             {
