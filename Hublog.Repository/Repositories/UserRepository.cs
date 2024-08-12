@@ -259,10 +259,11 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region GetAllUser
-        public async Task<List<Users>> GetAllUser() 
+        public async Task<List<Users>> GetAllUser(int organizationid) 
         {
-            var query = "SELECT * FROM Users WITH (NOLOCK)";
-            return await _dapper.GetAllAsync<Users>(query);
+            var query = "SELECT * FROM Users WHERE OrganizationId = @OrganizationId";
+            var parameters = new { OrganizationId = organizationid };
+            return await _dapper.GetAllAsync<Users>(query, parameters);
         }
         #endregion
 

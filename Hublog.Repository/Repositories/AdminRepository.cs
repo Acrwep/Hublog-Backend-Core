@@ -82,12 +82,13 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region GetAllUser
-        public async Task<List<Users>> GetAllUser()
+        public async Task<List<Users>> GetAllUser(int organizationid)
         {
             try
             {
-                const string query = @"SELECT * FROM Users WITH (NOLOCK)";
-                return await _dapper.GetAllAsync<Users>(query);
+                var query = @"SELECT * FROM Users  WHERE OrganizationId = @OrganizationId";
+                var parameter = new { OrganizationId = organizationid };
+                return await _dapper.GetAllAsync<Users>(query, parameter);
             }
             catch (SqlException Sqlex)
             {

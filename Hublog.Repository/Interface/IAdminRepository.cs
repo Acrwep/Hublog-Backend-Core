@@ -4,7 +4,7 @@ namespace Hublog.Repository.Interface
 {
     public interface IAdminRepository
     {
-        Task<List<Users>> GetAllUser();
+        Task<List<Users>> GetAllUser(int organizationId);
 
         Task<List<BreakMaster>> GetBreakMasters();
 

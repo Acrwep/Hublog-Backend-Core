@@ -6,7 +6,7 @@ namespace Hublog.Service.Interface
     {
         //Task<List<Users>> GetAllUser();
 
-        Task<List<Users>> GetAllUser(string loggedInUserEmail); 
+        Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationId); 
 
         Task<List<BreakMaster>> GetBreakMasters();
 

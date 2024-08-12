@@ -19,9 +19,9 @@ namespace Hublog.Service.Services
             return await _adminRepository.GetBreakMasters();
         }
 
-        public async Task<List<Users>> GetAllUser(string loggedInUserEmail)
+        public async Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationId)
         {
-            var users = await _adminRepository.GetAllUser();
+            var users = await _adminRepository.GetAllUser(organizationId);
 
             if (users != null && users.Any())
             {

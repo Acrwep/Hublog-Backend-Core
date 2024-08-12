@@ -32,6 +32,9 @@ namespace Hublog.API.Extensions
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<IDesignationRepository, DesignationRepository>();
+            services.AddScoped<IDesignationService, DesignationService>();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

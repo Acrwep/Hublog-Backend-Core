@@ -100,14 +100,14 @@ namespace Hublog.API.Controllers
 
         #region GetAllUser
         [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers(int organizationId)
         {
             try
             {
                 var claimsPrincipal = User as ClaimsPrincipal;
                 var loggedInUserEmail = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-                var result = await _adminService.GetAllUser(loggedInUserEmail);
+                var result = await _adminService.GetAllUser(loggedInUserEmail, organizationId);
 
                 if (result != null && result.Any())
                 {
