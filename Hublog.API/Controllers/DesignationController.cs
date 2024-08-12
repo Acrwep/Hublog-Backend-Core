@@ -132,7 +132,7 @@ namespace Hublog.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status200OK, "Error deleting designation");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting designation");
             }
         }
         #endregion

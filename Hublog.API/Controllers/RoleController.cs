@@ -106,7 +106,7 @@ namespace Hublog.API.Controllers
             }
             catch
             {
-                return StatusCode(StatusCodes.Status200OK, "Error deleting Role");
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting Role");
             }
         }
         #endregion
