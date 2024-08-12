@@ -81,7 +81,7 @@ namespace Hublog.Repository.Repositories
         }
         #endregion
 
-        #region UpdateDesignation
+        #region DeleteDesignation
         public async Task<int> DeleteDesignation(int organizationId, int designationId)
         {
             var query = @"DELETE Designation WHERE OrganizationId = @OrganizationId AND Id = @Id";
