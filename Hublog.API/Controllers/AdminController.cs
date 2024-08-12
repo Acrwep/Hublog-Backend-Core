@@ -1,7 +1,6 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
-using Hublog.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;

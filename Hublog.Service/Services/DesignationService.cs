@@ -11,9 +11,34 @@ namespace Hublog.Service.Services
         {
             _designationRepository = designationRepository;
         }
+
         public async Task<List<Designation>> GetDesignationAll(int organizationId)
         {
             return await _designationRepository.GetDesignationAll(organizationId);
         }
+
+        public async Task<Designation> GetDesignationById(int organizationId, int designationId)
+        {
+            return await _designationRepository.GetDesignationById(organizationId, designationId);
+        }
+
+        #region InsertDesignation
+        public async Task<Designation> InsertDesignation(Designation designation)
+        {
+            designation.Active = true;
+            TimeZoneInfo istZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            designation.Created_date = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, istZone);
+
+            var result = await _designationRepository.InsertDesignation(designation);
+            if (result > 0)
+            {
+                return designation;
+            }
+            else
+            {
+                throw new Exception("Could not create designation");
+            }
+        }
+        #endregion 
     }
 }
