@@ -84,5 +84,56 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
+
+        #region UpdateDesignation
+        [HttpPut("UpdateDesignation")]
+        public async Task<IActionResult> UpdateDesignation(Designation designation)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest("ModelState is not valid");
+            }
+
+            try
+            {
+                var result = await _designationService.UpdateDesignation(designation);
+                if(result != null)
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("No data found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error updating designation");
+            }
+        }
+        #endregion
+
+        #region DeleteDesignation
+        [HttpDelete("DeleteDesignation")]
+        public async Task<IActionResult> DeleteDesignation(int organizationId, int designationId)
+        {
+            try
+            {
+                bool isDeleted = await _designationService.DeleteDesignation(organizationId, designationId);
+                if (isDeleted)
+                {
+                    return Ok($"Designation with {designationId} is deleted");
+                }
+                else
+                {
+                    return NotFound($"Designation with {designationId} not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting designation");
+            }
+        }
+        #endregion
     }
 }

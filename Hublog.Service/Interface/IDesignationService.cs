@@ -8,6 +8,10 @@ namespace Hublog.Service.Interface
 
         Task<Designation> GetDesignationById(int organizationId, int designationId);
 
-        Task<Designation> InsertDesignation(Designation designation);   
+        Task<Designation> InsertDesignation(Designation designation);  
+        
+        Task<Designation> UpdateDesignation(Designation designation);
+
+        Task<bool> DeleteDesignation(int organizationId, int designationId);
     }
 }

@@ -8,6 +8,10 @@ namespace Hublog.Repository.Interface
 
         Task<Designation> GetDesignationById(int organizationId ,int designationId);
 
-        Task<int> InsertDesignation(Designation designation);
+        Task<int> InsertDesignation(Designation designation);  
+
+        Task<int> UpdateDesignation(Designation designation);
+
+        Task<int> DeleteDesignation(int organizationId, int designationId);
     }
 }

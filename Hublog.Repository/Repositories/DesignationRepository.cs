@@ -59,5 +59,35 @@ namespace Hublog.Repository.Repositories
             }
         }
         #endregion
+
+        #region UpdateDesignation
+        public async Task<int> UpdateDesignation(Designation designation)
+        {
+            try
+            {
+                string query = @"UPDATE Designation 
+                                SET Name = @Name, 
+                                    Active = @Active,
+                                    Description = @Description, 
+                                    Created_date = @Created_date, 
+                                    OrganizationId = @OrganizationId 
+                                WHERE Id = @Id";
+                return await _dapper.ExecuteAsync(query, designation);
+            }
+            catch(Exception ex)
+            {
+                throw new Exception("error updating designation", ex);
+            }
+        }
+        #endregion
+
+        #region UpdateDesignation
+        public async Task<int> DeleteDesignation(int organizationId, int designationId)
+        {
+            var query = @"DELETE Designation WHERE OrganizationId = @OrganizationId AND Id = @Id";
+            var parameter = new { OrganizationId = organizationId, Id = designationId };
+            return await _dapper.ExecuteAsync(query, parameter);
+        }
+        #endregion 
     }
 }

@@ -22,6 +22,12 @@ namespace Hublog.Service.Services
             return await _designationRepository.GetDesignationById(organizationId, designationId);
         }
 
+        public async Task<bool> DeleteDesignation(int organizationId, int designationId)
+        {
+            var result = await _designationRepository.DeleteDesignation(organizationId, designationId);
+            return result > 0;
+        }
+
         #region InsertDesignation
         public async Task<Designation> InsertDesignation(Designation designation)
         {
@@ -39,6 +45,18 @@ namespace Hublog.Service.Services
                 throw new Exception("Could not create designation");
             }
         }
-        #endregion 
+        #endregion
+
+        #region UpdateDesignation
+        public async Task<Designation> UpdateDesignation(Designation designation)
+        {
+            var result = await _designationRepository.UpdateDesignation(designation);
+            if (result > 0)     
+            {
+                return designation;
+            }
+            return null;
+        }
+        #endregion
     }
 }
