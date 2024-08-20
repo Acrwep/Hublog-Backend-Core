@@ -120,6 +120,8 @@ namespace Hublog.Service.Services
         new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
         new Claim(JwtRegisteredClaimNames.Email, user.Email),
         new Claim(ClaimTypes.Role, user.RoleName),
+        new Claim("First_Name", user.First_Name),
+        new Claim("Last_Name", user.Last_Name),
         new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(now).ToUnixTimeSeconds().ToString()),
         new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(now).ToUnixTimeSeconds().ToString())
     };
@@ -137,6 +139,6 @@ namespace Hublog.Service.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        #endregion
+        #endregion  
     }
 }

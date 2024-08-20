@@ -10,7 +10,7 @@ namespace Hublog.Repository.Interface
 
         Task<(bool IsSuccessful, string Message, Team CreatedTeam)> CreateTeam(Team team);
 
-        Task<Team> UpdateTeam(int id, Team team);
+        Task<(string, Team)> UpdateTeam(int id, Team team);
 
         Task<string> DeleteTeam(int id);
     }

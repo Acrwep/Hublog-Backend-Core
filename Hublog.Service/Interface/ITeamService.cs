@@ -9,7 +9,7 @@ namespace Hublog.Service.Interface
 
         Task<(bool IsSuccessful, string Message, Team CreatedTeam)> CreateTeam(Team team);
 
-        Task<Team> UpdateTeam (int id, TeamDTO teamDto);
+        Task<(string, Team)> UpdateTeam (int id, TeamDTO teamDto);
 
         Task<string> DeleteTeam (int id);
     }

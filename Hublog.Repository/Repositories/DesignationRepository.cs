@@ -61,23 +61,43 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region UpdateDesignation
-        public async Task<int> UpdateDesignation(Designation designation)
+        public async Task<(int RowsAffected, string Message)> UpdateDesignation(Designation designation)
         {
             try
             {
+                if (designation.Active == false)
+                {
+                    bool isMapped = await IsDesignationMappedToUser(designation.Id);
+                    if (isMapped)
+                    {
+                        return (0, "Designation is currently mapped to a user and cannot be deactivated.");
+                    }
+                }
+
                 string query = @"UPDATE Designation 
-                                SET Name = @Name, 
-                                    Active = @Active,
-                                    Description = @Description, 
-                                    Created_date = @Created_date, 
-                                    OrganizationId = @OrganizationId 
-                                WHERE Id = @Id";
-                return await _dapper.ExecuteAsync(query, designation);
+                        SET Name = @Name, 
+                            Active = @Active,
+                            Description = @Description, 
+                            Created_date = @Created_date, 
+                            OrganizationId = @OrganizationId 
+                        WHERE Id = @Id";
+                int rowsAffected = await _dapper.ExecuteAsync(query, designation);
+                return (rowsAffected, "Designation updated successfully.");
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                throw new Exception("error updating designation", ex);
+                throw new Exception("Error updating designation", ex);
             }
+        }
+
+        #endregion
+
+        #region IsDesignationMappedToUser
+        public async Task<bool> IsDesignationMappedToUser(int designationId)
+        {
+            string query = "SELECT COUNT(*) FROM Users WHERE DesignationId = @DesignationId";
+            var count = await _dapper.ExecuteScalarAsync<int>(query, new { DesignationId = designationId });
+            return count > 0;
         }
         #endregion
 

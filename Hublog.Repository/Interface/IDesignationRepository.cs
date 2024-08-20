@@ -10,8 +10,10 @@ namespace Hublog.Repository.Interface
 
         Task<int> InsertDesignation(Designation designation);  
 
-        Task<int> UpdateDesignation(Designation designation);
+        Task<(int RowsAffected, string Message)> UpdateDesignation(Designation designation);
 
         Task<int> DeleteDesignation(int organizationId, int designationId);
+
+        Task<bool> IsDesignationMappedToUser(int designationId);
     }
 }

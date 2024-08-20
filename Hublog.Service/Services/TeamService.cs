@@ -31,10 +31,11 @@ namespace Hublog.Service.Services
             return await _teamRepository.GetTeams(organizationId);
         }
 
-        public async Task<Team> UpdateTeam(int id, TeamDTO teamDto)
+        public async Task<(string, Team)> UpdateTeam(int id, TeamDTO teamDto)
         {
             var team = _mapper.Map<Team>(teamDto);
             return await _teamRepository.UpdateTeam(id, team);
         }
+
     }
 }

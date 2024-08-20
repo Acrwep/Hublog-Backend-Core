@@ -48,14 +48,14 @@ namespace Hublog.Service.Services
         #endregion
 
         #region UpdateDesignation
-        public async Task<Designation> UpdateDesignation(Designation designation)
+        public async Task<(Designation UpdatedDesignation, string Message)> UpdateDesignation(Designation designation)
         {
-            var result = await _designationRepository.UpdateDesignation(designation);
-            if (result > 0)     
+            var (rowsAffected, message) = await _designationRepository.UpdateDesignation(designation);
+            if (rowsAffected > 0)
             {
-                return designation;
+                return (designation, message);
             }
-            return null;
+            return (null, message);
         }
         #endregion
     }

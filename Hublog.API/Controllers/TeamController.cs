@@ -67,7 +67,6 @@ namespace Hublog.API.Controllers
         #endregion
 
         #region UpdateTeam
-
         [HttpPut("UpdateTeam")]
         public async Task<IActionResult> UpdateTeam(int id, [FromBody] TeamDTO teamDto)
         {
@@ -78,14 +77,25 @@ namespace Hublog.API.Controllers
 
             try
             {
-                var updatedTeam = await _teamService.UpdateTeam(id, teamDto);
+                var (message, updatedTeam) = await _teamService.UpdateTeam(id, teamDto);
                 if (updatedTeam != null)
                 {
                     return Ok(updatedTeam);
                 }
+                else if (message != null)
+                {
+                    if (message.Contains("User is already mapped to this team"))
+                    {
+                        return Conflict(message); 
+                    }
+                    else
+                    {
+                        return NotFound(message);
+                    }
+                }
                 else
                 {
-                    return NotFound("Team not found");
+                    return StatusCode(StatusCodes.Status500InternalServerError, "Unexpected error occurred");
                 }
             }
             catch (Exception ex)

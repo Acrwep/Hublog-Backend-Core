@@ -97,19 +97,16 @@ namespace Hublog.API.Controllers
 
             try
             {
-                var result = await _designationService.UpdateDesignation(designation);
-                if(result != null)
+                var (result, message) = await _designationService.UpdateDesignation(designation);
+                if (result != null)
                 {
-                    return Ok(result);
+                    return Ok(new { Message = message, Designation = result });
                 }
-                else
-                {
-                    return NotFound("No data found");
-                }
+                return BadRequest(new { Message = message });
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error updating designation");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Message = $"Error updating designation: {ex.Message}" });
             }
         }
         #endregion

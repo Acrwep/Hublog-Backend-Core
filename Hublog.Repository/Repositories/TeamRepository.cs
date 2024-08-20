@@ -14,36 +14,53 @@ namespace Hublog.Repository.Repositories
         }
 
         #region UpdateTeam
-        public async Task<Team> UpdateTeam(int id, Team team)
+        public async Task<(string, Team)> UpdateTeam(int id, Team team)
         {
             try
             {
+                var existingTeam = await _dapper.GetAsync<Team>("SELECT * FROM Team WHERE Id = @Id", new { Id = id });
+                if (existingTeam == null)
+                {
+                    return ("Team not found", null);
+                }
+
+                if (!team.Active && existingTeam.Active)
+                {
+                    var userCount = await _dapper.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM Users WHERE TeamId = @Id", new { Id = id });
+                    if (userCount > 0)
+                    {
+                        return ("User is already mapped to this team and cannot be updated to inactive", null);
+                    }
+                }
+
                 string query = @"UPDATE Team SET 
-                                    Name = @Name, 
-                                    Description = @Description, 
-                                    Active = @Active, 
-                                    OrganizationId = @OrganizationId, 
-                                    Parentid = @Parentid WHERE Id = @Id";
+                            Name = @Name, 
+                            Description = @Description, 
+                            Active = @Active, 
+                            OrganizationId = @OrganizationId, 
+                            Parentid = @Parentid WHERE Id = @Id";
 
                 team.Id = id;
 
                 var result = await _dapper.ExecuteAsync(query, team);
 
-                if(result > 0)
+                if (result > 0)
                 {
                     string selectquery = @"SELECT * FROM Team WHERE Id = @Id";
-                    return await _dapper.GetAsync<Team>(selectquery, new { Id = team.Id });
+                    var updatedTeam = await _dapper.GetAsync<Team>(selectquery, new { Id = team.Id });
+                    return (null, updatedTeam);
                 }
                 else
                 {
-                    return null;
+                    return ("No changes were made", null);
                 }
             }
             catch (Exception ex)
             {
-                throw new Exception("Error Updating Team", ex);
+                return ($"Error Updating Team: {ex.Message}", null);
             }
         }
+
         #endregion
 
         #region CreateTeam
