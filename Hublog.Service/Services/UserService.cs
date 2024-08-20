@@ -198,17 +198,12 @@ namespace Hublog.Service.Services
         #endregion
 
         #region GetAllUser
-        public async Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid)
+        public async Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery, int pageNumber, int pageSize)
         {
-            var users = await _userRepository.GetAllUser(organizationid);
-
-            if (users != null && users.Any())
-            {
-                return users.OrderByDescending(u => u.Email == loggedInUserEmail).ToList();
-            }
-
-            return new List<Users>();
+            var users = await _userRepository.GetAllUser(loggedInUserEmail, organizationid, searchQuery, pageNumber, pageSize);
+            return users;
         }
+
         #endregion
 
         #region  InsertUser

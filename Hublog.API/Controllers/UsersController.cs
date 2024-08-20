@@ -238,14 +238,14 @@ namespace Hublog.API.Controllers
 
         #region  User CRUD Operation
         [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUsers(int organizationid)
+        public async Task<IActionResult> GetAllUsers(int organizationid, string searchQuery = "", int pageNumber = 1, int pageSize = 10)
         {
             try
             {
                 var claimsPrincipal = User as ClaimsPrincipal;
                 var loggedInUserEmail = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-                var result = await _userService.GetAllUser(loggedInUserEmail, organizationid);
+                var result = await _userService.GetAllUser(loggedInUserEmail, organizationid, searchQuery, pageNumber, pageSize);
 
                 if (result != null && result.Any())
                 {
