@@ -18,7 +18,7 @@ namespace Hublog.API.Controllers
         }
 
         #region  GetRoleByOrganizationId
-        [HttpGet("GetRoleAll")]
+        [HttpGet("GetRoleByOrganizationId")]
         public async Task<IActionResult> GetRoleByOrganizationId(int organizationId)
         {
             try
@@ -36,6 +36,29 @@ namespace Hublog.API.Controllers
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region GetAllRole
+        [HttpGet("GetRoleAll")]
+        public async Task<IActionResult> GetRoleAll()
+        {
+            try
+            {
+                var result = await _roleService.GetRoleAll();
+                if (result.Any())
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("No data found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
             }
         }
         #endregion

@@ -17,6 +17,11 @@ namespace Hublog.Service.Services
             return await _roleRepository.GetRoleByOrganizationId(organizationId);
         }
 
+        public async Task<List<Role>> GetRoleAll()
+        {
+            return await _roleRepository.GetRoleAll();
+        }
+
         #region InsertRole
         public async Task<Role> InsertRole(Role role)
         {

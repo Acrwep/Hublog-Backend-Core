@@ -6,6 +6,8 @@ namespace Hublog.Repository.Interface
     {
         Task<List<Role>> GetRoleByOrganizationId(int organizationId);
 
+        Task<List<Role>> GetRoleAll();
+
         Task<int> InsertRole(Role role);    
 
         Task<int> UpdateRole(Role role);

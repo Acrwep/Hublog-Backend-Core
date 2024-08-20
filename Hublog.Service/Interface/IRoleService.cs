@@ -4,7 +4,9 @@ namespace Hublog.Service.Interface
 {
     public interface IRoleService
     {
-        Task<List<Role>> GetRoleByOrganizationId(int organizationId); 
+        Task<List<Role>> GetRoleByOrganizationId(int organizationId);
+
+        Task<List<Role>> GetRoleAll();
 
         Task<Role> InsertRole(Role role);
 

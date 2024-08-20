@@ -23,6 +23,14 @@ namespace Hublog.Repository.Repositories
         }
         #endregion
 
+        #region GetRoleAll
+        public async Task<List<Role>> GetRoleAll()
+        {
+            var query = @"SELECT * FROM Role";
+            return await _dapper.GetAllAsync<Role>(query);
+        }
+        #endregion
+
         #region InsertRole
         public async Task<int> InsertRole(Role role)
         {
