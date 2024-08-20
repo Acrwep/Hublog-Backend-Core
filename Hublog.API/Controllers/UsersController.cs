@@ -238,14 +238,14 @@ namespace Hublog.API.Controllers
 
         #region  User CRUD Operation
         [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUsers(int organizationid, string searchQuery = "", int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllUsers(int organizationid, string searchQuery = "")
         {
             try
             {
                 var claimsPrincipal = User as ClaimsPrincipal;
                 var loggedInUserEmail = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-                var result = await _userService.GetAllUser(loggedInUserEmail, organizationid, searchQuery, pageNumber, pageSize);
+                var result = await _userService.GetAllUser(loggedInUserEmail, organizationid, searchQuery);
 
                 if (result != null && result.Any())
                 {
@@ -261,6 +261,7 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpPost("InsertUser")]
         public async Task<IActionResult> InsertUser([FromBody] Users user)

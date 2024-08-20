@@ -259,29 +259,26 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region GetAllUser
-        public async Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery, int pageNumber, int pageSize)
+        public async Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery)
         {
             var query = @"
-                        SELECT * 
-                        FROM Users 
-                        WHERE OrganizationId = @OrganizationId
-                            AND First_Name LIKE @SearchQuery OR Email LIKE @SearchQuery
-                        ORDER BY CASE WHEN Email = @LoggedInUserEmail THEN 0 ELSE 1 END
-                        OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+                SELECT * 
+                FROM Users 
+                WHERE OrganizationId = @OrganizationId
+                    AND First_Name LIKE @SearchQuery OR Email LIKE @SearchQuery
+                ORDER BY CASE WHEN Email = @LoggedInUserEmail THEN 0 ELSE 1 END";
 
             var parameters = new
             {
                 OrganizationId = organizationid,
                 SearchQuery = $"%{searchQuery}%",
-                LoggedInUserEmail = loggedInUserEmail,
-                Offset = (pageNumber - 1) * pageSize,
-                PageSize = pageSize
+                LoggedInUserEmail = loggedInUserEmail
             };
 
             try
             {
                 var users = await _dapper.GetAllAsync<Users>(query, parameters);
-                return users ?? new List<Users>(); 
+                return users ?? new List<Users>();
             }
             catch (Exception ex)
             {

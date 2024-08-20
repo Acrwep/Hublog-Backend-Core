@@ -198,9 +198,9 @@ namespace Hublog.Service.Services
         #endregion
 
         #region GetAllUser
-        public async Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery, int pageNumber, int pageSize)
+        public async Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery)
         {
-            var users = await _userRepository.GetAllUser(loggedInUserEmail, organizationid, searchQuery, pageNumber, pageSize);
+            var users = await _userRepository.GetAllUser(loggedInUserEmail, organizationid, searchQuery);
             return users;
         }
 

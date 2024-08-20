@@ -23,7 +23,7 @@ namespace Hublog.Service.Interface
 
         Task<List<UserBreakRecordModel>> GetUserBreakRecordDetails(int userId, DateTime? startDate, DateTime? endDate);
 
-        Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery, int pageNumber, int pageSize);
+        Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery);
 
         Task<Users> InsertUser(Users user);
 
