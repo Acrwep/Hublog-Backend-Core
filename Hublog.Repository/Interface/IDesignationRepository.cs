@@ -4,7 +4,7 @@ namespace Hublog.Repository.Interface
 {
     public interface IDesignationRepository
     {
-        Task<List<Designation>> GetDesignationAll(int organizationId);
+        Task<List<Designation>> GetDesignationAll(int organizationId, string searchQuery);
 
         Task<Designation> GetDesignationById(int organizationId ,int designationId);
 

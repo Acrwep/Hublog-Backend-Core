@@ -19,11 +19,11 @@ namespace Hublog.API.Controllers
 
         #region GetDesignationAll
         [HttpGet("GetDesignationAll")]
-        public async Task<IActionResult> GetDesignationAll(int organizationId)
+        public async Task<IActionResult> GetDesignationAll(int organizationId, string searchQuery = "")
         {
             try
             {
-                var result = await _designationService.GetDesignationAll(organizationId);
+                var result = await _designationService.GetDesignationAll(organizationId, searchQuery);
                 if (result.Any())
                 {
                     return Ok(result);

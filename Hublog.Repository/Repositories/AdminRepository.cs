@@ -67,12 +67,13 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region GetBreakMasters
-        public async Task<List<BreakMaster>> GetBreakMasters()
+        public async Task<List<BreakMaster>> GetBreakMasters(string searchQuery)
         {
             try
             {
-                const string query = @"SELECT * FROM BreakMaster";
-                return await _dapper.GetAllAsync<BreakMaster>(query);
+                var query = @"SELECT * FROM BreakMaster WHERE Name LIKE @SearchQuery";
+                var parameter = new { SearchQuery = $"%{searchQuery}%" };
+                return await _dapper.GetAllAsync<BreakMaster>(query, parameter);
             }
             catch (Exception ex)
             {
