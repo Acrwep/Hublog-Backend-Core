@@ -13,12 +13,13 @@ namespace Hublog.Repository.Repositories
         }
 
         #region GetDesignationAll
-        public async Task<List<Designation>> GetDesignationAll(int organizationId)
+        public async Task<List<Designation>> GetDesignationAll(int organizationId, string searchQuery)
         {
             try
             {
-                var query = @"SELECT * FROM Designation WHERE OrganizationId = @OrganizationId";
-                var parameter = new { OrganizationId = organizationId };
+                var query = @"SELECT * FROM Designation 
+                              WHERE OrganizationId = @OrganizationId AND Name LIKE @SearchQuery";
+                var parameter = new { OrganizationId = organizationId, SearchQuery = $"%{searchQuery}%", };
                 return await _dapper.GetAllAsync<Designation>(query, parameter);
             }
             catch (Exception ex)

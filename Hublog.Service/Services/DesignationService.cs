@@ -12,9 +12,9 @@ namespace Hublog.Service.Services
             _designationRepository = designationRepository;
         }
 
-        public async Task<List<Designation>> GetDesignationAll(int organizationId)
+        public async Task<List<Designation>> GetDesignationAll(int organizationId, string searchQuery)
         {
-            return await _designationRepository.GetDesignationAll(organizationId);
+            return await _designationRepository.GetDesignationAll(organizationId, searchQuery);
         }
 
         public async Task<Designation> GetDesignationById(int organizationId, int designationId)

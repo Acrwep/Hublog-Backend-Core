@@ -6,7 +6,7 @@ namespace Hublog.Repository.Interface
     {
         Task<List<Users>> GetAllUser(int organizationId);
 
-        Task<List<BreakMaster>> GetBreakMasters();
+        Task<List<BreakMaster>> GetBreakMasters(string searchQuery);
 
         Task<BreakMaster> InsertBreakMaster(BreakMaster breakMaster);
 

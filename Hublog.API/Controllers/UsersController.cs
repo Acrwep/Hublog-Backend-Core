@@ -262,7 +262,6 @@ namespace Hublog.API.Controllers
             }
         }
 
-
         [HttpPost("InsertUser")]
         public async Task<IActionResult> InsertUser([FromBody] Users user)
         {

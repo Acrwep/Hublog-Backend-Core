@@ -8,7 +8,7 @@ namespace Hublog.Service.Interface
 
         Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationId); 
 
-        Task<List<BreakMaster>> GetBreakMasters();
+        Task<List<BreakMaster>> GetBreakMasters(string searchQuery);
 
         Task<BreakMaster> InsertBreakMaster(BreakMaster breakMaster);
 
