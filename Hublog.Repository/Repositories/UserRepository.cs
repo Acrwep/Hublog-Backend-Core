@@ -22,11 +22,6 @@ namespace Hublog.Repository.Repositories
         {
             try
             {
-                string details = JsonConvert.SerializeObject(userBreakModels);
-                details = details.Replace("\"null\"", "\"\"");
-                details = details.Replace("null", "\"\"");
-                details = details.Replace("'", "");
-
                 var formattedDetails = new List<dynamic>();
                 foreach (var item in userBreakModels)
                 {
@@ -42,10 +37,19 @@ namespace Hublog.Repository.Repositories
                         item.Status
                     });
                 }
-                details = JsonConvert.SerializeObject(formattedDetails);
+
+                string details = JsonConvert.SerializeObject(formattedDetails);
 
                 var parameters = new { details };
                 var result = await _dapper.GetAsync<ResultModel>("Exec [SP_BreakEntry] @details", parameters);
+
+                Console.WriteLine($"Stored Procedure Result Message: {result.Msg}");
+
+                if (result != null && result.Msg.Contains("ongoing break"))
+                {
+                    Console.WriteLine("Entering ongoing break condition.");
+
+                }
 
                 return result;
             }
@@ -55,6 +59,7 @@ namespace Hublog.Repository.Repositories
                 return new ResultModel { Result = 0, Msg = ex.Message };
             }
         }
+
         #endregion
 
         #region InsertAttendance
