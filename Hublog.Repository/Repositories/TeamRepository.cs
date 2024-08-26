@@ -99,7 +99,7 @@ namespace Hublog.Repository.Repositories
         {
             try
             {
-                return await _dapper.GetAllAsync<Team>("SELECT * FROM Team WHERE OrganizationId  = @OrganizationId AND Active = 1", new { OrganizationId = organizationId });
+                return await _dapper.GetAllAsync<Team>("SELECT * FROM Team WHERE OrganizationId  = @OrganizationId", new { OrganizationId = organizationId });
             }
             catch (Exception ex)
             {
