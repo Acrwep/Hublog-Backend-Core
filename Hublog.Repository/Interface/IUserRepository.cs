@@ -1,4 +1,4 @@
-﻿using Hublog.Repository.Entities.Login;
+﻿using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
 
 namespace Hublog.Repository.Interface
@@ -23,7 +23,7 @@ namespace Hublog.Repository.Interface
 
         Task<List<UserBreakRecordModel>> GetUserBreakRecordDetails(int userId, DateTime startDate, DateTime endDate);
 
-        Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery);
+        Task<List<UsersDTO>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery);
 
         Task<int> InsertUser(Users user);
 

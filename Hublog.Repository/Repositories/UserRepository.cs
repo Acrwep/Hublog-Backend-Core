@@ -1,5 +1,6 @@
 ﻿using Dapper;
 using Hublog.Repository.Common;
+using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Login;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Interface;
@@ -264,14 +265,33 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region GetAllUser
-        public async Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery)
+        public async Task<List<UsersDTO>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery)
         {
             var query = @"
-                SELECT * 
-                FROM Users 
-                WHERE OrganizationId = @OrganizationId
-                    AND First_Name LIKE @SearchQuery OR Email LIKE @SearchQuery
-                ORDER BY CASE WHEN Email = @LoggedInUserEmail THEN 0 ELSE 1 END";
+                        SELECT 
+                            u.Id,
+                            u.First_Name,
+                            u.Last_Name,
+                            u.Email,
+                            u.DOB,
+                            u.DOJ,
+                            u.Phone,
+                            u.UsersName,
+                            u.Gender,
+                            u.OrganizationId,
+                            u.RoleId,
+                            u.DesignationId,
+                            d.Name AS DesignationName,
+                            u.TeamId,
+                            t.Name AS TeamName,
+                            u.Active,
+                            u.EmployeeID
+                        FROM Users u
+                            LEFT JOIN Designation d ON u.DesignationId = d.Id
+                            LEFT JOIN Team t ON u.TeamId = t.Id
+                        WHERE u.OrganizationId = @OrganizationId
+                        AND (u.First_Name LIKE @SearchQuery OR u.Email LIKE @SearchQuery)
+                            ORDER BY CASE WHEN u.Email = @LoggedInUserEmail THEN 0 ELSE 1 END";
 
             var parameters = new
             {
@@ -282,13 +302,13 @@ namespace Hublog.Repository.Repositories
 
             try
             {
-                var users = await _dapper.GetAllAsync<Users>(query, parameters);
-                return users ?? new List<Users>();
+                var users = await _dapper.GetAllAsync<UsersDTO>(query, parameters);
+                return users ?? new List<UsersDTO>();
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                return new List<Users>();
+                return new List<UsersDTO>();
             }
         }
 

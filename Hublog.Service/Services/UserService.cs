@@ -1,4 +1,5 @@
 ﻿using Hublog.Repository.Entities.DTO;
+using Hublog.Repository.Entities.Login;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Interface;
 using Hublog.Service.Interface;
@@ -198,11 +199,11 @@ namespace Hublog.Service.Services
         #endregion
 
         #region GetAllUser
-        public async Task<List<Users>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery)
+        public async Task<List<UsersDTO>> GetAllUser(string loggedInUserEmail, int organizationid, string searchQuery)
         {
             var users = await _userRepository.GetAllUser(loggedInUserEmail, organizationid, searchQuery);
             return users;
-        }
+            }
 
         #endregion
 
