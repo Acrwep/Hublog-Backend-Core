@@ -16,6 +16,7 @@ namespace Hublog.Repository.Entities.DTO
         public DateTime? DOJ { get; set; }
         public string Phone { get; set; }
         public string UsersName { get; set; }
+        public string Password { get; set; } 
         public string Gender { get; set; }
         public int OrganizationId { get; set; }
         public int RoleId { get; set; }

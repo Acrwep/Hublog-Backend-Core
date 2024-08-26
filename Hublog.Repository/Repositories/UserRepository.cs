@@ -276,6 +276,7 @@ namespace Hublog.Repository.Repositories
                             u.DOB,
                             u.DOJ,
                             u.Phone,
+                            u.Password,
                             u.UsersName,
                             u.Gender,
                             u.OrganizationId,
