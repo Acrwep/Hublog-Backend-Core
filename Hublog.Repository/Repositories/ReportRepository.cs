@@ -18,9 +18,10 @@ namespace Hublog.Repository.Repositories
         {
             var query = @"
                           SELECT 
-                            U.First_Name,
-                            A.Start_Time,
-                            A.End_Time,
+                            U.First_Name AS Employee,
+                            A.Start_Time AS InTime,
+                            A.End_Time AS Out,
+                            A.Total_Time AS TotalTime,
                             A.AttendanceDate,
                             O.Id AS OrganizationId
                           FROM Users U 
