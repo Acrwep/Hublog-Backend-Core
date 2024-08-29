@@ -31,6 +31,21 @@ namespace Hublog.API.Controllers
                 return StatusCode(500, "Internal server error.");
             }
         }
-        #endregion  
+        #endregion
+
+        [HttpGet("BreakReport")]
+        public async Task<IActionResult> BreakReport(int? userId, int? teamId, int organizationId, DateTime date)
+        {
+            try
+            {
+                var breakReport = await _reportService.BreakReport(userId, teamId, organizationId, date);
+                return Ok(breakReport);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting user.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
     }
 }

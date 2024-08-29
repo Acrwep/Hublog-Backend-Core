@@ -1,6 +1,7 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Interface;
+using System.Data;
 
 namespace Hublog.Repository.Repositories
 {
@@ -16,30 +17,34 @@ namespace Hublog.Repository.Repositories
         #region AttendanceReport
         public async Task<List<AttendanceReport>> AttendanceReport(int? userId, int? teamId, int organizationId, DateTime date)
         {
-            var query = @"
-                          SELECT 
-                            U.First_Name AS Employee,
-                            A.Start_Time AS InTime,
-                            A.End_Time AS Out,
-                            A.Total_Time AS TotalTime,
-                            A.AttendanceDate,
-                            O.Id AS OrganizationId,
-                            U.TeamId
-                          FROM Users U 
-                            INNER JOIN Attendance A ON U.Id = A.UserId
-                            INNER JOIN Organization O ON A.OrganizationId = O.Id
-                          WHERE (@UserId IS NULL OR U.Id = @UserId)
-                            AND A.AttendanceDate = @AttendanceDate 
-                            AND O.Id = @OrganizationId
-                            AND(@TeamId IS NULL OR U.TeamId = @TeamId)";
+            var query = "GetAttendanceReport";
 
-            return await _dapper.GetAllAsync<AttendanceReport>(query, new
+            var parameters = new
             {
                 UserId = userId,
-                OrganizationId = organizationId,
                 AttendanceDate = date,
+                OrganizationId = organizationId,
                 TeamId = teamId
-            });
+            };
+
+            return await _dapper.GetAllAsyncs<AttendanceReport>(query, parameters, commandType: CommandType.StoredProcedure);
+        }
+        #endregion
+
+        #region BreakReport
+        public async Task<List<BreaksReport>> BreakReport(int? userId, int? teamId, int organizationId, DateTime date)
+        {
+            var query = "GetBreakReport"; 
+
+            var parameters = new
+            {
+                UserId = userId,
+                BreakDate = date,
+                OrganizationId = organizationId,
+                TeamId = teamId
+            };
+
+            return await _dapper.GetAllAsyncs<BreaksReport>(query, parameters, commandType: CommandType.StoredProcedure);
         }
         #endregion
     }

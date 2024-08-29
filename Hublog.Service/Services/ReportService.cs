@@ -15,5 +15,10 @@ namespace Hublog.Service.Services
         {
             return await _reportRepository.AttendanceReport(userId, teamId, organizationId, date);  
         }
+
+        public async Task<List<BreaksReport>> BreakReport(int? userId, int? teamId, int organizationId, DateTime date)
+        {
+            return await _reportRepository.BreakReport(userId, teamId, organizationId, date);
+        }
     }
 }
