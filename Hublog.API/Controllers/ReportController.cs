@@ -17,7 +17,7 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("AttendanceReport")]
-        public async Task<IActionResult> AttendanceReport(int userId, int organizationId, DateTime date)
+        public async Task<IActionResult> AttendanceReport(int? userId, int organizationId, DateTime date)
         {
             try
             {

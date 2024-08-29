@@ -14,7 +14,7 @@ namespace Hublog.Repository.Repositories
         }
 
         #region AttendanceReport
-        public async Task<List<AttendanceReport>> AttendanceReport(int userId, int organizationId, DateTime date)
+        public async Task<List<AttendanceReport>> AttendanceReport(int? userId, int organizationId, DateTime date)
         {
             var query = @"
                           SELECT 
@@ -27,7 +27,7 @@ namespace Hublog.Repository.Repositories
                           FROM Users U 
                             INNER JOIN Attendance A ON U.Id = A.UserId
                             INNER JOIN Organization O ON A.OrganizationId = O.Id
-                          WHERE U.Id = @UserId 
+                          WHERE (@UserId IS NULL OR U.Id = @UserId)
                             AND A.AttendanceDate = @AttendanceDate 
                             AND O.Id = @OrganizationId";
 
