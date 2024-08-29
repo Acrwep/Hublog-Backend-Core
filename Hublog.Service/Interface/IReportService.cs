@@ -4,6 +4,6 @@ namespace Hublog.Service.Interface
 {
     public interface IReportService
     {
-        Task<List<AttendanceReport>> AttendanceReport(int? userId, int organizationId, DateTime date);   
+        Task<List<AttendanceReport>> AttendanceReport(int? userId, int? teamId, int organizationId, DateTime date);   
     }
 }

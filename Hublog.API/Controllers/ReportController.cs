@@ -16,12 +16,13 @@ namespace Hublog.API.Controllers
             _logger = logger;
         }
 
+        #region AttendanceReport
         [HttpGet("AttendanceReport")]
-        public async Task<IActionResult> AttendanceReport(int? userId, int organizationId, DateTime date)
+        public async Task<IActionResult> AttendanceReport(int? userId, int? teamId, int organizationId, DateTime date)
         {
             try
             {
-                var attendanceReport = await _reportService.AttendanceReport(userId, organizationId, date);
+                var attendanceReport = await _reportService.AttendanceReport(userId, teamId, organizationId, date);
                 return Ok(attendanceReport);
             }
             catch (Exception ex)
@@ -30,5 +31,6 @@ namespace Hublog.API.Controllers
                 return StatusCode(500, "Internal server error.");
             }
         }
+        #endregion  
     }
 }

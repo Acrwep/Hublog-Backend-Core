@@ -4,6 +4,6 @@ namespace Hublog.Repository.Interface
 {
     public interface IReportRepository
     {
-        Task<List<AttendanceReport>> AttendanceReport(int? userId, int organizationId, DateTime date);   
+        Task<List<AttendanceReport>> AttendanceReport(int? userId, int? teamId, int organizationId, DateTime date);   
     }
 }
