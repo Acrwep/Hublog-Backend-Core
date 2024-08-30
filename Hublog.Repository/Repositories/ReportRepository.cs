@@ -1,5 +1,7 @@
 ﻿using Hublog.Repository.Common;
-using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.Attendance;
+using Hublog.Repository.Entities.Model.Break;
+using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using System.Data;
 
@@ -45,6 +47,24 @@ namespace Hublog.Repository.Repositories
             };
 
             return await _dapper.GetAllAsyncs<BreaksReport>(query, parameters, commandType: CommandType.StoredProcedure);
+        }
+        #endregion
+
+        #region GetMonthlyAttendanceReport
+        public async Task<List<AttedndanceLog>> GetMonthlyAttendanceReport(int? userId, int? teamId, int organizationId, int year, int month)
+        {
+            var query = "GetMonthlyAttendanceReport";
+
+            var parameter = new
+            {
+                UserId = userId,
+                TeamId = teamId,
+                OrganizationId = organizationId,
+                Year = year,
+                Month = month
+            };
+
+            return await _dapper.GetAllAsyncs<AttedndanceLog>(query, parameter, commandType: CommandType.StoredProcedure);
         }
         #endregion
     }

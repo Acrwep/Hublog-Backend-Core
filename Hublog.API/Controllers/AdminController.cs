@@ -1,5 +1,5 @@
 ﻿using Hublog.Repository.Common;
-using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.Break;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,6 @@
 ﻿
 using Hublog.Repository.Common;
-using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.UserModels;
 
 namespace Hublog.Repository.Interface
 {

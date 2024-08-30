@@ -1,5 +1,5 @@
 ﻿using Hublog.Repository.Entities.Login;
-using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Hublog.Repository.Repositories;
 using Hublog.Service.Interface;

@@ -1,4 +1,4 @@
-﻿namespace Hublog.Repository.Entities.Model
+﻿namespace Hublog.Repository.Entities.Model.Break
 {
     public class UserBreakModel
     {
@@ -11,7 +11,7 @@
         public DateTime BreakDate { get; set; } //(datetime, not null)
 
         public DateTime Start_Time { get; set; } //(datetime, not null)
-        public Nullable<DateTime> End_Time { get; set; } //(datetime, not null)
+        public DateTime? End_Time { get; set; } //(datetime, not null)
         public int Status { get; set; } //(int, not null)
     }
 }

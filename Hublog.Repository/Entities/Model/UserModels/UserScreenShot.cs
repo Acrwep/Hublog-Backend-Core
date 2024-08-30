@@ -1,6 +1,6 @@
-﻿namespace Hublog.Repository.Entities.Model
+﻿namespace Hublog.Repository.Entities.Model.UserModels
 {
-    public class UserScreenShot       
+    public class UserScreenShot
     {
         public int UserId { get; set; }
         public int OrganizationId { get; set; }

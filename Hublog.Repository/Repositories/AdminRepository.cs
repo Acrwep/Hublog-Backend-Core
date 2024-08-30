@@ -1,5 +1,6 @@
 ﻿using Hublog.Repository.Common;
-using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.Break;
+using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Microsoft.Data.SqlClient;
 

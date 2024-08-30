@@ -49,5 +49,39 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
+
+        #region GetMonthlyAttendanceReport
+        [HttpGet("GetMonthlyAttendanceReport")]
+        public async Task<IActionResult> GetMonthlyAttendanceReport(int? userId, int? teamId, int organizationId, int year, int month)
+        {
+            var attendanceLogs = await _reportService.GetMonthlyAttendanceReport(userId, teamId, organizationId, year, month);
+
+            if (attendanceLogs == null || !attendanceLogs.Any())
+            {
+                return NotFound("No attendance records found for the specified criteria.");
+            }
+
+            var response = new
+            {
+                OrganizationId = organizationId,
+                users = attendanceLogs
+                    .GroupBy(x => new { x.UserId, x.First_Name, x.Last_Name })
+                    .Select(g => new
+                    {
+                        //userId = g.Key.UserId,
+                        first_name = g.Key.First_Name,
+                        last_name = g.Key.Last_Name,
+                        logs = g.Select(r => new
+                        {
+                            date = r.AttendanceDate.ToString("yyyy-MM-dd"),
+                            total_time = r.Total_Time,
+                            day_status = r.DayStatus
+                        }).ToList()
+                    }).ToList()
+            };
+
+            return Ok(response);
+        }
+        #endregion
     }
 }

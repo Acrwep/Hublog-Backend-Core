@@ -1,4 +1,4 @@
-﻿namespace Hublog.Repository.Entities.Model
+﻿namespace Hublog.Repository.Entities.Model.Break
 {
     public class BreakMaster
     {

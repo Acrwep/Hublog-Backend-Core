@@ -1,4 +1,5 @@
-﻿using Hublog.Repository.Entities.Model;
+﻿using Hublog.Repository.Entities.Model.Break;
+using Hublog.Repository.Entities.Model.UserModels;
 
 namespace Hublog.Service.Interface
 {

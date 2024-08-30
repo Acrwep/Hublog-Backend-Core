@@ -1,5 +1,8 @@
 ﻿using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.Attendance;
+using Hublog.Repository.Entities.Model.Break;
+using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
