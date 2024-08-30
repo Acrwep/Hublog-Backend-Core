@@ -33,6 +33,7 @@ namespace Hublog.API.Controllers
         }
         #endregion
 
+        #region BreakReport
         [HttpGet("BreakReport")]
         public async Task<IActionResult> BreakReport(int? userId, int? teamId, int organizationId, DateTime date)
         {
@@ -47,5 +48,6 @@ namespace Hublog.API.Controllers
                 return StatusCode(500, "Internal server error.");
             }
         }
+        #endregion
     }
 }
