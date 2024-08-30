@@ -58,7 +58,7 @@ namespace Hublog.API.Controllers
 
             if (attendanceLogs == null || !attendanceLogs.Any())
             {
-                return NotFound("No attendance records found for the specified criteria.");
+                return NotFound("No attendance records found.");
             }
 
             var response = new
@@ -68,7 +68,6 @@ namespace Hublog.API.Controllers
                     .GroupBy(x => new { x.UserId, x.First_Name, x.Last_Name })
                     .Select(g => new
                     {
-                        //userId = g.Key.UserId,
                         first_name = g.Key.First_Name,
                         last_name = g.Key.Last_Name,
                         logs = g.Select(r => new
@@ -78,6 +77,38 @@ namespace Hublog.API.Controllers
                             day_status = r.DayStatus
                         }).ToList()
                     }).ToList()
+            };
+
+            return Ok(response);
+        }
+        #endregion
+
+        #region GetMonthlyInOutReport
+        [HttpGet("GetMonthlyInOutReport")]
+        public async Task<IActionResult> GetMonthlyInOutReport(int? userId, int? teamId, int organizationId, int year, int month)
+        {
+            var inOutLogs = await _reportService.GetMonthlyInOutReport(userId, teamId, organizationId, year, month);
+            if (inOutLogs == null || !inOutLogs.Any())
+            {
+                return NotFound("No IN and OUT records found.");
+            }
+            var response = new
+            {
+                OrganizationId = organizationId,
+                users = inOutLogs
+                        .GroupBy(u => new { u.First_Name, u.Last_Name })
+                        .Select(s => new
+                        {
+                            first_name = s.Key.First_Name,
+                            last_name = s.Key.Last_Name,
+                            logs = s.Select(ss => new
+                            {
+                                date = ss.AttendanceDate.ToString("yyyy-MM-dd"),
+                                In = ss.Start_Time,
+                                Out = ss.End_Time,
+                                day_status = ss.DayStatus,
+                            }).ToList()
+                        }).ToList(),
             };
 
             return Ok(response);

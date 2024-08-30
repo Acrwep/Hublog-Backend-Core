@@ -67,5 +67,22 @@ namespace Hublog.Repository.Repositories
             return await _dapper.GetAllAsyncs<AttedndanceLog>(query, parameter, commandType: CommandType.StoredProcedure);
         }
         #endregion
+
+        #region GetMonthlyInOutReport
+        public async Task<List<InOutLogs>> GetMonthlyInOutReport(int? userId, int? teamId, int organizationId, int year, int month)
+        {
+            var query = "GetMonthlyInOutReport";
+
+            var parameter = new
+            {
+                TeamId = teamId,
+                OrganizationId = organizationId,
+                Year = year,
+                Month = month
+            };
+
+            return await _dapper.GetAllAsyncs<InOutLogs>(query, parameter, commandType: CommandType.StoredProcedure);
+        }
+        #endregion
     }
 }

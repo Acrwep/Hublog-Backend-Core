@@ -26,5 +26,10 @@ namespace Hublog.Service.Services
         {
             return await _reportRepository.GetMonthlyAttendanceReport(userId, teamId, organizationId, year, month);
         }
+
+        public async Task<List<InOutLogs>> GetMonthlyInOutReport(int? userId, int? teamId, int organizationId, int year, int month)
+        {
+            return await _reportRepository.GetMonthlyInOutReport(userId, teamId, organizationId, year, month);
+        }
     }
 }

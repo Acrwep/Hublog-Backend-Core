@@ -10,5 +10,7 @@ namespace Hublog.Service.Interface
         Task<List<BreaksReport>> BreakReport(int? userId, int? teamId, int organizationId, DateTime date);
 
         Task<List<AttedndanceLog>> GetMonthlyAttendanceReport(int? userId, int? teamId, int organizationId, int year, int month);
+
+        Task<List<InOutLogs>> GetMonthlyInOutReport(int? userId, int? teamId, int organizationId, int year, int month);
     }
 }
