@@ -334,6 +334,26 @@ namespace Hublog.API.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting user");
             }
         }
-        #endregion 
+        #endregion
+
+        [HttpPost("AppUsage")]
+        public async Task<IActionResult> TrackApplicationUsage([FromBody] ApplicationUsageDto usageDto)
+        {
+            try
+            {
+                if (usageDto == null)
+                {
+                    return BadRequest("Usage data is null.");
+                }
+
+                await _userService.TrackApplicationUsage(usageDto.UserId, usageDto.ApplicationName, usageDto.TotalUsage, usageDto.Details);
+                return Ok("Usage data logged successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error logging usage data: {ex.Message}");
+            }
+        }
+
     }
 }

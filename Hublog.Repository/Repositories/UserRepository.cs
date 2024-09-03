@@ -7,7 +7,6 @@ using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
-using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Data;
 
@@ -356,6 +355,31 @@ namespace Hublog.Repository.Repositories
 
             return await _dapper.ExecuteAsync(query, parameter);
         }
-        #endregion 
+        #endregion
+
+        #region TrackApplicationUsage
+        public async Task TrackApplicationUsage(int userId, string applicationName, string totalUsage, string details)
+        {
+            try
+            {
+                var parameters = new DynamicParameters();
+                parameters.Add("@UserId", userId);
+                parameters.Add("@ApplicationName", applicationName);
+                parameters.Add("@TotalUsage", totalUsage);
+                parameters.Add("@Details", details);
+
+                var result = await _dapper.ExecuteAsync("InsertOrUpdateApplicationUsage", parameters, CommandType.StoredProcedure);
+
+                if (result <= 0)
+                {
+                    Console.WriteLine("Failed to log application usage.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error tracking application usage: {ex.Message}");
+            }
+        }
+        #endregion
     }
 }
