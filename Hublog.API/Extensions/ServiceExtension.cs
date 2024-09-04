@@ -34,10 +34,8 @@ namespace Hublog.API.Extensions
             services.AddScoped<IUserService, UserService>();
 
             services.AddScoped<IDesignationRepository, DesignationRepository>();
-            services.AddScoped<IDesignationService, DesignationService>();
 
             services.AddScoped<IRoleRepository, RoleRepository>();
-            services.AddScoped<IRoleService, RoleService>();
 
             services.AddScoped<IReportRepository, ReportRepository>();
             services.AddScoped<IReportService, ReportService>();
@@ -58,7 +56,7 @@ namespace Hublog.API.Extensions
                      {
                          var authKey = configuration["Jwt:Secret"];
                          var issuer = configuration["Jwt:Issuer"];
-                         var audience = configuration["Jwt:Audience"];
+                         var audience = configuration["Jwt:Audiencee"];
 
                          options.RequireHttpsMetadata = true;
                          options.SaveToken = true;
