@@ -96,33 +96,5 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
-
-        #region GetAllUser
-        [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUsers(int organizationId)
-        {
-            try
-            {
-                var claimsPrincipal = User as ClaimsPrincipal;
-                var loggedInUserEmail = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-
-                var result = await _adminService.GetAllUser(loggedInUserEmail, organizationId);
-
-                if (result != null && result.Any())
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return NotFound("No Data Found");
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error in GetAllUsers");
-                return BadRequest(ex.Message);
-            }
-        }
-        #endregion
     }
 }
