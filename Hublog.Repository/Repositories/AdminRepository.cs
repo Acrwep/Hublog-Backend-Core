@@ -82,25 +82,5 @@ namespace Hublog.Repository.Repositories
             }
         }
         #endregion
-
-        #region GetAllUser
-        public async Task<List<Users>> GetAllUser(int organizationid)
-        {
-            try
-            {
-                var query = @"SELECT * FROM Users  WHERE OrganizationId = @OrganizationId";
-                var parameter = new { OrganizationId = organizationid };
-                return await _dapper.GetAllAsync<Users>(query, parameter);
-            }
-            catch (SqlException Sqlex)
-            {
-                throw new Exception("Database query Failed", Sqlex);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error fetching the data", ex);
-            }
-        }
-        #endregion
     }
 }
