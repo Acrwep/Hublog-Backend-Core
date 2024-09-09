@@ -358,7 +358,7 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region TrackApplicationUsage
-        public async Task TrackApplicationUsage(int userId, string applicationName, string totalUsage, string details)
+        public async Task TrackApplicationUsage(int userId, string applicationName, string totalUsage, string details, DateTime usageDate)
         {
             try
             {
@@ -367,8 +367,9 @@ namespace Hublog.Repository.Repositories
                 parameters.Add("@ApplicationName", applicationName);
                 parameters.Add("@TotalUsage", totalUsage);
                 parameters.Add("@Details", details);
+                parameters.Add("@UsageDate", usageDate);
 
-                var result = await _dapper.ExecuteAsync("InsertOrUpdateApplicationUsage", parameters, CommandType.StoredProcedure);
+                var result = await _dapper.ExecuteAsync("InsertOrUpdateApplicationUsage", parameters, commandType: CommandType.StoredProcedure);
 
                 if (result <= 0)
                 {
@@ -381,5 +382,34 @@ namespace Hublog.Repository.Repositories
             }
         }
         #endregion
+
+        public async Task<List<GetApplicationUsage>> GetUsersApplicationUsages(int organizationId, int userId, DateTime startDate, DateTime endDate)
+        {
+            string query = @"
+                    SELECT 
+                        au.Id AS ApplicationUsageId,
+                        au.UserId,
+                        u.Email,
+                        u.OrganizationId,
+                        au.ApplicationName,
+                        au.TotalUsage,
+                        au.Details,
+                        au.CreatedDate,
+                        au.UsageDate
+                    FROM 
+                        ApplicationUsage AS au
+                    JOIN 
+                        Users AS u ON au.UserId = u.Id
+                    JOIN 
+                        Organization AS o ON u.OrganizationId = o.Id
+                    WHERE 
+                        u.OrganizationId = @OrganizationId  
+                        AND au.UserId = @UserId              
+                        AND au.UsageDate BETWEEN @StartDate AND @EndDate";
+
+            var parameter = new { organizationId, userId, startDate, endDate };
+
+            return await _dapper.GetAllAsync<GetApplicationUsage>(query, parameter);
+        }
     }
 }

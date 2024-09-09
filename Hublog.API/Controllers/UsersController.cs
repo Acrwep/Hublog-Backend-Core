@@ -337,7 +337,7 @@ namespace Hublog.API.Controllers
         #endregion
 
         [HttpPost("AppUsage")]
-        public async Task<IActionResult> TrackApplicationUsage([FromBody] ApplicationUsageDto usageDto)
+        public async Task<IActionResult> TrackApplicationUsage([FromBody] ApplicationUsage usageDto)
         {
             try
             {
@@ -346,12 +346,26 @@ namespace Hublog.API.Controllers
                     return BadRequest("Usage data is null.");
                 }
 
-                await _userService.TrackApplicationUsage(usageDto.UserId, usageDto.ApplicationName, usageDto.TotalUsage, usageDto.Details);
+                await _userService.TrackApplicationUsage(usageDto.UserId, usageDto.ApplicationName, usageDto.TotalUsage, usageDto.Details, usageDto.UsageDate);
                 return Ok("Usage data logged successfully.");
             }
             catch (Exception ex)
             {
                 return BadRequest($"Error logging usage data: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetAppUsage")]
+        public async Task<IActionResult> GetApplicationUsage(int userId, int organizationId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var usageData = await _userService.GetUsersApplicationUsages(organizationId, userId, startDate, endDate);
+                return Ok(usageData);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error retrieving usage data: {ex.Message}");
             }
         }
     }
