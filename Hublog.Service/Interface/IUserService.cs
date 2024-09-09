@@ -34,5 +34,7 @@ namespace Hublog.Service.Interface
         Task<Users> UpdateUser(Users user); 
 
         Task<bool> DeleteUser(int userId);
+
+        Task TrackApplicationUsage(int userId, string applicationName, string totalUsage, string details);
     }
 }
