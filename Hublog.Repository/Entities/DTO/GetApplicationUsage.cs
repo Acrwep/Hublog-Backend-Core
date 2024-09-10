@@ -17,6 +17,8 @@ namespace Hublog.Repository.Entities.DTO
         public string Details { get; set; }
 
         public DateTime CreatedDate { get; set; }
-        public DateTime UsageDate { get; set; } 
+        public DateTime UsageDate { get; set; }
+
+        public string Url { get; set; } 
     }
 }
