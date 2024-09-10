@@ -41,6 +41,9 @@ namespace Hublog.API.Extensions
 
             services.AddScoped<IReportRepository, ReportRepository>();
             services.AddScoped<IReportService, ReportService>();
+
+            services.AddScoped<IAppsUrlsRepository, AppsUrlsRepository>();
+            services.AddScoped<IAppsUrlsService, AppsUrlsService>();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

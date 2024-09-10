@@ -68,6 +68,12 @@ namespace Hublog.Repository.Common
             var result = await _connection.QueryAsync<T>(query, parameters, commandType: commandType);
             return result.FirstOrDefault();
         }
+
+        public async Task<T> GetSingleAsync<T>(string query, object parameters = null, CommandType commandType = CommandType.Text)
+        {
+            return await _connection.QuerySingleOrDefaultAsync<T>(query, parameters, commandType: commandType);
+        }
+
         public void Dispose()
         {
             Dispose(true);

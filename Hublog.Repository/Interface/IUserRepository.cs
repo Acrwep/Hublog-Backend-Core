@@ -33,9 +33,5 @@ namespace Hublog.Repository.Interface
         Task<int> UpdateUser(Users user); 
         
         Task<int> DeleteUser(int userId);
-
-        Task TrackApplicationUsage(int userId, string applicationName, string totalUsage, string details, DateTime usageDate);
-
-        Task<List<GetApplicationUsage>> GetUsersApplicationUsages(int organizationId, int userId, DateTime startDate, DateTime endDate); 
     }
 }

@@ -239,15 +239,5 @@ namespace Hublog.Service.Services
             return null;
         }
         #endregion
-
-        public async Task TrackApplicationUsage(int userId, string applicationName, string totalUsage, string details, DateTime usageDate)
-        {
-            await _userRepository.TrackApplicationUsage(userId, applicationName, totalUsage, details, usageDate);
-        }
-
-        public async Task<List<GetApplicationUsage>> GetUsersApplicationUsages(int organizationId, int userId, DateTime startDate, DateTime endDate)
-        {
-            return await _userRepository.GetUsersApplicationUsages(organizationId, userId, startDate, endDate);
-        }
     }
 }
