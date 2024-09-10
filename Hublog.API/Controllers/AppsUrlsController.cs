@@ -14,27 +14,27 @@ namespace Hublog.API.Controllers
             _appsUrlsService = appsUrlsService;
         }
 
-        #region TrackApplicationUsage
-        [HttpPost("AppUsage")]
-        public async Task<IActionResult> TrackApplicationUsage([FromBody] ApplicationUsage usageDto)
-        {
-            if (usageDto == null)
-            {
-                return BadRequest("Usage data is null.");
-            }
+        //#region TrackApplicationUsage
+        //[HttpPost("AppUsage")]
+        //public async Task<IActionResult> TrackApplicationUsage([FromBody] ApplicationUsage usageDto)
+        //{
+        //    if (usageDto == null)
+        //    {
+        //        return BadRequest("Usage data is null.");
+        //    }
 
-            try
-            {
-                await _appsUrlsService.TrackApplicationUsage(usageDto.UserId, usageDto.ApplicationName, usageDto.TotalUsage, usageDto.Details, usageDto.UsageDate, usageDto.Url);
-                return Ok("Usage data logged successfully.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error logging usage data: {ex.Message}");
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-        }
-        #endregion
+        //    try
+        //    {
+        //        await _appsUrlsService.TrackApplicationUsage(usageDto.UserId, usageDto.ApplicationName, usageDto.TotalUsage, usageDto.Details, usageDto.UsageDate);//, usageDto.Url);
+        //        return Ok("Usage data logged successfully.");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error logging usage data: {ex.Message}");
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+        //#endregion
 
         #region GetApplicationUsage
         [HttpGet("GetAppUsage")]
@@ -51,5 +51,24 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
+
+
+        [HttpPost("Application")]
+        public async Task<IActionResult> LogApplicationUsage(ApplicationUsage applicationUsage)
+        {
+            var result = await _appsUrlsService.LogApplicationUsageAsync(applicationUsage);
+            if (result)
+                return Ok(new { Message = "Application usage logged successfully" });
+            return BadRequest(new { Message = "Failed to log application usage" });
+        }
+
+        [HttpPost("Url")]
+        public async Task<IActionResult> LogUrlUsage(UrlUsage urlUsage)
+        {
+            var result = await _appsUrlsService.LogUrlUsageAsync(urlUsage);
+            if (result)
+                return Ok(new { Message = "URL usage logged successfully" });
+            return BadRequest(new { Message = "Failed to log URL usage" });
+        }
     }
 }

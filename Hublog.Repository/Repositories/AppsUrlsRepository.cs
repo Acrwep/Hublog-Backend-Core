@@ -1,8 +1,10 @@
 ﻿using Dapper;
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
+using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Interface;
 using System.Data;
+using System.Data.Common;
 
 namespace Hublog.Repository.Repositories
 {
@@ -15,45 +17,45 @@ namespace Hublog.Repository.Repositories
         }
 
         #region TrackApplicationUsage
-        public async Task TrackApplicationUsage(int userId, string applicationName, string totalUsage, string details, DateTime usageDate, string url)
-        {
-            if (!await UserExists(userId))
-            {
-                throw new Exception("User does not exist.");
-            }
+        //public async Task TrackApplicationUsage(int userId, string applicationName, string totalUsage, string details, DateTime usageDate)//, string url)
+        //{
+        //    if (!await UserExists(userId))
+        //    {
+        //        throw new Exception("User does not exist.");
+        //    }
 
-            try
-            {
-                var parameters = new DynamicParameters();
-                parameters.Add("@UserId", userId);
-                parameters.Add("@ApplicationName", applicationName);
-                parameters.Add("@TotalUsage", totalUsage);
-                parameters.Add("@Details", details);
-                parameters.Add("@UsageDate", usageDate);
-                parameters.Add("@Url", url);
+        //    try
+        //    {
+        //        var parameters = new DynamicParameters();
+        //        parameters.Add("@UserId", userId);
+        //        parameters.Add("@ApplicationName", applicationName);
+        //        parameters.Add("@TotalUsage", totalUsage);
+        //        parameters.Add("@Details", details);
+        //        parameters.Add("@UsageDate", usageDate);
+        //        //parameters.Add("@Url", url);
 
-                var result = await _dapper.ExecuteAsync("InsertOrUpdateApplicationUsage", parameters, commandType: CommandType.StoredProcedure);
+        //        var result = await _dapper.ExecuteAsync("InsertOrUpdateApplicationUsage", parameters, commandType: CommandType.StoredProcedure);
 
-                if (result <= 0)
-                {
-                    Console.WriteLine("Failed to log application usage.");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error tracking application usage: {ex.Message}");
-                throw; 
-            }
-        }
+        //        if (result <= 0)
+        //        {
+        //            Console.WriteLine("Failed to log application usage.");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Console.WriteLine($"Error tracking application usage: {ex.Message}");
+        //        throw; 
+        //    }
+        //}
 
-        private async Task<bool> UserExists(int userId)
-        {
-            var parameters = new DynamicParameters();
-            parameters.Add("@UserId", userId);
+        //private async Task<bool> UserExists(int userId)
+        //{
+        //    var parameters = new DynamicParameters();
+        //    parameters.Add("@UserId", userId);
 
-            var result = await _dapper.GetSingleAsync<int>("SELECT COUNT(1) FROM Users WHERE Id = @UserId", parameters);
-            return result > 0;
-        }
+        //    var result = await _dapper.GetSingleAsync<int>("SELECT COUNT(1) FROM Users WHERE Id = @UserId", parameters);
+        //    return result > 0;
+        //}
 
         #endregion
 
@@ -87,6 +89,32 @@ namespace Hublog.Repository.Repositories
             return await _dapper.GetAllAsync<GetApplicationUsage>(query, parameter);
         }
         #endregion
+
+        public async Task<int> InsertApplicationUsageAsync(ApplicationUsage applicationUsage)
+        {
+            var sql = "EXEC InsertApplicationUsage @UserId, @ApplicationName, @TotalUsage, @UsageDate, @Details";
+            return await _dapper.ExecuteAsync(sql, new
+            {
+                applicationUsage.UserId,
+                applicationUsage.ApplicationName,
+                applicationUsage.TotalUsage,
+                applicationUsage.UsageDate,
+                applicationUsage.Details
+            });
+        }
+
+        public async Task<int> InsertUrlUsageAsync(UrlUsage urlUsage)
+        {
+            var sql = "EXEC InsertUrlUsage @UserId, @Url, @TotalUsage, @UsageDate, @Details";
+            return await _dapper.ExecuteAsync(sql, new
+            {
+                urlUsage.UserId,
+                urlUsage.Url,
+                urlUsage.TotalUsage,
+                urlUsage.UsageDate,
+                urlUsage.Details
+            });
+        }
 
     }
 }
