@@ -69,7 +69,6 @@ namespace Hublog.Repository.Repositories
                         au.ApplicationName,
                         au.TotalUsage,
                         au.Details,
-                        au.CreatedDate,
                         au.UsageDate,
                         au.Url
                     FROM 

@@ -23,7 +23,8 @@ var app = builder.Build();
 
 app.UseCors(options =>
 {
-    options.WithOrigins("http://localhost:3000")
+    //options.WithOrigins("https://hublog.org") //frontend production url
+    options.WithOrigins("http://localhost:3000") //frontend local url
            .AllowAnyHeader()
            .AllowAnyMethod();
 });
@@ -34,6 +35,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionMiddleware>();
