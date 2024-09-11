@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
+using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.ApplicationModel;
 using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Repository.Interface;
@@ -18,65 +19,62 @@ namespace Hublog.Repository.Repositories
         }
 
         #region GetUsersApplicationUsages
-        public async Task<List<GetApplicationUsage>> GetUsersApplicationUsages(int organizationId,int? teamid, int? userId, DateTime startDate, DateTime endDate)
+        public async Task<List<GetApplicationUsage>> GetUsersApplicationUsages(int organizationId, int? teamid, int? userId, DateTime startDate, DateTime endDate)
         {
             string query = @"
-                    SELECT 
-    au.Id AS ApplicationUsageId,
-    au.UserId,
-    u.Email,
-    u.TeamId,
-    u.OrganizationId,
-    au.ApplicationName,
-    au.TotalUsage,
-    au.Details,
-    au.UsageDate
-FROM 
-    ApplicationUsage AS au
-JOIN 
-    Users AS u ON au.UserId = u.Id
-JOIN 
-    Organization AS o ON u.OrganizationId = o.Id
-WHERE 
-    u.OrganizationId = @OrganizationId  
-    AND (@UserId IS NULL OR au.UserId = @UserId)  
-    AND (@TeamId IS NULL OR u.TeamId = @TeamId)  
-    AND au.UsageDate BETWEEN @StartDate AND @EndDate;";
+        SELECT 
+            au.ApplicationName,
+            COUNT(DISTINCT au.UserId) AS UserCount,
+            CONVERT(VARCHAR(8), DATEADD(SECOND, SUM(DATEDIFF(SECOND, 0, TRY_CAST(au.TotalUsage AS TIME))), 0), 108) AS TotalUsage,
+            au.UsageDate
+        FROM 
+            ApplicationUsage AS au
+        JOIN 
+            Users AS u ON au.UserId = u.Id
+        WHERE 
+            u.OrganizationId = @OrganizationId  
+            AND (@UserId IS NULL OR au.UserId = @UserId)  
+            AND (@TeamId IS NULL OR u.TeamId = @TeamId)  
+            AND au.UsageDate BETWEEN @StartDate AND @EndDate
+        GROUP BY 
+            au.ApplicationName, au.UsageDate  
+        ORDER BY 
+            au.UsageDate;";
 
             var parameter = new { organizationId, teamid, userId, startDate, endDate };
 
             return await _dapper.GetAllAsync<GetApplicationUsage>(query, parameter);
         }
+
         #endregion
 
-        public async Task<List<GetApplicationUsage>> GetUsersUrlUsages(int organizationId, int? teamid, int? userId, DateTime startDate, DateTime endDate)
+        public async Task<List<GetUrlUsage>> GetUsersUrlUsages(int organizationId, int? teamid, int? userId, DateTime startDate, DateTime endDate)
         {
             string query = @"
 SELECT 
-    uu.Id AS UrlUsageId,
-    uu.UserId,
-    u.Email,
-    u.TeamId,
-    u.OrganizationId,
-    uu.Url,
-    uu.TotalUsage,
-    uu.Details,
+	uu.Url,
+    COUNT(DISTINCT uu.UserId) AS UserCount,  
+    CONVERT(VARCHAR(8), DATEADD(SECOND, SUM(
+        DATEDIFF(SECOND, 0, TRY_CAST(uu.TotalUsage AS TIME))
+    ), 0), 108) AS TotalUsage,
     uu.UsageDate
 FROM 
     UrlUsage AS uu
 JOIN 
     Users AS u ON uu.UserId = u.Id
-JOIN 
-    Organization AS o ON u.OrganizationId = o.Id
 WHERE 
     u.OrganizationId = @OrganizationId  
     AND (@UserId IS NULL OR uu.UserId = @UserId)  
     AND (@TeamId IS NULL OR u.TeamId = @TeamId)  
-    AND uu.UsageDate BETWEEN @StartDate AND @EndDate";
+    AND uu.UsageDate BETWEEN @StartDate AND @EndDate
+GROUP BY 
+    uu.Url, uu.UsageDate  
+ORDER BY 
+    uu.UsageDate;";
 
             var parameter = new { organizationId, teamid, userId, startDate, endDate };
 
-            return await _dapper.GetAllAsync<GetApplicationUsage>(query, parameter);
+            return await _dapper.GetAllAsync<GetUrlUsage>(query, parameter);
         }
 
         public async Task<int> InsertApplicationUsageAsync(ApplicationUsage applicationUsage)

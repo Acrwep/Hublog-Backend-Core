@@ -1,4 +1,5 @@
 ﻿using Hublog.Repository.Entities.DTO;
+using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.ApplicationModel;
 using Hublog.Repository.Entities.Model.UrlModel;
 
@@ -8,7 +9,7 @@ namespace Hublog.Repository.Interface
     {
         Task<List<GetApplicationUsage>> GetUsersApplicationUsages(int organizationId, int? teamid, int? userId, DateTime startDate, DateTime endDate);
 
-        Task<List<GetApplicationUsage>> GetUsersUrlUsages(int organizationId, int? teamid, int? userId, DateTime startDate, DateTime endDate);  
+        Task<List<GetUrlUsage>> GetUsersUrlUsages(int organizationId, int? teamid, int? userId, DateTime startDate, DateTime endDate);  
 
         Task<int> InsertApplicationUsageAsync(ApplicationUsage applicationUsage);
 

@@ -8,15 +8,9 @@ namespace Hublog.Repository.Entities.DTO
 {
     public class GetApplicationUsage
     {
-        public int ApplicationUsageId { get; set; }
-        public int UserId { get; set; }
-        public string Email { get; set; }
-        public int OrganizationId { get; set; }
         public string ApplicationName { get; set; }
+        public int UserCount { get; set; }  
         public string TotalUsage { get; set; }
-        public string Details { get; set; }
         public DateTime UsageDate { get; set; }
-
-        public int TeamId { get; set; } 
     }
 }
