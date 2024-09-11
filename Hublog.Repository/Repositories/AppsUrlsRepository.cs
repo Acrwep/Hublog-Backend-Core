@@ -1,7 +1,8 @@
 ﻿using Dapper;
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
-using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.ApplicationModel;
+using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Repository.Interface;
 using System.Data;
 using System.Data.Common;
@@ -104,5 +105,36 @@ WHERE
             });
         }
 
+        public async Task<(string Url, string MaxUsage)> GetTopUrlUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
+        {
+            var parameters = new
+            {
+                @OrganizationId = organizationId,
+                @TeamId = teamId,
+                @UserId = userId,
+                @StartDate = startDate,
+                @EndDate = endDate
+            };
+
+            string query = "GetTopUrlUsage";
+
+            return await _dapper.GetSingleAsync<(string Url, string MaxUsage)>(query, parameters, CommandType.StoredProcedure);
+        }
+
+        public async Task<(string ApplicationName, string MaxUsage)> GetTopAppUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
+        {
+            var parameters = new
+            {
+                @OrganizationId = organizationId,
+                @TeamId = teamId,
+                @UserId = userId,
+                @StartDate = startDate,
+                @EndDate = endDate
+            };
+
+            string query = "GetTopAppUsage";
+
+            return await _dapper.GetSingleAsync<(string Url, string MaxUsage)>(query, parameters, CommandType.StoredProcedure);
+        }
     }
 }

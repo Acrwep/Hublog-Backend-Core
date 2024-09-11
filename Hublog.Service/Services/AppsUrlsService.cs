@@ -1,5 +1,6 @@
 ﻿using Hublog.Repository.Entities.DTO;
-using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.ApplicationModel;
+using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Repository.Interface;
 using Hublog.Service.Interface;
 
@@ -33,6 +34,26 @@ namespace Hublog.Service.Services
         {
             var result = await _appsUrlsRepository.InsertUrlUsageAsync(urlUsage);
             return result > 0;
+        }
+
+        public async Task<TopUrlUsageResponse> GetTopUrlUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
+        {
+            var result = await _appsUrlsRepository.GetTopUrlUsageAsync(organizationId, teamId, userId, startDate, endDate);
+            return new TopUrlUsageResponse
+            {
+                Url = result.Url,
+                MaxUsage = result.MaxUsage
+            };
+        }
+
+        public async Task<TopAppUsageResponse> GetTopAppUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
+        {
+            var result = await _appsUrlsRepository.GetTopAppUsageAsync(organizationId, teamId, userId, startDate, endDate);
+            return new TopAppUsageResponse
+            {
+                ApplicationName = result.ApplicationName,
+                MaxUsage = result.MaxUsage
+            };
         }
     }
 }

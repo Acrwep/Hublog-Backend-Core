@@ -1,5 +1,6 @@
 ﻿using Hublog.Repository.Entities.DTO;
-using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.ApplicationModel;
+using Hublog.Repository.Entities.Model.UrlModel;
 
 namespace Hublog.Service.Interface
 {
@@ -12,5 +13,9 @@ namespace Hublog.Service.Interface
         Task<bool> LogApplicationUsageAsync(ApplicationUsage applicationUsage);
 
         Task<bool> LogUrlUsageAsync(UrlUsage urlUsage);
+
+        Task<TopUrlUsageResponse> GetTopUrlUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate);
+
+        Task<TopAppUsageResponse> GetTopAppUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate);
     }
 }
