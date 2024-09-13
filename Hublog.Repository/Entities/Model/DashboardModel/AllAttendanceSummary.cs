@@ -4,6 +4,8 @@
     {
         public string First_Name { get; set; }
         public string Last_Name { get; set; }
+
+        public DateTime AttendanceDate { get; set; }
         public int PresentCount { get; set; }
         public int AbsentCount { get; set; }
         public float AttendancePercentage { get; set; }
