@@ -1,9 +1,7 @@
 ﻿using Hublog.Repository.Entities.Login;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
-using Hublog.Repository.Repositories;
 using Hublog.Service.Interface;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -95,8 +93,9 @@ namespace Hublog.Service.Services
             var users = await _loginRepository.Login(model.UserName, model.Password);
             if (users != null)
             {
-                var token = CreateToken(users); 
-                return (users, token);
+                //var token = CreateToken(users); 
+                //return (users, token);
+                return (null, null);
             }
 
             return (null, null);

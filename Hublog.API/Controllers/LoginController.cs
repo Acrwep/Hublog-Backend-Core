@@ -57,14 +57,12 @@ namespace Hublog.API.Controllers
             try
             {
                 var (user, token) = await _loginService.UserLogout(model);
-                if (user != null)
+                if (user == null && token == null)
                 {
-                    return Ok(new { user, token });
+                    return Ok(new { message = "User logged out successfully" });
                 }
-                else
-                {
-                    return NotFound("Invalid Username & Password");
-                }
+
+                return NotFound("Invalid Username & Password");
             }
             catch (Exception ex)
             {
