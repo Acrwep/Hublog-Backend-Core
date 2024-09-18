@@ -21,5 +21,20 @@ namespace Hublog.Service.Services
         {
             return await _attendanceDashboardRepository.GetUserTotalAttendanceAndBreakSummary(organizationId, teamId, userId, startDate, endDate);
         }
+
+        public async Task<AttendanceDashboardSummaryModel> AttendanceDashboardSummary(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            return await _attendanceDashboardRepository.AttendanceDashboardSummary(organizationId, teamId, startDate, endDate);
+        }
+
+        public async Task<List<TeamProductivityModel>> GetTopTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            return await _attendanceDashboardRepository.GetTopTeamProductivity(organizationId, teamId, startDate, endDate);
+        }
+
+        public async Task<List<TeamProductivityModel>> GetLeastTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            return await _attendanceDashboardRepository.GetLeastTeamProductivity(organizationId,teamId, startDate, endDate);
+        }
     }
 }

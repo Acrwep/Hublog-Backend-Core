@@ -1,4 +1,5 @@
-﻿using Hublog.Repository.Common;
+﻿using Dapper;
+using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.DashboardModel;
 using Hublog.Repository.Interface;
 using System.Data;
@@ -42,6 +43,51 @@ namespace Hublog.Repository.Repositories
             };
 
             return await _dapper.GetAllAsyncs<UserAttendanceReport>(sp, parameters, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<AttendanceDashboardSummaryModel> AttendanceDashboardSummary(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            string query = "AttendanceDashboardSummary"; 
+
+            return await _dapper.GetSingleAsync<AttendanceDashboardSummaryModel>(query, parameters, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<List<TeamProductivityModel>> GetTopTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            string query = "GetTopTeamProductivity";
+
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            return await _dapper.GetAllAsyncs<TeamProductivityModel>(query, parameters, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<List<TeamProductivityModel>> GetLeastTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            string query = "GetBottomTeamProductivity";
+
+            var parameters = new
+            {
+                organizationId = organizationId,
+                TeamId = teamId,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            return await _dapper.GetAllAsyncs<TeamProductivityModel>(query, parameters, commandType: CommandType.StoredProcedure);
         }
     }
 }

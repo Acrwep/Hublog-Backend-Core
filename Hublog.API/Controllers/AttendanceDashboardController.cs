@@ -34,5 +34,34 @@ namespace Hublog.API.Controllers
             var result = await _attendanceDashboardService.GetAllAttendanceSummary(organizationId,teamId, userId, startDate, endDate);
             return Ok(result);
         }
+
+        [HttpGet("dashboard-summary")]
+        public async Task<IActionResult> GetAttendanceDashboardSummary([FromQuery] int organizationId, [FromQuery] int? teamId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            var result = await _attendanceDashboardService.AttendanceDashboardSummary(organizationId, teamId, startDate, endDate);
+            return Ok(result);
+        }
+
+        [HttpGet("top-productivity-Teams")]
+        public async Task<IActionResult> GetTopTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            var result = await _attendanceDashboardService.GetTopTeamProductivity(organizationId, teamId, startDate, endDate);
+            if (result == null || result.Count == 0)
+            {
+                return NotFound("No data found");
+            }
+            return Ok(result);
+        }
+
+        [HttpGet("Least-Productivity-Teams")]
+        public async Task<IActionResult> GetLeastTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            var result = await _attendanceDashboardService.GetLeastTeamProductivity(organizationId,teamId, startDate, endDate);
+            if(result == null || result.Count == 0)
+            {
+                return NotFound("No data found");
+            }
+            return Ok(result);
+        }
     }
 }
