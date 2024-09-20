@@ -77,17 +77,32 @@ namespace Hublog.Repository.Repositories
 
         public async Task<List<TeamProductivityModel>> GetLeastTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
         {
-            string query = "GetBottomTeamProductivity";
+            var query = "GetBottomTeamProductivity";
 
             var parameters = new
             {
-                organizationId = organizationId,
+                OrganizationId = organizationId,
                 TeamId = teamId,
                 StartDate = startDate,
                 EndDate = endDate
             };
 
             return await _dapper.GetAllAsyncs<TeamProductivityModel>(query, parameters, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<List<LateArrivalsModel>> GetLateArrivals(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            string query = "LateArrivals";
+
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            return await _dapper.GetAllAsyncs<LateArrivalsModel>(query, parameters, commandType: CommandType.StoredProcedure);
         }
     }
 }

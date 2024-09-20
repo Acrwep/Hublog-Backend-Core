@@ -63,5 +63,15 @@ namespace Hublog.API.Controllers
             }
             return Ok(result);
         }
+
+        [HttpGet("LateArrivals")]
+        public async Task<IActionResult> GetLateArrivals(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            var result = await _attendanceDashboardService.GetLateArrivals(organizationId, teamId, startDate, endDate);
+            if(result == null ){
+                return NotFound("No data found");
+            }
+            return Ok(result);
+        }
     }
 }
