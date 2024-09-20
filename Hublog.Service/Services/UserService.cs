@@ -86,7 +86,7 @@ namespace Hublog.Service.Services
         #endregion
 
         #region GetUserAttendanceDetails
-        public async Task<(List<UserAttendanceDetailModel> Records, AttendanceSummaryModel Summary)> GetUserAttendanceDetails(int userId, DateTime? startDate, DateTime? endDate)
+        public async Task<(List<UserAttendanceDetailModel> Records, AttendanceSummaryModel Summary)> GetUserAttendanceDetails(int organizationId, int userId, DateTime? startDate, DateTime? endDate)
         {
             if (!startDate.HasValue || !endDate.HasValue)
             {
@@ -99,7 +99,7 @@ namespace Hublog.Service.Services
                 endDate = endOfWeek;
             }
 
-            var records = await _userRepository.GetUserAttendanceDetails(userId, startDate.Value, endDate.Value);
+            var records = await _userRepository.GetUserAttendanceDetails(organizationId, userId, startDate.Value, endDate.Value);
 
             var allDates = Enumerable.Range(0, 1 + endDate.Value.Subtract(startDate.Value).Days)
                 .Select(offset => startDate.Value.AddDays(offset))

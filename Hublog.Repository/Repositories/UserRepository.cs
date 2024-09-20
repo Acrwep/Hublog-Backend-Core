@@ -107,7 +107,7 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region GetUserAttendanceDetails
-        public async Task<List<UserAttendanceDetailModel>> GetUserAttendanceDetails(int userId, DateTime startDate, DateTime endDate)   
+        public async Task<List<UserAttendanceDetailModel>> GetUserAttendanceDetails(int organizationId, int userId, DateTime startDate, DateTime endDate)   
         {
             var query = @"
             SELECT 
@@ -123,10 +123,10 @@ namespace Hublog.Repository.Repositories
                 A.Status 
             FROM Users U
                 INNER JOIN Attendance A ON U.Id = A.UserId
-                WHERE U.Id = @UserId
+                WHERE U.Id = @UserId AND U.OrganizationId = @OrganizationId
                   AND A.AttendanceDate BETWEEN @StartDate AND @EndDate";
 
-            var parameters = new { UserId = userId, StartDate = startDate, EndDate = endDate };
+            var parameters = new { OrganizationId = organizationId, UserId = userId, StartDate = startDate, EndDate = endDate };
 
             return await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
         }

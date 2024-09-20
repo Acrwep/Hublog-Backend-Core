@@ -111,11 +111,11 @@ namespace Hublog.API.Controllers
 
         #region GetUserAttendanceDetails
         [HttpGet("GetUserAttendanceDetails")]
-        public async Task<IActionResult> GetUserAttendanceDetails([FromQuery] int userId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
+        public async Task<IActionResult> GetUserAttendanceDetails([FromQuery] int organizationId ,[FromQuery] int userId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
         {
             try
             {
-                var (records, summary) = await _userService.GetUserAttendanceDetails(userId, startDate, endDate);
+                var (records, summary) = await _userService.GetUserAttendanceDetails(organizationId, userId, startDate, endDate);
 
                 var responseModel = new
                 {
