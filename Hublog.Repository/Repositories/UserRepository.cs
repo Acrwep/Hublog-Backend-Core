@@ -321,7 +321,7 @@ namespace Hublog.Repository.Repositories
         public async Task<int> InsertUser(Users user)
         {
             string query = @"
-            INSERT INTO Users (First_Name, Last_Name, Email, DOB, DOJ, Phone, UsersName, Password, 
+            INSERT INTO Users (First_Name, Last_Name, Email, DOB, DOJ, Phone, UsersName, Password,  
             Gender, OrganizationId, RoleId, DesignationId, TeamId, Active, EmployeeID) 
             VALUES (@First_Name, @Last_Name, @Email, @DOB, @DOJ, @Phone, @UsersName, @Password,
             @Gender, @OrganizationId, @RoleId, @DesignationId, @TeamId, @Active, @EmployeeID);
