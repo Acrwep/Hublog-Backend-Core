@@ -213,10 +213,15 @@ namespace Hublog.Service.Services
         public async Task<Users> InsertUser(Users user)
         {
             var userId = await _userRepository.InsertUser(user);
+
             if (userId > 0)
             {
                 user.Id = userId;
                 return user;
+            }
+            else if (userId == -1)
+            {
+                return null; 
             }
             else
             {

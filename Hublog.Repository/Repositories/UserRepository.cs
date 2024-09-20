@@ -320,16 +320,24 @@ namespace Hublog.Repository.Repositories
         #region InsertUser
         public async Task<int> InsertUser(Users user)
         {
-            string query = @"
-            INSERT INTO Users (First_Name, Last_Name, Email, DOB, DOJ, Phone, UsersName, Password,  
-            Gender, OrganizationId, RoleId, DesignationId, TeamId, Active, EmployeeID) 
-            VALUES (@First_Name, @Last_Name, @Email, @DOB, @DOJ, @Phone, @UsersName, @Password,
-            @Gender, @OrganizationId, @RoleId, @DesignationId, @TeamId, @Active, @EmployeeID);
-            SELECT CAST(SCOPE_IDENTITY() as int)";
+            string checkEmail = "SELECT * FROM Users WHERE Email = @Email";
+            var AlreadyExistEmail = await _dapper.ExecuteScalarAsync<int>(checkEmail, new { user.Email });
+
+            if (AlreadyExistEmail > 0)
+            {
+                return -1; 
+            }
+
+            string insertQuery = @"
+                            INSERT INTO Users (First_Name, Last_Name, Email, DOB, DOJ, Phone, UsersName, Password, 
+                                Gender, OrganizationId, RoleId, DesignationId, TeamId, Active, EmployeeID) 
+                            VALUES (@First_Name, @Last_Name, @Email, @DOB, @DOJ, @Phone, @UsersName, @Password,
+                                @Gender, @OrganizationId, @RoleId, @DesignationId, @TeamId, @Active, @EmployeeID);
+                            SELECT CAST(SCOPE_IDENTITY() as int)";
 
             user.Active = true;
 
-            return await _dapper.ExecuteAsync(query, user);
+            return await _dapper.ExecuteAsync(insertQuery, user);
         }
         #endregion
 

@@ -273,6 +273,12 @@ namespace Hublog.API.Controllers
                 try
                 {
                     var createdUser = await _userService.InsertUser(user);
+
+                    if (createdUser == null)
+                    {
+                        return Conflict("A user with this email already exists");
+                    }
+
                     return CreatedAtAction(nameof(InsertUser), new { id = createdUser.Id }, createdUser);
                 }
                 catch (Exception ex)
