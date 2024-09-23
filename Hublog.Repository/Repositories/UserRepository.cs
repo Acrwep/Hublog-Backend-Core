@@ -419,5 +419,18 @@ namespace Hublog.Repository.Repositories
 
             return await _dapper.GetAllAsync<GetApplicationUsage>(query, parameter);
         }
+
+        public async Task<List<UserTotalBreakModel>> GetUserTotalBreak(int organizationId, int userId, DateTime startDate, DateTime endDate)
+        {
+            var query = "GetUserTotalBreakHours";
+
+            var parameter = new { OrganizationId = organizationId, 
+                                  UserId = userId, 
+                                  StartDate = startDate, 
+                                  EndDate = endDate 
+                                };
+
+            return await _dapper.GetAllAsyncs<UserTotalBreakModel>(query, parameter, commandType: CommandType.StoredProcedure);
+        }
     }
 }

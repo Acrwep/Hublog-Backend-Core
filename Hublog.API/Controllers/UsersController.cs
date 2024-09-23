@@ -341,5 +341,23 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
+
+        [HttpGet("GetTotalBreak")]
+        public async Task<IActionResult> GetUserTotalBreak(int organizationId, int userId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var result = await _userService.GetUserTotalBreak(organizationId, userId, startDate, endDate);
+                if(result != null)
+                {
+                    return Ok(result);
+                }
+                return NotFound("No data found");
+            }
+            catch(Exception ex) 
+            {
+                return BadRequest("An error occured while processing your request");
+            }
+        }
     }
 }

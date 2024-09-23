@@ -1,12 +1,10 @@
-﻿using Dapper;
-using Hublog.Repository.Common;
+﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.ApplicationModel;
 using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Repository.Interface;
 using System.Data;
-using System.Data.Common;
 
 namespace Hublog.Repository.Repositories
 {

@@ -34,5 +34,7 @@ namespace Hublog.Service.Interface
         Task<Users> UpdateUser(Users user); 
 
         Task<bool> DeleteUser(int userId);
+
+        Task<List<UserTotalBreakModel>> GetUserTotalBreak(int organizationId, int userId, DateTime startDate, DateTime endDate);
     }
 }

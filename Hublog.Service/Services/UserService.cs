@@ -243,5 +243,10 @@ namespace Hublog.Service.Services
             return null;
         }
         #endregion
+
+        public async Task<List<UserTotalBreakModel>> GetUserTotalBreak(int organizationId, int userId, DateTime startDate, DateTime endDate)
+        {
+            return await _userRepository.GetUserTotalBreak(organizationId, userId, startDate, endDate);
+        }
     }
 }
