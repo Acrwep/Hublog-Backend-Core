@@ -162,8 +162,9 @@ namespace Hublog.Service.Services
                     Users = result.Select(u => new
                     {
                         UserId = u.Id,
-                        FirstName = u.First_Name,
-                        LastName = u.Last_Name,
+                        First_Name = u.First_Name,
+                        Last_Name = u.Last_Name,
+                        full_Name = $"{u.First_Name} {u.Last_Name}",
                         Email = u.Email,
                         DOB = u.DOB,
                         DOJ = u.DOJ,

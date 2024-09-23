@@ -16,6 +16,7 @@ namespace Hublog.Repository.Common
             _connection = new SqlConnection(connectionString);
         }
 
+        #region Dapp
         public int Execute(string query, object parameters = null)
         {
             return _connection.Execute(query, parameters);
@@ -73,6 +74,7 @@ namespace Hublog.Repository.Common
         {
             return await _connection.QuerySingleOrDefaultAsync<T>(query, parameters, commandType: commandType);
         }
+        #endregion
 
         public void Dispose()
         {

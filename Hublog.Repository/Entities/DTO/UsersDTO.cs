@@ -11,6 +11,7 @@ namespace Hublog.Repository.Entities.DTO
         public int Id { get; set; }
         public string First_Name { get; set; }
         public string Last_Name { get; set; }
+        public string full_Name { get; set; }       
         public string Email { get; set; }
         public DateTime? DOB { get; set; }
         public DateTime? DOJ { get; set; }

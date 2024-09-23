@@ -5,6 +5,7 @@
         public int Id { get; set; } //(int, not null)
         public string First_Name { get; set; } //(varchar(100), not null)
         public string Last_Name { get; set; } //(varchar(100), null)
+        public string full_Name { get; set; }   
         public string Email { get; set; } //(varchar(100), not null)
         public DateTime? DOB { get; set; } //(date, null)
         public DateTime? DOJ { get; set; } //(date, null)

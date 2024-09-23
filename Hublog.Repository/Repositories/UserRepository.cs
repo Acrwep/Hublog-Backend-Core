@@ -176,31 +176,31 @@ namespace Hublog.Repository.Repositories
         {
             var query = @"
             SELECT 
-                u.[Id],
-                u.[First_Name],
-                u.[Last_Name],
-                u.[Email],
-                u.[DOB],
-                u.[DOJ],
-                u.[Phone],
-                u.[UsersName],
-                u.[Password],
-                u.[Gender],
-                u.[OrganizationId],
-                u.[RoleId],
-                u.[DesignationId],
-                u.[TeamId],
-                u.[Active],
-                u.[EmployeeID],
-                t.[Name] AS TeamName
+                u.Id,
+                u.First_Name,
+                u.Last_Name,
+                u.Email,
+                u.DOB,
+                u.DOJ,
+                u.Phone,
+                u.UsersName,
+                u.Password,
+                u.Gender,
+                u.OrganizationId,
+                u.RoleId,
+                u.DesignationId,
+                u.TeamId,
+                u.Active,
+                u.EmployeeID,
+                t.Name AS TeamName
             FROM 
-                [dbo].[Users] u
+                Users u
             INNER JOIN 
-                [dbo].[Team] t
+                Team t
             ON 
-                u.[TeamId] = t.[Id]
+                u.TeamId = t.Id
             WHERE 
-                u.[TeamId] = @TeamId
+                u.TeamId = @TeamId
         "
             ;
 
@@ -274,6 +274,7 @@ namespace Hublog.Repository.Repositories
                             u.Id,
                             u.First_Name,
                             u.Last_Name,
+                            CONCAT(U.First_Name, ' ', U.Last_Name) AS full_Name,
                             u.Email,
                             u.DOB,
                             u.DOJ,
