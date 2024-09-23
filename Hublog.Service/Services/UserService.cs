@@ -161,7 +161,7 @@ namespace Hublog.Service.Services
                     TeamName = teamData.TeamName,
                     Users = result.Select(u => new
                     {
-                        UserId = u.Id,
+                        Id = u.Id,
                         First_Name = u.First_Name,
                         Last_Name = u.Last_Name,
                         full_Name = $"{u.First_Name} {u.Last_Name}",
