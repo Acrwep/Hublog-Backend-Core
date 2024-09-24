@@ -64,11 +64,10 @@ namespace Hublog.API.Controllers
             {
                 OrganizationId = organizationId,
                 users = attendanceLogs
-                    .GroupBy(x => new { x.UserId, x.First_Name, x.Last_Name })
+                    .GroupBy(x => new { x.UserId, x.Full_Name })
                     .Select(g => new
                     {
-                        first_name = g.Key.First_Name,
-                        last_name = g.Key.Last_Name,
+                        full_name = g.Key.Full_Name,
                         logs = g.Select(r => new
                         {
                             date = r.AttendanceDate.ToString("yyyy-MM-dd"),
