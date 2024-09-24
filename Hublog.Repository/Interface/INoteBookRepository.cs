@@ -10,6 +10,6 @@ namespace Hublog.Repository.Interface
 
         Task<int> DeleteNote(int noteId);
 
-        Task<Notebook> GetNotebookById(int organizationId, int userId, int noteId); 
+        Task<List<Notebook>> GetNotebookById(int organizationId, int userId); 
     }
 }

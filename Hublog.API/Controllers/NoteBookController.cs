@@ -52,11 +52,11 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("GetbyId")]
-        public async Task<IActionResult> GetNotebookById(int organizationId, int userId, int noteId)
+        public async Task<IActionResult> GetNotebookById(int organizationId, int userId)
         {
-            var notebook = await _noteBookService.GetNotebookById(organizationId, userId, noteId);
+            var notebook = await _noteBookService.GetNotebookById(organizationId, userId);
 
-            if (notebook != null)
+            if (notebook.Any())
             {
                 return Ok(notebook);
             }
