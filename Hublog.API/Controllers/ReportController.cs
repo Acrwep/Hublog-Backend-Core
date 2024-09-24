@@ -67,7 +67,7 @@ namespace Hublog.API.Controllers
                     .GroupBy(x => new { x.UserId, x.Full_Name })
                     .Select(g => new
                     {
-                        full_name = g.Key.Full_Name,
+                        full_Name = g.Key.Full_Name,
                         logs = g.Select(r => new
                         {
                             date = r.AttendanceDate.ToString("yyyy-MM-dd"),
@@ -94,11 +94,10 @@ namespace Hublog.API.Controllers
             {
                 OrganizationId = organizationId,
                 users = inOutLogs
-                        .GroupBy(u => new { u.First_Name, u.Last_Name })
+                        .GroupBy(u => new { u.full_Name })
                         .Select(s => new
                         {
-                            first_name = s.Key.First_Name,
-                            last_name = s.Key.Last_Name,
+                            full_Name = s.Key.full_Name,
                             logs = s.Select(ss => new
                             {
                                 date = ss.AttendanceDate.ToString("yyyy-MM-dd"),
