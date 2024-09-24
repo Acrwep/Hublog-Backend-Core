@@ -8,6 +8,8 @@ namespace Hublog.Service.Interface
 
         Task<int> UpdateNote(Notebook notebook);
 
-        Task<int> DeleteNote(int noteId);   
+        Task<int> DeleteNote(int noteId);
+
+        Task<Notebook> GetNotebookById(int organizationId, int userId, int noteId); 
     }
 }

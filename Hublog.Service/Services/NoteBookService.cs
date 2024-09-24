@@ -25,5 +25,11 @@ namespace Hublog.Service.Services
         {
             return await _notebookRepository.DeleteNote(noteId);
         }
+
+        public async Task<Notebook> GetNotebookById(int organizationId, int userId, int noteId)
+        {
+            return await _notebookRepository.GetNotebookById(organizationId, userId, noteId);
+        }
+
     }
 }

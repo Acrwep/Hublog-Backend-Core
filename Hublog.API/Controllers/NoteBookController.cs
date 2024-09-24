@@ -51,5 +51,17 @@ namespace Hublog.API.Controllers
             return NotFound(new { message = "Notebook not found." });
         }
 
+        [HttpGet("GetbyId")]
+        public async Task<IActionResult> GetNotebookById(int organizationId, int userId, int noteId)
+        {
+            var notebook = await _noteBookService.GetNotebookById(organizationId, userId, noteId);
+
+            if (notebook != null)
+            {
+                return Ok(notebook);
+            }
+            return NotFound(new { message = "Notebook not found." });
+        }
+
     }
 }

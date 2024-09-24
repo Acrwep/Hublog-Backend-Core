@@ -28,5 +28,23 @@ namespace Hublog.Repository.Repositories
             string query = "DELETE FROM Notebook WHERE NoteId = @NoteId";
             return await _dapper.ExecuteAsync(query, new { NoteId = noteId });
         }
+
+        public async Task<Notebook> GetNotebookById(int organizationId, int userId, int noteId)
+        {
+            string query = @"
+        SELECT NoteId, NoteTitle, Notes, UserId 
+        FROM Notebook 
+        WHERE NoteId = @NoteId AND UserId = @UserId AND UserId IN 
+        (SELECT Id FROM Users WHERE OrganizationId = @OrganizationId AND Id = @UserId)";
+
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                UserId = userId,
+                NoteId = noteId
+            };
+
+            return await _dapper.GetAsync<Notebook>(query, parameters);
+        }
     }
 }
