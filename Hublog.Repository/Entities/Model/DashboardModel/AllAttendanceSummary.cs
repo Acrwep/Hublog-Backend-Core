@@ -3,6 +3,7 @@
     public class AllAttendanceSummary
     {
         public DateTime AttendanceDate { get; set; }
+        public string Full_Name { get; set; }   
         public int PresentCount { get; set; }
         public int AbsentCount { get; set; }
         public float AttendancePercentage { get; set; }

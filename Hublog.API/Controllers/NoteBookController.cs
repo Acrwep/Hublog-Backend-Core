@@ -16,7 +16,7 @@ namespace Hublog.API.Controllers
             _noteBookService = noteBookService;
         }
 
-        [HttpPost]
+        [HttpPost("CreateNote")]
         public async Task<IActionResult> CreateNotebook([FromBody] Notebook notebook)
         {
             var result = await _noteBookService.CreateNote(notebook);

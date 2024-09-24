@@ -2,8 +2,7 @@
 {
     public class BreaksReport
     {
-        public string First_Name { get; set; }
-        public string Last_Name { get; set; }
+        public string Full_Name { get; set; }   
         public string BreakName { get; set; }
         public DateTime BreakDate { get; set; }
         public DateTime Start_Time { get; set; }
