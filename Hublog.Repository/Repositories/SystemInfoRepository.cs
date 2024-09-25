@@ -79,6 +79,7 @@ namespace Hublog.Repository.Repositories
             {
                 organizationId,
                 teamId,
+                userid,
                 userSearchQuery = userSearchQuery ?? string.Empty,
                 platformSearchQuery = platformSearchQuery ?? string.Empty,
                 systemTypeSearchQuery = systemTypeSearchQuery ?? string.Empty
