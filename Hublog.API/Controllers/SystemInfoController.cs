@@ -34,11 +34,11 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("GetSystemInfo")]
-        public async Task<IActionResult> GetSystemInfo(int organizationId, int? teamId = null, string userSearchQuery = "", string platformSearchQuery = "", string systemTypeSearchQuery = "")
+        public async Task<IActionResult> GetSystemInfo(int organizationId, int? userid, int? teamId = null, string userSearchQuery = "", string platformSearchQuery = "", string systemTypeSearchQuery = "")
         {
             try
             {
-                var result = await _systemInfoService.GetSystemInfo(organizationId, teamId, userSearchQuery, platformSearchQuery, systemTypeSearchQuery);
+                var result = await _systemInfoService.GetSystemInfo(organizationId,userid, teamId, userSearchQuery, platformSearchQuery, systemTypeSearchQuery);
                 return Ok(result);
             }
             catch (Exception ex)

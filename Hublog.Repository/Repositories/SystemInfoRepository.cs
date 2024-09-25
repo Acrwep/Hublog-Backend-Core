@@ -40,7 +40,7 @@ namespace Hublog.Repository.Repositories
             await _dapper.ExecuteAsync(sql, systemInfoModel);
         }
 
-        public async Task<List<SystemInfoDto>> GetSystemInfo(int organizationId, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
+        public async Task<List<SystemInfoDto>> GetSystemInfo(int organizationId,int? userid, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
         {
             var query = @"
         SELECT
@@ -67,6 +67,7 @@ namespace Hublog.Repository.Repositories
         WHERE 
             O.Id = @organizationId  
             AND (@teamId IS NULL OR T.Id = @teamId)  
+            AND (@userid IS NULL OR U.Id = @userid)
             AND ( 
                 (@userSearchQuery IS NULL OR @userSearchQuery = '' OR CONCAT(U.First_Name, ' ', U.Last_Name) LIKE '%' + @userSearchQuery + '%')
             )

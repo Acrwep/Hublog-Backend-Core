@@ -30,9 +30,9 @@ namespace Hublog.Service.Services
             }
         }
 
-        public async Task<List<SystemInfoDto>> GetSystemInfo(int organizationId, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
+        public async Task<List<SystemInfoDto>> GetSystemInfo(int organizationId, int? userid, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
         {
-            return await _systemInfoRepository.GetSystemInfo(organizationId, teamId, userSearchQuery, platformSearchQuery, systemTypeSearchQuery);
+            return await _systemInfoRepository.GetSystemInfo(organizationId,userid, teamId, userSearchQuery, platformSearchQuery, systemTypeSearchQuery);
         }
     }
 }

@@ -9,6 +9,6 @@ namespace Hublog.Repository.Interface
         Task<SystemInfoModel> InsertSystemInfo(SystemInfoModel systemInfoModel);
         Task UpdateSystemInfo(SystemInfoModel systemInfoModel);
 
-        Task<List<SystemInfoDto>> GetSystemInfo(int organizationId, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery);
+        Task<List<SystemInfoDto>> GetSystemInfo(int organizationId,int? userid, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery);
     }
 }
