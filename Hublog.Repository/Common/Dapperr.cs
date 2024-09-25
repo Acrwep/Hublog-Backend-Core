@@ -22,6 +22,12 @@ namespace Hublog.Repository.Common
             return _connection.Execute(query, parameters);
         }
 
+        public async Task<T> QueryFirstOrDefaultAsync<T>(string query, object parameters = null, CommandType commandType = CommandType.Text)
+        {
+            var result = await _connection.QueryAsync<T>(query, parameters, commandType: commandType);
+            return result.FirstOrDefault();
+        }
+
         public object ExecuteScalar(string query)
         {
             return _connection.ExecuteScalar(query);

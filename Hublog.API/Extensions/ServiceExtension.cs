@@ -50,6 +50,9 @@ namespace Hublog.API.Extensions
 
             services.AddScoped<INoteBookRepository, NoteBookRepository>();
             services.AddScoped<INoteBookService, NoteBookService>();
+
+            services.AddScoped<ISystemInfoRepository, SystemInfoRepository>();
+            services.AddScoped<ISystemInfoService, SystemInfoService>();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

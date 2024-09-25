@@ -206,8 +206,7 @@ namespace Hublog.Service.Services
         {
             var users = await _userRepository.GetAllUser(loggedInUserEmail, organizationid, searchQuery);
             return users;
-            }
-
+        }
         #endregion
 
         #region  InsertUser
