@@ -18,7 +18,7 @@ namespace Hublog.API.Controllers
         }
 
         [HttpPost("InsertOrUpdateSystemInfo")]
-        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> InsertOrUpdateSystemInfo([FromBody] SystemInfoModel systemInfoModel)
         {
             if (systemInfoModel == null)

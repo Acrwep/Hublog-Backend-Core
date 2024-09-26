@@ -76,7 +76,7 @@ namespace Hublog.API.Controllers
 
         #region UploadFile
         [HttpPost("UploadFile")]
-        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> UploadFile()
         {
             try
