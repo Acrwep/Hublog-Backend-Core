@@ -1,9 +1,11 @@
-﻿using Hublog.Repository.Entities.DTO;
+﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -21,6 +23,7 @@ namespace Hublog.API.Controllers
 
         #region InsertBreak
         [HttpPost("InsertBreak")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> InsertBreak(List<UserBreakModel> model)
         {
             if (!ModelState.IsValid)
@@ -51,6 +54,7 @@ namespace Hublog.API.Controllers
 
         #region InsertAttendance
         [HttpPost("InsertAttendance")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> InsertAttendance(List<UserAttendanceModel> model)
         {
             if (!ModelState.IsValid)
@@ -72,6 +76,7 @@ namespace Hublog.API.Controllers
 
         #region UploadFile
         [HttpPost("UploadFile")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> UploadFile()
         {
             try
@@ -111,6 +116,7 @@ namespace Hublog.API.Controllers
 
         #region GetUserAttendanceDetails
         [HttpGet("GetUserAttendanceDetails")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]   
         public async Task<IActionResult> GetUserAttendanceDetails([FromQuery] int organizationId ,[FromQuery] int userId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
         {
             try
@@ -155,6 +161,7 @@ namespace Hublog.API.Controllers
 
         #region GetUsersByOrganizationId
         [HttpGet("GetUsersByOrganizationId")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetUsersByOrganizationId(int organizationId)
         {
             try
@@ -176,6 +183,7 @@ namespace Hublog.API.Controllers
 
         #region GetAvailableBreak
         [HttpPost("GetAvailableBreak")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetAvailableBreak([FromBody] GetModels model)
         {
             if (!ModelState.IsValid)
@@ -205,6 +213,7 @@ namespace Hublog.API.Controllers
 
         #region GetBreakMasterById
         [HttpGet("GetBreakMasterById")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetBreakMasterById(int id)
         {
             try
@@ -221,6 +230,7 @@ namespace Hublog.API.Controllers
 
         #region GetUserBreakRecordDetails
         [HttpGet("GetUserBreakRecordDetails")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetUserBreakRecordDetails([FromQuery] int userId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
         {
             try
@@ -241,6 +251,7 @@ namespace Hublog.API.Controllers
 
         #region  User CRUD Operation
         [HttpGet("GetAllUsers")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetAllUsers(int organizationid, string searchQuery = "")
         {
             try
@@ -343,6 +354,7 @@ namespace Hublog.API.Controllers
         #endregion
 
         [HttpGet("GetTotalBreak")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetUserTotalBreak(int organizationId, int userId, DateTime startDate, DateTime endDate)
         {
             try

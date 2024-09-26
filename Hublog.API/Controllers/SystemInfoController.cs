@@ -1,5 +1,7 @@
-﻿using Hublog.Repository.Entities.Model;
+﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +18,7 @@ namespace Hublog.API.Controllers
         }
 
         [HttpPost("InsertOrUpdateSystemInfo")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> InsertOrUpdateSystemInfo([FromBody] SystemInfoModel systemInfoModel)
         {
             if (systemInfoModel == null)
@@ -34,6 +37,7 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("GetSystemInfo")]
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         public async Task<IActionResult> GetSystemInfo(int organizationId, int? userid, int? teamId = null, string userSearchQuery = "", string platformSearchQuery = "", string systemTypeSearchQuery = "")
         {
             try
@@ -45,6 +49,14 @@ namespace Hublog.API.Controllers
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
+        }
+
+        [HttpGet("GetSystemInfoCount")]
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+        public async Task<IActionResult> GetSystemInfoCount(int organizationId, int? teamId = null, int? userId = null, string userSearchQuery = "", string platformSearchQuery = "", string systemTypeSearchQuery = "")
+        {
+            var result = await _systemInfoService.GetSystemInfoCount(organizationId, teamId, userId, userSearchQuery, platformSearchQuery, systemTypeSearchQuery);
+            return Ok(result);
         }
     }
 }

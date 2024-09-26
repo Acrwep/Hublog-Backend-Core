@@ -1,6 +1,8 @@
-﻿using Hublog.Repository.Entities.Model.ApplicationModel;
+﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model.ApplicationModel;
 using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.API.Controllers
@@ -17,6 +19,7 @@ namespace Hublog.API.Controllers
 
         #region GetApplicationUsage
         [HttpGet("GetAppUsage")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetApplicationUsage(int? userId,int? teamid, int organizationId, DateTime startDate, DateTime endDate)
         {
             try
@@ -32,6 +35,7 @@ namespace Hublog.API.Controllers
         #endregion
 
         [HttpGet("GetUrlUsage")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetUrlUsage(int? userId, int? teamid, int organizationId, DateTime startDate, DateTime endDate)
         {
             try
@@ -47,6 +51,7 @@ namespace Hublog.API.Controllers
 
 
         [HttpPost("Application")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> LogApplicationUsage(ApplicationUsage applicationUsage)
         {
             var result = await _appsUrlsService.LogApplicationUsageAsync(applicationUsage);
@@ -56,6 +61,7 @@ namespace Hublog.API.Controllers
         }
 
         [HttpPost("Url")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> LogUrlUsage(UrlUsage urlUsage)
         {
             var result = await _appsUrlsService.LogUrlUsageAsync(urlUsage);
@@ -65,6 +71,7 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("GetTopUrlUsage")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetTopUrlUsage(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
         {
             try
@@ -79,6 +86,7 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("GetTopAppUsage")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetTopAppUsage(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
         {
             try

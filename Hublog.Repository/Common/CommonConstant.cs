@@ -4,9 +4,9 @@
     {
         public static class Policies
         {
-            public const string EmployeePolicy = "EmployeePolicy";
-            public const string AdminPolicy = "AdminPolicy";
-            public const string SuperAdminPolicy = "SuperAdminPolicy";
+            public const string EmployeePolicy = "EmployeePolicy"; 
+            public const string AdminPolicy = "AdminPolicy"; 
+            public const string UserOrAdminPolicy = "UserOrAdminPolicy";
         }
 
         public static class Role

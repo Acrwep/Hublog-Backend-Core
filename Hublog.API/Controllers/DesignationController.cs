@@ -1,5 +1,7 @@
-﻿using Hublog.Repository.Entities.Model;
+﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
 
@@ -7,7 +9,7 @@ namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+    [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
     public class DesignationController : ControllerBase
     {
         private readonly IDesignationService _designationService;

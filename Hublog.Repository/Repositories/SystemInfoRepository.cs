@@ -88,5 +88,43 @@ namespace Hublog.Repository.Repositories
             return await _dapper.GetAllAsync<SystemInfoDto>(query, parameters);
         }
 
+        public async Task<UserStatistics> GetSystemInfoCount(int organizationId, int? teamId, int? userId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
+        {
+            var query = @"
+                SELECT 
+                    SUM(CASE WHEN SY.Status = 1 AND SY.SystemType LIKE '%' + @SystemTypeSearchQuery + '%' AND SY.Platform LIKE '%' + @PlatformSearchQuery + '%' THEN 1 ELSE 0 END) AS OnlineCount,
+                    SUM(CASE WHEN SY.Status = 0 AND SY.SystemType LIKE '%' + @SystemTypeSearchQuery + '%' AND SY.Platform LIKE '%' + @PlatformSearchQuery + '%' THEN 1 ELSE 0 END) AS OfflineCount,
+                    SUM(CASE WHEN SY.Platform LIKE '%WinUI%' THEN 1 ELSE 0 END) AS WinUICount,
+                    SUM(CASE WHEN SY.Platform LIKE '%Mac%' THEN 1 ELSE 0 END) AS MacCount,
+                    SUM(CASE WHEN SY.Platform LIKE '%Linux%' THEN 1 ELSE 0 END) AS LinuxCount
+                FROM 
+                    Users U
+                INNER JOIN 
+                    SystemInfo SY ON U.Id = SY.UserId
+                INNER JOIN 
+                    Team T ON T.Id = U.TeamId
+                INNER JOIN 
+                    Organization O ON U.OrganizationId = O.Id
+                WHERE 
+                    O.Id = @OrganizationId  
+                    AND (@TeamId IS NULL OR T.Id = @TeamId)  
+                    AND (@UserId IS NULL OR U.Id = @UserId)
+                    AND (@UserSearchQuery = '' OR CONCAT(U.First_Name, ' ', U.Last_Name) LIKE '%' + @UserSearchQuery + '%')
+                    AND (@PlatformSearchQuery = '' OR SY.Platform LIKE '%' + @PlatformSearchQuery + '%')
+                    AND (@SystemTypeSearchQuery = '' OR SY.SystemType LIKE '%' + @SystemTypeSearchQuery + '%')";
+
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                UserId = userId,
+                UserSearchQuery = userSearchQuery,
+                PlatformSearchQuery = platformSearchQuery,
+                SystemTypeSearchQuery = systemTypeSearchQuery
+            };
+
+            return await _dapper.QueryFirstOrDefaultAsync<UserStatistics>(query, parameters);
+        }
+
     }
 }

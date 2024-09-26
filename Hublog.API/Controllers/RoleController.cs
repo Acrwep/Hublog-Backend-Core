@@ -1,6 +1,8 @@
-﻿using Hublog.Repository.Entities.Model;
+﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
 using Hublog.Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +10,7 @@ namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
     public class RoleController : ControllerBase
     {
         private readonly IRoleService _roleService;

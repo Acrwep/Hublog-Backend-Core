@@ -1,13 +1,14 @@
-﻿using Hublog.Repository.Entities.Model;
+﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
-using Hublog.Service.Services;
-using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
     public class NoteBookController : ControllerBase
     {
         private readonly INoteBookService _noteBookService;

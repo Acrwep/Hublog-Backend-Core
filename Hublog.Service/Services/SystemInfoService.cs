@@ -34,5 +34,10 @@ namespace Hublog.Service.Services
         {
             return await _systemInfoRepository.GetSystemInfo(organizationId,userid, teamId, userSearchQuery, platformSearchQuery, systemTypeSearchQuery);
         }
+
+        public async Task<UserStatistics> GetSystemInfoCount(int organizationId, int? teamId, int? userId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
+        {
+            return await _systemInfoRepository.GetSystemInfoCount(organizationId, teamId, userId, userSearchQuery, platformSearchQuery, systemTypeSearchQuery);
+        }
     }
 }

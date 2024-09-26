@@ -118,8 +118,16 @@ namespace Hublog.API.Extensions
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy(CommonConstant.Policies.EmployeePolicy, policy =>
+                    policy.RequireClaim(ClaimTypes.Role, CommonConstant.Role.Employee));
+
                 options.AddPolicy(CommonConstant.Policies.AdminPolicy, policy =>
                     policy.RequireClaim(ClaimTypes.Role, CommonConstant.Role.Admin));
+
+                options.AddPolicy(CommonConstant.Policies.UserOrAdminPolicy, policy =>
+                    policy.RequireClaim(ClaimTypes.Role,
+                        CommonConstant.Role.Employee,
+                        CommonConstant.Role.Admin));
             });
         }
     }
