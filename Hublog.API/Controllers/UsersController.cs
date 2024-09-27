@@ -23,7 +23,7 @@ namespace Hublog.API.Controllers
 
         #region InsertBreak
         [HttpPost("InsertBreak")]
-        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> InsertBreak(List<UserBreakModel> model)
         {
             if (!ModelState.IsValid)
@@ -54,7 +54,7 @@ namespace Hublog.API.Controllers
 
         #region InsertAttendance
         [HttpPost("InsertAttendance")]
-        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> InsertAttendance(List<UserAttendanceModel> model)
         {
             if (!ModelState.IsValid)
