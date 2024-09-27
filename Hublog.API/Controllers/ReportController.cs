@@ -7,7 +7,7 @@ namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+    //[Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
     public class ReportController : ControllerBase
     {
         private readonly IReportService _reportService;
@@ -114,5 +114,12 @@ namespace Hublog.API.Controllers
             return Ok(response);
         }
         #endregion
+
+        [HttpGet("combined")]
+        public async Task<IActionResult> GetCombinedUsage(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate, string type = null)
+        {
+            var result = await _reportService.GetCombinedUsageReport(organizationId, teamId, userId, type, startDate, endDate);
+            return Ok(result);
+        }
     }
 }

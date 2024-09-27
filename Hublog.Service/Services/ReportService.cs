@@ -1,4 +1,5 @@
-﻿using Hublog.Repository.Entities.Model.Attendance;
+﻿using Hublog.Repository.Entities.DTO;
+using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Interface;
 using Hublog.Service.Interface;
@@ -30,6 +31,11 @@ namespace Hublog.Service.Services
         public async Task<List<InOutLogs>> GetMonthlyInOutReport(int? userId, int? teamId, int organizationId, int year, int month)
         {
             return await _reportRepository.GetMonthlyInOutReport(userId, teamId, organizationId, year, month);
+        }
+
+        public async Task<List<CombinedUsageDto>> GetCombinedUsageReport(int organizationId, int? teamId, int? userId, string type, DateTime startDate, DateTime endDate)
+        {
+            return await _reportRepository.GetCombinedUsageReport(organizationId, teamId, userId, type, startDate, endDate);
         }
     }
 }

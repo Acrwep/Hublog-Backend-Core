@@ -1,4 +1,5 @@
 ﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
@@ -84,5 +85,75 @@ namespace Hublog.Repository.Repositories
             return await _dapper.GetAllAsyncs<InOutLogs>(query, parameter, commandType: CommandType.StoredProcedure);
         }
         #endregion
+
+
+        public async Task<List<CombinedUsageDto>> GetCombinedUsageReport(int organizationId, int? teamId, int? userId, string type, DateTime startDate, DateTime endDate)
+        {
+            var query = @"
+        WITH CombinedUsage AS (
+            SELECT 
+                'URL' AS Type,
+                UrlUsage.Url AS Details,
+                DATEDIFF(SECOND, 0, CAST(UrlUsage.TotalUsage AS TIME)) AS TotalUsage, 
+                UrlUsage.UsageDate,
+                Users.OrganizationId,
+                Users.TeamId,
+                Users.Id AS UserId
+            FROM 
+                UrlUsage
+            JOIN 
+                Users ON Users.Id = UrlUsage.UserId
+            WHERE 
+                UrlUsage.TotalUsage IS NOT NULL
+
+            UNION ALL
+
+            SELECT 
+                'Application' AS Type,
+                ApplicationUsage.ApplicationName AS Details,
+                DATEDIFF(SECOND, 0, CAST(ApplicationUsage.TotalUsage AS TIME)) AS TotalUsage, 
+                ApplicationUsage.UsageDate,
+                Users.OrganizationId,
+                Users.TeamId,
+                Users.Id AS UserId
+            FROM 
+                ApplicationUsage
+            JOIN 
+                Users ON Users.Id = ApplicationUsage.UserId
+            WHERE 
+                ApplicationUsage.TotalUsage IS NOT NULL
+        )
+        SELECT
+            Type,
+            Details,
+            CONVERT(VARCHAR(8), DATEADD(SECOND, SUM(TotalUsage), 0), 108) AS TotalUsage,
+            SUM(TotalUsage) * 100.0 / NULLIF((SELECT SUM(TotalUsage) FROM CombinedUsage WHERE OrganizationId = @OrganizationId), 0) AS UsagePercentage
+        FROM 
+            CombinedUsage
+        WHERE 
+            OrganizationId = @OrganizationId
+            AND (@TeamId IS NULL OR TeamId = @TeamId)
+            AND (@UserId IS NULL OR UserId = @UserId)
+            AND (@Type IS NULL OR Type = @Type)
+            AND UsageDate BETWEEN @StartDate AND @EndDate
+        GROUP BY
+            Type,
+            Details
+        ORDER BY
+            TotalUsage DESC;";
+
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                UserId = userId,
+                Type = type,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            return await _dapper.GetAllAsync<CombinedUsageDto>(query, parameters);
+        }
+
     }
 }
