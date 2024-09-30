@@ -55,8 +55,12 @@ namespace Hublog.API.Controllers
         public async Task<IActionResult> LogApplicationUsage(ApplicationUsage applicationUsage)
         {
             var result = await _appsUrlsService.LogApplicationUsageAsync(applicationUsage);
+
+            Console.WriteLine($"Result from InsertApplicationUsage: {result}");
+
             if (result)
                 return Ok(new { Message = "Application usage logged successfully" });
+
             return BadRequest(new { Message = "Failed to log application usage" });
         }
 

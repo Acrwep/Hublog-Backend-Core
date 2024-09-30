@@ -1,4 +1,5 @@
-﻿using Hublog.Repository.Common;
+﻿using Dapper;
+using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.ApplicationModel;
@@ -87,6 +88,7 @@ ORDER BY
                 applicationUsage.Details
             });
         }
+
 
         public async Task<int> InsertUrlUsageAsync(UrlUsage urlUsage)
         {
