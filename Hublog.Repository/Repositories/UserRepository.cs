@@ -93,17 +93,12 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region SaveUserScreenShot
-        public async Task SaveUserScreenShot(UserScreenShot userScreenShot)
-        {
-            var parameters = new DynamicParameters();
-            parameters.Add("@UserId", userScreenShot.UserId);
-            parameters.Add("@OrganizationId", userScreenShot.OrganizationId);
-            parameters.Add("@ScreenShotDate", userScreenShot.ScreenShotDate);
-            parameters.Add("@FileName", userScreenShot.FileName);
-            parameters.Add("@ImageData", userScreenShot.ImageData);
 
-            await _dapper.ExecuteAsync("SP_InsertScreenShot", parameters, CommandType.StoredProcedure);
+        public Task SaveUserScreenShot(UserScreenShot userScreenShot)
+        {
+            return Task.CompletedTask;
         }
+
         #endregion
 
         #region GetUserAttendanceDetails
