@@ -6,6 +6,6 @@
         public string ApplicationName { get; set; }
         public string TotalUsage { get; set; }
         public string Details { get; set; }
-        public DateTime UsageDate { get; set; }
+        public string UsageDate { get; set; }
     }
 }
