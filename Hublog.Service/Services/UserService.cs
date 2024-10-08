@@ -93,7 +93,7 @@ namespace Hublog.Service.Services
                 DateTime today = DateTime.Today;
                 int diff = today.DayOfWeek - DayOfWeek.Monday;
                 DateTime startOfWeek = today.AddDays(-diff).Date;
-                DateTime endOfWeek = startOfWeek.AddDays(6);
+                DateTime endOfWeek = startOfWeek.AddDays(7);
 
                 startDate = startOfWeek;
                 endDate = endOfWeek;
