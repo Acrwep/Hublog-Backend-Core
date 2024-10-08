@@ -110,7 +110,7 @@ namespace Hublog.Service.Services
 
             foreach (var date in allDates)
             {
-                if (date.DayOfWeek == DayOfWeek.Sunday) continue;
+                if (date.DayOfWeek == DayOfWeek.Saturday) continue;
 
                 var record = records.FirstOrDefault(r => r.AttendanceDate.Date == date.Date);
 
