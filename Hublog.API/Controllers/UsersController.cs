@@ -79,38 +79,7 @@ namespace Hublog.API.Controllers
         //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> UploadFile()
         {
-            try
-            {
-                var headers = Request.Headers;
-                if (!headers.ContainsKey("UId") || !headers.ContainsKey("OId") || !headers.ContainsKey("SType") || !headers.ContainsKey("SDate"))
-                {
-                    return BadRequest("Missing required headers.");
-                }
-
-                var userScreenshotDTO = new UserScreenshotDTO   
-                {
-                    UserId = int.Parse(headers["UId"]),
-                    OrganizationId = int.Parse(headers["OId"]),
-                    ScreenShotType = headers["SType"],
-                    ScreenShotDate = DateTime.Parse(headers["SDate"]),
-                    File = Request.Form.Files.FirstOrDefault()
-                };
-
-                await _userService.SaveUserScreenShot(userScreenshotDTO);
-                return Ok("Upload successful.");
-            }
-            catch (FormatException ex)
-            {
-                return BadRequest($"Header parsing error: {ex.Message}");
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+            return null;
         }
         #endregion
 

@@ -1,7 +1,6 @@
 ﻿using Dapper;
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
-using Hublog.Repository.Entities.Login;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;

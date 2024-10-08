@@ -76,42 +76,15 @@ ORDER BY
             return await _dapper.GetAllAsync<GetUrlUsage>(query, parameter);
         }
 
-        //public async Task<int> InsertApplicationUsageAsync(ApplicationUsage applicationUsage)
-        //{
-        //    return 0;
-        //}
-
-
-        //public async Task<int> InsertUrlUsageAsync(UrlUsage urlUsage)
-        //{
-        //    return 0;
-        //}
-
         public async Task<int> InsertApplicationUsageAsync(ApplicationUsage applicationUsage)
         {
-            var sql = "EXEC InsertApplicationUsage @UserId, @ApplicationName, @TotalUsage, @UsageDate, @Details";
-
-            return await _dapper.ExecuteAsync(sql, new
-            {
-                applicationUsage.UserId,
-                applicationUsage.ApplicationName,
-                applicationUsage.TotalUsage,
-                applicationUsage.UsageDate,
-                applicationUsage.Details
-            });
+            return 0;
         }
+
 
         public async Task<int> InsertUrlUsageAsync(UrlUsage urlUsage)
         {
-            var sql = "EXEC InsertUrlUsage @UserId, @Url, @TotalUsage, @UsageDate, @Details";
-            return await _dapper.ExecuteAsync(sql, new
-            {
-                urlUsage.UserId,
-                urlUsage.Url,
-                urlUsage.TotalUsage,
-                urlUsage.UsageDate,
-                urlUsage.Details
-            });
+            return 0;
         }
 
         public async Task<(string Url, string MaxUsage)> GetTopUrlUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
