@@ -53,7 +53,7 @@ namespace Hublog.Service.Services
         #region SaveUserScreenShot
         public async Task SaveUserScreenShot(UserScreenshotDTO userScreenshotDTO)   
         {
-            if (userScreenshotDTO.File == null || userScreenshotDTO.File.Length == 0)
+            if (userScreenshotDTO.File == null || userScreenshotDTO.File.Length == 1)
             {
                 throw new ArgumentException("No file uploaded.");
             }
