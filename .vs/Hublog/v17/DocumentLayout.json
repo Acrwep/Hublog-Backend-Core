@@ -76,7 +76,7 @@
               "RelativeDocumentMoniker": "Hublog.Repository\\Common\\Dapperr.cs",
               "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Common\\Dapperr.cs",
               "RelativeToolTip": "Hublog.Repository\\Common\\Dapperr.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAAJAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAABhAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-21T09:07:24.176Z",
               "EditorCaption": ""
@@ -91,8 +91,7 @@
               "RelativeToolTip": "Hublog.Repository\\Common\\CommonConstant.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-21T09:07:21.565Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-21T09:07:21.565Z"
             },
             {
               "$type": "Document",
@@ -104,8 +103,7 @@
               "RelativeToolTip": "Hublog.Service\\Services\\UserService.cs",
               "ViewState": "AQIAADAAAAAAAAAAAAAqwPgAAABnAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-21T08:54:17.103Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-21T08:54:17.103Z"
             },
             {
               "$type": "Document",
@@ -117,8 +115,7 @@
               "RelativeToolTip": "Hublog.Repository\\Repositories\\UserRepository.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-21T08:53:17.811Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-21T08:53:17.811Z"
             },
             {
               "$type": "Document",
@@ -130,8 +127,7 @@
               "RelativeToolTip": "Hublog.API\\Controllers\\TeamController.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-21T08:50:47.397Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-21T08:50:47.397Z"
             },
             {
               "$type": "Document",
@@ -143,8 +139,7 @@
               "RelativeToolTip": "Hublog.API\\Controllers\\UsersController.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABEAAAAzAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-21T08:50:13.614Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-21T08:50:13.614Z"
             },
             {
               "$type": "Document",
@@ -156,8 +151,7 @@
               "RelativeToolTip": "Hublog.API\\Controllers\\NoteBookController.cs",
               "ViewState": "AQIAACkAAAAAAAAAAAAwwAgAAAAfAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-21T08:25:19.081Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-21T08:25:19.081Z"
             },
             {
               "$type": "Document",
@@ -169,8 +163,7 @@
               "RelativeToolTip": "Hublog.Repository\\Repositories\\LoginRepository.cs",
               "ViewState": "AQIAACIAAAAAAAAAAAAowB0AAAAVAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-21T08:19:29.253Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-21T08:19:29.253Z"
             },
             {
               "$type": "Document",
@@ -182,8 +175,7 @@
               "RelativeToolTip": "Hublog.API\\Program.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAADQAAAAYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-08-12T08:27:08.053Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-12T08:27:08.053Z"
             },
             {
               "$type": "Document",
@@ -194,8 +186,7 @@
               "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Hublog.API.csproj",
               "RelativeToolTip": "Hublog.API\\Hublog.API.csproj",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2024-10-21T07:22:52.567Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-21T07:22:52.567Z"
             },
             {
               "$type": "Document",
@@ -207,8 +198,7 @@
               "RelativeToolTip": "Hublog.Repository\\Repositories\\SystemInfoRepository.cs",
               "ViewState": "AQIAAGgAAAAAAAAAAAAgwGIAAABdAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-25T12:08:46.954Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-25T12:08:46.954Z"
             },
             {
               "$type": "Document",
@@ -220,8 +210,7 @@
               "RelativeToolTip": "Hublog.API\\Controllers\\AppsUrlsController.cs",
               "ViewState": "AQIAAEEAAAAAAAAAAAAwwAkAAAAfAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-09-18T03:48:27.381Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-09-18T03:48:27.381Z"
             },
             {
               "$type": "Document",
@@ -233,8 +222,7 @@
               "RelativeToolTip": "Hublog.API\\appsettings.json",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2024-08-12T05:50:54.935Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-08-12T05:50:54.935Z"
             }
           ]
         }
