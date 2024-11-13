@@ -6,6 +6,7 @@ namespace Hublog.Repository.Interface
     {
         Task<List<CategoryModel>> GetCategoryProductivity(string categoryName);
 
-        Task<int> UpdateProductivityId(int categoryId, int? productivityId);    
+        Task<int> UpdateProductivityId(int categoryId, int? productivityId);
+        Task<List<MappingModel>> GetImbuildAppsAndUrls();
     }
 }

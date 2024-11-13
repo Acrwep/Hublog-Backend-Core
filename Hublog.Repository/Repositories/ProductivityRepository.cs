@@ -45,5 +45,15 @@ namespace Hublog.Repository.Repositories
 
             return await _dapper.ExecuteAsync(query, parameters);
         }
+        public async Task<List<MappingModel>> GetImbuildAppsAndUrls()
+        {
+            //var query = "SELECT I.Type, I.Name " +
+            //            "FROM ImbuildAppsAndUrls I " +
+            //            "LEFT JOIN Categories C ON C.ProductivityId = I.CategoryId";
+
+            // You can include the filtering logic here
+            var query = "Select * From ImbuildAppsAndUrls";
+            return await _dapper.GetAllAsync<MappingModel>(query);
+        }
     }
 }

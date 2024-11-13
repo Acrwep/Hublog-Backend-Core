@@ -1,4 +1,5 @@
-﻿using Hublog.Service.Interface;
+﻿using Hublog.Repository.Entities.Model.Productivity;
+using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.API.Controllers
@@ -33,6 +34,12 @@ namespace Hublog.API.Controllers
                 return Ok(new { message = "ProductivityId updated successfully." });
             else
                 return NotFound(new { message = "Category not found." });
+        }
+        [HttpGet("GetImbuildAppsAndUrls")]
+        public async Task<IActionResult> GetImbuildAppsAndUrls()
+        {
+            var categories = await _productivityService.GetImbuildAppsAndUrls();
+            return Ok(categories);
         }
     }
 }

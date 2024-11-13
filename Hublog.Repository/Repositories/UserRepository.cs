@@ -124,7 +124,7 @@ namespace Hublog.Repository.Repositories
                 A.Total_Time, 
                 A.Late_Time, 
                 A.Status 
-            FROM Users U
+                FROM Users U
                 INNER JOIN Attendance A ON U.Id = A.UserId
                 WHERE U.Id = @UserId AND U.OrganizationId = @OrganizationId
                   AND A.AttendanceDate BETWEEN @StartDate AND @EndDate";

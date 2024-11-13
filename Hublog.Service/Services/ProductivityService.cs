@@ -7,7 +7,7 @@ namespace Hublog.Service.Services
     public class ProductivityService : IProductivityService
     {
         private readonly IProductivityRepository _productivityRepository;
-        public ProductivityService(IProductivityRepository productivityRepository)  
+        public ProductivityService(IProductivityRepository productivityRepository)
         {
             _productivityRepository = productivityRepository;
         }
@@ -16,10 +16,14 @@ namespace Hublog.Service.Services
             return await _productivityRepository.GetCategoryProductivity(categoryName);
         }
 
-        public async Task<bool> UpdateProductivityId(int categoryId, int? productivityId)   
+        public async Task<bool> UpdateProductivityId(int categoryId, int? productivityId)
         {
             var rowsAffected = await _productivityRepository.UpdateProductivityId(categoryId, productivityId);
             return rowsAffected > 0;
+        }
+        public async Task<List<MappingModel>> GetImbuildAppsAndUrls()
+        {
+            return await _productivityRepository.GetImbuildAppsAndUrls();
         }
     }
 }
