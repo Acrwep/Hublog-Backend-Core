@@ -1,6 +1,7 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Interface;
+using System;
 
 namespace Hublog.Repository.Repositories
 {
@@ -54,6 +55,31 @@ namespace Hublog.Repository.Repositories
             // You can include the filtering logic here
             var query = "Select * From ImbuildAppsAndUrls";
             return await _dapper.GetAllAsync<MappingModel>(query);
+        }
+        public async Task<List<MappingModel>> GetByIdImbuildAppsAndUrls(int id)
+        {
+            var query = @"
+        SELECT [id], [type], [name], [categoryid]
+        FROM [EMP6].[dbo].[ImbuildAppsAndUrls] 
+        WHERE [id] = @Id";
+
+            var parameters = new { Id = id };
+            var result = await _dapper.GetAllAsync<MappingModel>(query, parameters);
+
+            return result;
+        }
+
+        public async Task<bool> InsertImbuildAppsAndUrls(int id, MappingModel model)
+        {
+            var query = @"
+                UPDATE [EMP4].[dbo].[ImbuildAppsAndUrls]
+                SET [CategoryId] = @NewCategoryId
+                WHERE [id] = @Id";
+
+            var parameters = new { Id = id, NewCategoryId = model.CategoryId };
+            var affectedRows = await _dapper.ExecuteAsync(query, parameters);
+
+            return affectedRows > 0;
         }
     }
 }

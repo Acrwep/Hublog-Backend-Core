@@ -23,7 +23,15 @@ namespace Hublog.Service.Services
         }
         public async Task<List<MappingModel>> GetImbuildAppsAndUrls()
         {
-            return await _productivityRepository.GetImbuildAppsAndUrls();
+            return await _productivityRepository.GetImbuildAppsAndUrls(); 
+        }
+        public async Task<List<MappingModel>> GetByIdImbuildAppsAndUrls(int id)
+        {
+            return await _productivityRepository.GetByIdImbuildAppsAndUrls(id);
+        }
+        public async Task<bool> InsertImbuildAppsAndUrls(int id, MappingModel model)
+        {
+            return await _productivityRepository.InsertImbuildAppsAndUrls(id, model);
         }
     }
 }

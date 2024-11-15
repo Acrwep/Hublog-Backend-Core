@@ -1,5 +1,6 @@
 ﻿using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Service.Interface;
+using Hublog.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.API.Controllers
@@ -41,5 +42,23 @@ namespace Hublog.API.Controllers
             var categories = await _productivityService.GetImbuildAppsAndUrls();
             return Ok(categories);
         }
+        [HttpGet("GetByIdImbuildAppsAndUrls")]
+        public async Task<IActionResult> GetByIdImbuildAppsAndUrls(int id)
+        {
+            var categories = await _productivityService.GetByIdImbuildAppsAndUrls(id);
+            return Ok(categories);
+        }
+        [HttpPut("InsertImbuildAppsAndUrls/{id}")]
+        public async Task<IActionResult> InsertImbuildAppsAndUrls(int id, [FromBody] MappingModel model)
+        {
+            if (model.CategoryId == null)
+            {
+                return BadRequest("CategoryId is required.");
+            }
+
+            var result = await _productivityService.InsertImbuildAppsAndUrls(id, model);
+            return Ok(result);
+        }
+
     }
 }
