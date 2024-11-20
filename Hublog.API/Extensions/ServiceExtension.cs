@@ -56,6 +56,10 @@ namespace Hublog.API.Extensions
 
             services.AddScoped<IProductivityRepository, ProductivityRepository>();
             services.AddScoped<IProductivityService, ProductivityService>();
+
+            services.AddScoped<IAlertService, AlertService>();
+            services.AddScoped<IAlertRepository, AlertRepository>();
+
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

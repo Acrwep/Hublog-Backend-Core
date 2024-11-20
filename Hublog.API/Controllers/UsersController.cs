@@ -116,7 +116,7 @@ namespace Hublog.API.Controllers
 
         #region GetUserAttendanceDetails
         [HttpGet("GetUserAttendanceDetails")]
-        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]   
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]   
         public async Task<IActionResult> GetUserAttendanceDetails([FromQuery] int organizationId ,[FromQuery] int userId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
         {
             try
