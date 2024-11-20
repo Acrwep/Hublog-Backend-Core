@@ -7,7 +7,7 @@ namespace Hublog.Repository.Interface
     public interface IAlertRepository
     {
         Task<Alert> InsertAlert(Alert alert);
-        Task<List<Alert>> GetAlert(int id, int userId, string triggered, DateTime triggeredTime);
+        Task<List<Alert>> GetAlert(int organizationId,int? userId, DateTime triggeredTime);
     }
 }
 

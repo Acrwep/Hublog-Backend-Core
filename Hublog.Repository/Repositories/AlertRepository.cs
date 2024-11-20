@@ -25,14 +25,58 @@ namespace Hublog.Repository.Repositories
             return alert; 
         }
 
-        public async Task<List<Alert>> GetAlert(int id, int userId, string triggered, DateTime triggeredTime)
-        {
-            var query = "SELECT * FROM Alerts WHERE Id = @Id AND UserId = @UserId AND Triggered LIKE @Triggered AND TriggeredTime = @TriggeredTime";
-            var parameters = new { Id = id, UserId = userId, Triggered = $"%{triggered}%", TriggeredTime = triggeredTime };
-            var result = await _dapper.GetAllAsync<Alert>(query, parameters);
-            return result.ToList();
+        //public async Task<List<Alert>> GetAlert(int organizationId, int? userId, DateTime triggeredTime)
+        //{
+        //    var query = @"
+        //SELECT 
+        //    A.Id,
+        //    A.UserId,
+        //    A.Triggered,
+        //    A.TriggeredTime
+        //FROM 
+        //    Alerts A
+        //INNER JOIN 
+        //    Users U ON A.UserId = U.Id
+        //INNER JOIN 
+        //    Organization O ON U.OrganizationId = O.Id
+        //WHERE 
+        //    O.Id = @OrganizationId
 
+        //    AND (@UserId IS NULL OR A.UserId = @UserId)
+        //    AND (@TriggeredTime IS NULL OR 
+        //     (CAST(A.TriggeredTime AS DATE) = CAST(@TriggeredTime AS DATE)))";
+
+        //    // Create parameters
+        //    var parameters = new
+        //    {
+        //        OrganizationId = organizationId,
+        //        UserId = userId,
+        //        TriggeredTime = triggeredTime
+        //    };
+
+        //    // Execute query and return results
+        //    var result = await _dapper.GetAllAsync<Alert>(query, parameters);
+        //    return result.ToList();
+        
+
+        //}
+        public async Task<List<Alert>> GetAlert(int organizationId, int? userId, DateTime triggeredTime)
+        {
+            // Define the stored procedure name
+            var procedure = "EXEC GetAlerts @OrganizationId, @UserId, @TriggeredTime";
+            // Create parameters for the stored procedure
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                UserId = userId,
+                TriggeredTime = triggeredTime
+            };
+
+            // Execute the stored procedure and return the results
+            var result = await _dapper.GetAllAsync<Alert>(procedure, parameters);
+            return result.ToList();
         }
+
     }
 }
 

@@ -7,6 +7,6 @@ namespace Hublog.Service.Interface
     public interface IAlertService
     {
         Task<bool> InsertAlert(Alert model);
-        Task<List<Alert>> GetAlert(int id, int userId, string triggered, DateTime triggeredTime);
+        Task<List<Alert>> GetAlert(int organizationId, int? userId, DateTime triggeredTime);
     }
 }

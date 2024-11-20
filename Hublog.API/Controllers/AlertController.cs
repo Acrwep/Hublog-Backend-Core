@@ -36,14 +36,14 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("GetAlert")]
-        public async Task<IActionResult> GetAlert(int id, int userId, string triggered = "", DateTime triggeredTime = default)
+        public async Task<IActionResult> GetAlert(int organizationId, int? userId, DateTime triggeredTime = default)
         {
             if (triggeredTime == default)
             {
                 return BadRequest("Invalid or missing triggered time.");
             }
 
-            var result = await _alertService.GetAlert(id, userId, triggered, triggeredTime);
+            var result = await _alertService.GetAlert(organizationId, userId, triggeredTime);
             return Ok(result);
         }
     }

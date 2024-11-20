@@ -21,9 +21,9 @@ namespace Hublog.Service.Services
             return alert != null;
         }
 
-        public async Task<List<Alert>> GetAlert(int id, int userId, string triggered, DateTime triggeredTime)
+        public async Task<List<Alert>> GetAlert(int organizationId, int? userId,  DateTime triggeredTime)
         {
-            var alerts = await _alertRepository.GetAlert(id, userId, triggered, triggeredTime);
+            var alerts = await _alertRepository.GetAlert(organizationId, userId, triggeredTime);
             return alerts;
         }
     }
