@@ -9,7 +9,7 @@
         public DateTime AttendanceDate { get; set; }
         public DateTime Start_Time { get; set; }
         public DateTime End_Time { get; set; }
-        public DateTime Total_Time { get; set; }
+        public string Total_Time { get; set; }
         public DateTime Late_Time { get; set; }
         public int Status { get; set; }
     }

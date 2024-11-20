@@ -121,7 +121,7 @@ namespace Hublog.Repository.Repositories
                 A.AttendanceDate, 
                 A.Start_Time, 
                 A.End_Time, 
-                A.Total_Time, 
+                CONVERT(VARCHAR, DATEADD(SECOND, DATEDIFF(SECOND, A.Start_Time, A.End_Time), 0), 108) AS Total_Time,
                 A.Late_Time, 
                 A.Status 
                 FROM Users U
