@@ -10,7 +10,7 @@ namespace Hublog.API.Controllers
     public class ProductivityController : ControllerBase
     {
         private readonly IProductivityService _productivityService;
-        public ProductivityController(IProductivityService productivityService) 
+        public ProductivityController(IProductivityService productivityService)
         {
             _productivityService = productivityService;
         }
@@ -59,6 +59,15 @@ namespace Hublog.API.Controllers
             var result = await _productivityService.InsertImbuildAppsAndUrls(id, model);
             return Ok(result);
         }
+
+        [HttpGet("GetAppUsages")]
+        public async Task<IActionResult> GetProductivityDurations([FromQuery] int userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            var result = await _productivityService.GetProductivityDurations(userId, fromDate, toDate);
+            return Ok(result);
+            
+        }
+        
 
     }
 }

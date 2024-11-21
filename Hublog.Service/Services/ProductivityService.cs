@@ -33,5 +33,13 @@ namespace Hublog.Service.Services
         {
             return await _productivityRepository.InsertImbuildAppsAndUrls(id, model);
         }
+        public async Task<ProductivityDurations> GetProductivityDurations(int userId, DateTime fromDate, DateTime toDate) 
+        {
+            return await _productivityRepository.GetProductivityDurations(userId, fromDate, toDate);
+        }
+        public async Task<List<AppUsage>> GetAppUsages(int userId, DateTime fromDate, DateTime toDate)
+        { 
+            return await _productivityRepository.GetAppUsages(userId, fromDate, toDate);
+        }
     }
 }
