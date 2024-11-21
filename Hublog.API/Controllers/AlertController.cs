@@ -1,5 +1,7 @@
 ﻿using Hublog.Repository.Entities.Model.AlertModel;
+using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Service.Interface;
+using Hublog.Service.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -18,19 +20,16 @@ namespace Hublog.API.Controllers
         }
 
         [HttpPost("InsertAlert")]
-        public async Task<IActionResult> InsertAlert([FromBody] Alert alert)
+        public async Task<IActionResult> InsertAlert(List<Alert> alert)
         {
             if (alert == null)
             {
                 return BadRequest("Alert information cannot be null.");
             }
 
-            var result = await _alertService.InsertAlert(alert);
+            await _alertService.InsertAlert(alert);
+            return Ok("InsertAttendance Success");
 
-            if (result)
-            {
-                return Ok("Alert processed successfully.");
-            }
 
             return NotFound("Alert could not be processed.");
         }

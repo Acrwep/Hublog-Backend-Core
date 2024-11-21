@@ -71,6 +71,7 @@ namespace Hublog.Repository.Repositories
             try
             {
                 var parameters = new DynamicParameters();
+                string startTimeFormatted = model.Start_Time?.ToString("yyyy-MM-dd HH:mm:ss");
                 parameters.Add("@UserId", model.UserId);
                 parameters.Add("@OrganizationId", model.OrganizationId);
                 parameters.Add("@AttendanceDate", model.AttendanceDate.ToString("yyyy-MM-dd HH:mm:ss"));
@@ -79,7 +80,7 @@ namespace Hublog.Repository.Repositories
                 parameters.Add("@Total_Time", null);
                 parameters.Add("@Late_Time", null);
                 parameters.Add("@Status", model.Status);
-
+                Console.WriteLine(startTimeFormatted);
                 var result = await _dapper.ExecuteAsync("SP_InsertAttendance", parameters, CommandType.StoredProcedure);
 
                 return result;
@@ -121,7 +122,8 @@ namespace Hublog.Repository.Repositories
                 A.AttendanceDate, 
                 A.Start_Time, 
                 A.End_Time, 
-                CONVERT(VARCHAR, DATEADD(SECOND, DATEDIFF(SECOND, A.Start_Time, A.End_Time), 0), 108) AS Total_Time,
+                ISNULL(CONVERT(VARCHAR, DATEADD(SECOND, DATEDIFF(SECOND, A.Start_Time, A.End_Time), 0), 108),
+                                                                        '0001-01-01T00:00:00') AS Total_Time,
                 A.Late_Time, 
                 A.Status 
                 FROM Users U
