@@ -10,8 +10,9 @@ namespace Hublog.Repository.Entities.Model.AlertModel
     {
         public int Id { get; set; }
         public int UserId { get; set; }
+        public string Full_Name { get; set; }
         public string Triggered { get; set; }
-        public DateTime? TriggeredTime { get; set; }
+        public DateTime? TriggeredTime { get; set; } 
 
     }
 }
