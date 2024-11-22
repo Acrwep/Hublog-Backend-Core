@@ -234,15 +234,21 @@ namespace Hublog.Repository.Repositories
                 }
             }
 
-                // Create the result object
-                var result = new ProductivityDurations
-                {
-                    TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss"),
-                    TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss"),
-                    TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss")
-                };
+            // Create the result object
+            var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
+            var averageDurationInSeconds = totalDurationInSeconds / 3;
 
-                return result;
+            var result = new ProductivityDurations
+            {
+                TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss"),
+                TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss"),
+                TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss"),
+                TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss"),
+                AverageDuratiopn = TimeSpan.FromSeconds(averageDurationInSeconds).ToString(@"hh\:mm\:ss")
+            };
+
+            return result;
+
         }
 
     }

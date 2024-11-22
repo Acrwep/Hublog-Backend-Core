@@ -2,10 +2,13 @@
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.ApplicationModel;
 using Hublog.Repository.Entities.Model.UrlModel;
+using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using System.Data;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Hublog.Repository.Repositories
 {
@@ -87,6 +90,16 @@ ORDER BY
         //    return 0;
         //}
 
+        //public async Task<bool> LogApplicationUsage(ApplicationUsage applicationUsage)
+        //{
+
+        //    var query = "INSERT INTO ApplicationUsage (UserId, ApplicationName, TotalUsage, UsageDate, Details) VALUES (@UserId, @ApplicationName, @TotalUsage, @UsageDate, @Details);";
+
+        //    var result = await _dapper.ExecuteAsync(query, applicationUsage);
+
+        //    return result>0;
+
+        //}
         public async Task<int> InsertApplicationUsageAsync(ApplicationUsage applicationUsage)
         {
             var sql = "EXEC InsertApplicationUsage @UserId, @ApplicationName, @TotalUsage, @UsageDate, @Details";
