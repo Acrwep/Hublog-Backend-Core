@@ -30,7 +30,6 @@ namespace Hublog.API.Controllers
             await _alertService.InsertAlert(alert);
             return Ok("InsertAttendance Success");
 
-
             return NotFound("Alert could not be processed.");
         }
 

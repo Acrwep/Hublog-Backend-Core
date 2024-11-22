@@ -10,7 +10,7 @@ namespace Hublog.Service.Interface
         Task<List<CategoryModel>> GetCategoryProductivity(string categoryName);
 
         Task<bool> UpdateProductivityId(int categoryId, int? productivityId);
-        Task<List<AppUsage>> GetAppUsages(int userId, DateTime fromDate, DateTime toDate);
-        Task<ProductivityDurations> GetProductivityDurations(int userId, DateTime fromDate, DateTime toDate);
+        Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
+        Task<ProductivityDurations> GetProductivityDurations(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
     }
 }

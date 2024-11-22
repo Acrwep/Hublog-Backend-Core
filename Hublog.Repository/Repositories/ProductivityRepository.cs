@@ -1,4 +1,5 @@
 ﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Interface;
 using System;
@@ -81,25 +82,67 @@ namespace Hublog.Repository.Repositories
 
             return affectedRows > 0;
         }
-        public async Task<List<AppUsage>> GetAppUsages(int userId, DateTime fromDate, DateTime toDate)
+        public async Task<List<AppUsage>> GetAppUsages(int organizationId,int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
-            var appUsageQuery = @"
-            SELECT UserId, ApplicationName, Details, SUM(DATEDIFF(SECOND, '00:00:00', TotalUsage)) AS TotalSeconds, UsageDate
-            FROM ApplicationUsage
-            WHERE UserId = @UserId AND UsageDate BETWEEN @FromDate AND @ToDate
-            GROUP BY UserId, ApplicationName, Details, UsageDate";
+            string appUsageQuery = @"
+           SELECT 
+               A.UserId, 
+               A.ApplicationName, 
+               A.Details, 
+               SUM(DATEDIFF(SECOND, '00:00:00', A.TotalUsage)) AS TotalSeconds, 
+               A.UsageDate
+           FROM  
+               ApplicationUsage A
+           INNER JOIN 
+               Users U ON A.UserId = U.Id
+           INNER JOIN 
+               Organization O ON U.OrganizationId = O.Id
+           WHERE  
+                  O.Id = @OrganizationId 
+                  AND A.UsageDate BETWEEN @FromDate AND @ToDate
+                  AND (@TeamId IS NULL OR U.TeamId = @TeamId)
+                  AND (@UserId IS NULL OR A.UserId = @UserId)
+           GROUP BY 
+               A.UserId, 
+               A.ApplicationName, 
+               A.Details, 
+               A.UsageDate;
+        ";
 
             var urlUsageQuery = @"
-          SELECT UserId, Url AS ApplicationName, Details, SUM(DATEDIFF(SECOND, '00:00:00', TotalUsage)) AS TotalSeconds, UsageDate
-           FROM UrlUsage 
-           WHERE UserId = @UserId AND UsageDate BETWEEN @FromDate AND @ToDate 
-           GROUP BY UserId, Url, Details, UsageDate";
-
-            var parameters = new { UserId = userId, FromDate = fromDate, ToDate = toDate };
-            // Fetch data from both tables
+             SELECT U.UserId,
+                 U.Url AS ApplicationName,
+                 U.Details,
+                 SUM(DATEDIFF(SECOND, '00:00:00', U.TotalUsage)) AS TotalSeconds,
+                 U.UsageDate
+             FROM UrlUsage U
+             INNER JOIN 
+               Users Us ON U.UserId = Us.Id
+             INNER JOIN 
+               Organization O ON Us.OrganizationId = O.Id
+             WHERE 
+               O.Id = @OrganizationId 
+               AND U.UsageDate BETWEEN @FromDate AND @ToDate
+               AND (@TeamId IS NULL OR US.TeamId = @TeamId)
+               AND (@UserId IS NULL OR U.UserId = @UserId)
+             GROUP BY 
+               U.UserId,
+               U.Url,
+               U.Details, 
+               U.UsageDate;"
+            ;
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                UserId = userId,
+                FromDate = fromDate,
+                ToDate = toDate
+            };
+            
             var appUsages = await _dapper.GetAllAsync<AppUsage>(appUsageQuery, parameters);
             var urlUsages = await _dapper.GetAllAsync<AppUsage>(urlUsageQuery, parameters);
-            // Merge both lists
+
             var allUsages = appUsages.Concat(urlUsages).ToList();
 
             // Return the merged list return allUsages;
@@ -108,9 +151,9 @@ namespace Hublog.Repository.Repositories
 
 
         }
-        public async Task<ProductivityDurations> GetProductivityDurations(int userId, DateTime fromDate, DateTime toDate)
+        public async Task<ProductivityDurations> GetProductivityDurations(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
-            var usages = await GetAppUsages(userId, fromDate, toDate);
+            var usages = await GetAppUsages(organizationId,teamId,userId, fromDate, toDate);
 
             // Calculate TotalUsage for each ApplicationName
             var totalUsages = usages

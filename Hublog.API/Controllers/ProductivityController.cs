@@ -60,10 +60,10 @@ namespace Hublog.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet("GetAppUsages")]
-        public async Task<IActionResult> GetProductivityDurations([FromQuery] int userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        [HttpGet("GetProductivityBreakDown")]
+        public async Task<IActionResult> GetProductivityDurations(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
-            var result = await _productivityService.GetProductivityDurations(userId, fromDate, toDate);
+            var result = await _productivityService.GetProductivityDurations(organizationId, teamId, userId, fromDate, toDate);
             return Ok(result);
             
         }
