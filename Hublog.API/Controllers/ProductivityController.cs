@@ -68,6 +68,13 @@ namespace Hublog.API.Controllers
             
         }
         
+        [HttpGet("Teamwise_Productivity")]
+        public async Task<IActionResult> TeamwiseProductivity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            var result = await _productivityService.TeamwiseProductivity(organizationId, teamId, fromDate, toDate);
+            return Ok(result);
+
+        }
 
     }
 }

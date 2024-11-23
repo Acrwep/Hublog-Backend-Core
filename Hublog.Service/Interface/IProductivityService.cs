@@ -1,4 +1,5 @@
 ﻿using Hublog.Repository.Entities.Model.Productivity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.Service.Interface
 {
@@ -12,5 +13,6 @@ namespace Hublog.Service.Interface
         Task<bool> UpdateProductivityId(int categoryId, int? productivityId);
         Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
         Task<ProductivityDurations> GetProductivityDurations(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
+        Task<List<TeamProductivity>> TeamwiseProductivity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate);
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Hublog.Repository.Entities.Model.Productivity;
+using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Hublog.Service.Interface;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.Service.Services
 {
@@ -40,6 +42,10 @@ namespace Hublog.Service.Services
         public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         { 
             return await _productivityRepository.GetAppUsages( organizationId,  teamId, userId, fromDate, toDate);
+        }
+        public async Task<List<TeamProductivity>> TeamwiseProductivity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            return await _productivityRepository.TeamwiseProductivity(organizationId, teamId,fromDate, toDate);
         }
     }
 }
