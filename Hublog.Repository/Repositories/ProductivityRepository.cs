@@ -345,6 +345,7 @@ namespace Hublog.Repository.Repositories
 
             foreach (var team in teams)
             {
+                teamId = team.TeamId;
                 var usages = await GetAppUsages(organizationId, teamId, fromDate, toDate);
 
                 var totalProductiveDuration = 0;
