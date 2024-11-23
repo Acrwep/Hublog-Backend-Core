@@ -236,7 +236,14 @@ namespace Hublog.Repository.Repositories
 
             // Create the result object
             var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
-            var averageDurationInSeconds = totalDurationInSeconds / 3;
+
+            var dateDifferenceInDays = (toDate - fromDate).TotalDays;
+
+            if (dateDifferenceInDays <= 0)
+            {
+                dateDifferenceInDays = 1; 
+            }
+            var averageDurationInSeconds = totalDurationInSeconds / dateDifferenceInDays;
 
             var result = new ProductivityDurations
             {
