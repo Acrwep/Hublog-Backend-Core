@@ -243,7 +243,8 @@ namespace Hublog.Repository.Repositories
             {
                 dateDifferenceInDays = 1; 
             }
-            var averageDurationInSeconds = totalDurationInSeconds / dateDifferenceInDays;
+            var averageDurationInSeconds = totalProductiveDuration / dateDifferenceInDays;
+
 
             var result = new ProductivityDurations
             {
