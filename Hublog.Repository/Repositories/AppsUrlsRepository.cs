@@ -158,5 +158,20 @@ ORDER BY
 
             return await _dapper.GetSingleAsync<(string Url, string MaxUsage)>(query, parameters, CommandType.StoredProcedure);
         }
+        public async Task<(string ApplicationName, string MaxUsage)> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
+        {
+            var parameters = new
+            {
+                @OrganizationId = organizationId,
+                @TeamId = teamId,
+                @UserId = userId,
+                @StartDate = startDate,
+                @EndDate = endDate
+            };
+
+            string query = "GetTopUrlUsage1";
+
+            return await _dapper.GetSingleAsync<(string Url, string MaxUsage)>(query, parameters, CommandType.StoredProcedure);
+        }
     }
 }

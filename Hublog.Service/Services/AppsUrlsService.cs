@@ -56,5 +56,14 @@ namespace Hublog.Service.Services
                 MaxUsage = result.MaxUsage
             };
         }
+        public async Task<TopAppUsageResponse> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
+        {
+            var result = await _appsUrlsRepository.GetTopCategory(organizationId, teamId, userId, startDate, endDate);
+            return new TopAppUsageResponse
+            {
+                ApplicationName = result.ApplicationName,
+                MaxUsage = result.MaxUsage
+            };
+        }
     }
 }

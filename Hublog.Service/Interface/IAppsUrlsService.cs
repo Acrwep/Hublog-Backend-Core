@@ -2,6 +2,7 @@
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.ApplicationModel;
 using Hublog.Repository.Entities.Model.UrlModel;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.Service.Interface
 {
@@ -18,5 +19,6 @@ namespace Hublog.Service.Interface
         Task<TopUrlUsageResponse> GetTopUrlUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate);
 
         Task<TopAppUsageResponse> GetTopAppUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate);
+        Task<TopAppUsageResponse> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate,  DateTime toDate);
     }
 }

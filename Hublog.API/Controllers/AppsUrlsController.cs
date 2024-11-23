@@ -2,6 +2,7 @@
 using Hublog.Repository.Entities.Model.ApplicationModel;
 using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Service.Interface;
+using Hublog.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -102,6 +103,13 @@ namespace Hublog.API.Controllers
             {
                 return BadRequest($"Error retrieving top URL usage: {ex.Message}");
             }
+        }
+        [HttpGet("GetTopCategory")]
+        public async Task<IActionResult> GetTopCategory(int organizationId, int? teamId, int? userId,DateTime fromDate,  DateTime toDate)
+        {
+            var result = await _appsUrlsService.GetTopCategory(organizationId, teamId, userId, fromDate, toDate);
+            return Ok(result);
+
         }
     }
 }
