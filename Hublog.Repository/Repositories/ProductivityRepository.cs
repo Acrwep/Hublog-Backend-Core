@@ -96,11 +96,13 @@ namespace Hublog.Repository.Repositories
            INNER JOIN 
                Users U ON A.UserId = U.Id
            INNER JOIN 
+                   Team T ON T.Id = U.TeamId
+           INNER JOIN 
                Organization O ON U.OrganizationId = O.Id
            WHERE  
                   O.Id = @OrganizationId 
                   AND A.UsageDate BETWEEN @FromDate AND @ToDate
-                  AND (@TeamId IS NULL OR U.TeamId = @TeamId)
+                  AND (@TeamId IS NULL OR T.Id = @TeamId)
                   AND (@UserId IS NULL OR A.UserId = @UserId)
            GROUP BY 
                A.UserId, 
@@ -110,26 +112,30 @@ namespace Hublog.Repository.Repositories
         ";
 
             var urlUsageQuery = @"
-             SELECT U.UserId,
-                 U.Url AS ApplicationName,
-                 U.Details,
-                 SUM(DATEDIFF(SECOND, '00:00:00', U.TotalUsage)) AS TotalSeconds,
-                 U.UsageDate
-             FROM UrlUsage U
-             INNER JOIN 
-               Users Us ON U.UserId = Us.Id
-             INNER JOIN 
-               Organization O ON Us.OrganizationId = O.Id
-             WHERE 
-               O.Id = @OrganizationId 
-               AND U.UsageDate BETWEEN @FromDate AND @ToDate
-               AND (@TeamId IS NULL OR US.TeamId = @TeamId)
-               AND (@UserId IS NULL OR U.UserId = @UserId)
-             GROUP BY 
-               U.UserId,
-               U.Url,
-               U.Details, 
-               U.UsageDate;"
+    SELECT 
+        U.UserId,
+        U.Url AS ApplicationName,
+        NULL AS Details,
+        SUM(DATEDIFF(SECOND, '00:00:00', U.TotalUsage)) AS TotalSeconds,
+        U.UsageDate
+    FROM 
+        UrlUsage U
+    INNER JOIN 
+        Users Us ON U.UserId = Us.Id
+    INNER JOIN 
+        Team T ON T.Id = Us.TeamId
+    INNER JOIN 
+        Organization O ON Us.OrganizationId = O.Id
+    WHERE 
+        O.Id = @OrganizationId 
+        AND U.UsageDate BETWEEN @FromDate AND @ToDate
+        AND (@TeamId IS NULL OR T.Id = @TeamId)
+        AND (@UserId IS NULL OR U.UserId = @UserId)
+    GROUP BY 
+        U.UserId,
+        U.Url,
+        U.UsageDate;
+";
             ;
             var parameters = new
             {
@@ -139,15 +145,27 @@ namespace Hublog.Repository.Repositories
                 FromDate = fromDate,
                 ToDate = toDate
             };
-            
+
             var appUsages = await _dapper.GetAllAsync<AppUsage>(appUsageQuery, parameters);
             var urlUsages = await _dapper.GetAllAsync<AppUsage>(urlUsageQuery, parameters);
 
-            var allUsages = appUsages.Concat(urlUsages).ToList();
+            var allUsages = appUsages.Concat(urlUsages);
 
-            // Return the merged list return allUsages;
-            return allUsages;
-            //var urlUsageQuery1 = @"select * imImbuildAppsAndUrls where name Like '' ",;
+            // Group by ApplicationName (URL or Application) to handle duplicates
+            var groupedUsages = allUsages
+                .GroupBy(u => u.ApplicationName.ToLower()) // Grouping by URL in lowercase for case-insensitivity
+                .Select(g => new AppUsage
+                {
+                    UserId = g.First().UserId, // You can choose how to handle UserId if there are multiple
+                    ApplicationName = g.Key, // Use the grouped ApplicationName
+                    Details = g.First().Details, // Keep the first Details (adjust as needed)
+                    TotalSeconds = g.Sum(u => u.TotalSeconds), // Sum the TotalSeconds for the same URL
+                    UsageDate = g.Min(u => u.UsageDate) // Optional: Use earliest date as the representative date
+                })
+                .ToList();
+
+            // Return the merged and grouped list
+            return groupedUsages;
 
 
         }
@@ -163,9 +181,9 @@ namespace Hublog.Repository.Repositories
             // Fetching teams using the proper method and data type
             var teams = await _dapper.GetAllAsync<int>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
 
-            int totalProductiveDuration = 0;
-            int totalUnproductiveDuration = 0;
-            int totalNeutralDuration = 0;
+                int totalProductiveDuration = 0;
+                int totalUnproductiveDuration = 0;
+                int totalNeutralDuration = 0;
 
 
             ProductivityDurations result = null;
