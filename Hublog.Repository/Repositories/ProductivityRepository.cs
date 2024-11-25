@@ -153,110 +153,128 @@ namespace Hublog.Repository.Repositories
         }
         public async Task<ProductivityDurations> GetProductivityDurations(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
-            var usages = await GetAppUsages(organizationId,teamId,userId, fromDate, toDate);
+            var teamQuery = @"
+                         SELECT T.Id
+                          FROM Team T
+                          INNER JOIN Organization O ON T.OrganizationId = O.Id
+                          WHERE O.Id = @OrganizationId
+                          AND (@TeamId IS NULL OR T.Id = @TeamId) ";
 
-            // Calculate TotalUsage for each ApplicationName
-            var totalUsages = usages
-                .GroupBy(u => u.ApplicationName)
-                .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
-                .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
+            // Fetching teams using the proper method and data type
+            var teams = await _dapper.GetAllAsync<int>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
 
-            // Initialize duration variables
             int totalProductiveDuration = 0;
             int totalUnproductiveDuration = 0;
             int totalNeutralDuration = 0;
 
 
-
-            // Check against ImbuildAppsAndUrls and Categories tables
-            foreach (var usage in usages)
+            ProductivityDurations result = null;
+            foreach (var team in teams)
             {
-                usage.ApplicationName = usage.ApplicationName.ToLower();
+                 teamId = team;
+                var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
 
-                if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+
+                // Calculate TotalUsage for each ApplicationName
+                var totalUsages = usages
+                .GroupBy(u => u.ApplicationName)
+                .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
+                .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
+
+                // Initialize duration variables
+
+
+
+                // Check against ImbuildAppsAndUrls and Categories tables
+                foreach (var usage in usages)
                 {
-                    if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
-                    {
-                        usage.TotalSeconds = totalSeconds;
-                        usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
-                    }
+                    usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                    // Query for category and productivity details
-                    var imbuildAppQuery = @"
+                    if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                    {
+                        if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
+                        {
+                            usage.TotalSeconds = totalSeconds;
+                            usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
+                        }
+
+                        // Query for category and productivity details
+                        var imbuildAppQuery = @"
                         SELECT CategoryId 
                          FROM ImbuildAppsAndUrls 
                         WHERE Name LIKE '%' + @ApplicationName + '%'";
-                    var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName });
+                        var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName });
 
-                    if (categoryId.HasValue)
-                    {
-                        usage.CategoryId = categoryId.Value;
+                        if (categoryId.HasValue)
+                        {
+                            usage.CategoryId = categoryId.Value;
 
-                        var categoryQuery = @"
+                            var categoryQuery = @"
                         SELECT CategoryName, ProductivityId 
                         FROM Categories 
                          WHERE Id = @CategoryId";
 
-                        var category = await _dapper.QueryFirstOrDefaultAsync<(string CategoryName, int ProductivityId)>(categoryQuery, new { CategoryId = categoryId.Value });
+                            var category = await _dapper.QueryFirstOrDefaultAsync<(string CategoryName, int ProductivityId)>(categoryQuery, new { CategoryId = categoryId.Value });
 
-                        if (category != default)
-                        {
-                            usage.CategoryName = category.CategoryName;
+                            if (category != default)
+                            {
+                                usage.CategoryName = category.CategoryName;
 
-                            // Fetch ProductivityName from ProductivityAssign
-                            var productivityQuery = @"
+                                // Fetch ProductivityName from ProductivityAssign
+                                var productivityQuery = @"
                             SELECT Name FROM ProductivityAssign
                             WHERE Id = @ProductivityId";
 
-                            var productivityName = await _dapper.QueryFirstOrDefaultAsync<string>(productivityQuery, new { ProductivityId = category.ProductivityId });
-                            usage.ProductivityName = productivityName;
+                                var productivityName = await _dapper.QueryFirstOrDefaultAsync<string>(productivityQuery, new { ProductivityId = category.ProductivityId });
+                                usage.ProductivityName = productivityName;
 
-                            // Add to the corresponding duration
-                            switch (usage.ProductivityName)
-                            {
-                                case "Productive":
-                                    totalProductiveDuration += usage.TotalSeconds;
-                                    break;
-                                case "Unproductive":
-                                    totalUnproductiveDuration += usage.TotalSeconds;
-                                    break;
-                                case "Neutral":
-                                    totalNeutralDuration += usage.TotalSeconds;
-                                    break;
+                                // Add to the corresponding duration
+                                switch (usage.ProductivityName)
+                                {
+                                    case "Productive":
+                                        totalProductiveDuration += usage.TotalSeconds;
+                                        break;
+                                    case "Unproductive":
+                                        totalUnproductiveDuration += usage.TotalSeconds;
+                                        break;
+                                    case "Neutral":
+                                        totalNeutralDuration += usage.TotalSeconds;
+                                        break;
+                                }
                             }
                         }
+                        //else
+                        //{
+                        //    // Assign to Neutral if no category is found
+                        //    totalNeutralDuration += usage.TotalSeconds;
+                        //}
                     }
-                    //else
-                    //{
-                    //    // Assign to Neutral if no category is found
-                    //    totalNeutralDuration += usage.TotalSeconds;
-                    //}
                 }
+            
+              // Create the result object
+             var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
+
+                var dateDifferenceInDays = (toDate - fromDate).TotalDays;
+
+                if (dateDifferenceInDays <= 0)
+                {
+                    dateDifferenceInDays = 1;
+                }
+                var averageDurationInSeconds = totalProductiveDuration / dateDifferenceInDays;
+
+
+                 result = new ProductivityDurations
+                {
+                    TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss"),
+                    TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss"),
+                    TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss"),
+                    TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss"),
+                    AverageDuratiopn = TimeSpan.FromSeconds(averageDurationInSeconds).ToString(@"hh\:mm\:ss")
+                };
+                
             }
-
-            // Create the result object
-            var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
-
-            var dateDifferenceInDays = (toDate - fromDate).TotalDays;
-
-            if (dateDifferenceInDays <= 0)
-            {
-                dateDifferenceInDays = 1; 
-            }
-            var averageDurationInSeconds = totalProductiveDuration / dateDifferenceInDays;
-
-
-            var result = new ProductivityDurations
-            {
-                TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss"),
-                TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss"),
-                TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss"),
-                TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss"),
-                AverageDuratiopn = TimeSpan.FromSeconds(averageDurationInSeconds).ToString(@"hh\:mm\:ss")
-            };
-
             return result;
-
+            
         }
 
         public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)

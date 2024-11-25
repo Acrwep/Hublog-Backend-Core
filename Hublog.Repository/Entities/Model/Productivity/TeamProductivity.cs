@@ -13,5 +13,6 @@ namespace Hublog.Repository.Entities.Model.Productivity
         public string TotalNeutralDuration { get; set; }
         public string TotalUnproductiveDuration { get; set; }
         public string TotalDuration { get; set; }
+        public string AverageDuratiopn {  get; set; }
     }
 }
