@@ -47,5 +47,10 @@ namespace Hublog.Service.Services
         {
             return await _productivityRepository.TeamwiseProductivity(organizationId, teamId,fromDate, toDate);
         }
+
+        public async Task<dynamic> MostTeamwiseProductivity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            return await _productivityRepository.MostTeamwiseProductivity(organizationId, teamId, fromDate, toDate);
+        }
     }
 }

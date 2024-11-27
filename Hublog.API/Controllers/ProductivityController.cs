@@ -76,5 +76,12 @@ namespace Hublog.API.Controllers
 
         }
 
+        [HttpGet("Most&Least_Teamwise_Productivity")]
+        public async Task<IActionResult> MostTeamwiseProductivity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            var result = await _productivityService.MostTeamwiseProductivity(organizationId, teamId, fromDate, toDate);
+            return Ok(result);
+
+        }
     }
 }
