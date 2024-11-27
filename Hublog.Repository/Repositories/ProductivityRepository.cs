@@ -617,7 +617,7 @@ WHERE O.Id = @organizationId
 
             var leastProductivePercent = sortedTeams.LastOrDefault()?.productive_duration ?? 0;
 
-            var bottomTeams = sortedTeams.Where(t => t.productive_percent == leastProductivePercent ).ToList();
+            var bottomTeams = sortedTeams.Where(t => t.productive_duration == leastProductivePercent ).ToList();
 
             
             return new
