@@ -149,7 +149,9 @@ namespace Hublog.Repository.Repositories
                         BE.End_Time, 
                         BE.BreakEntryId, 
                         BE.Status,
-                        BE.BreakDuration,
+    RIGHT('00' + CAST(DATEDIFF(SECOND, BE.Start_Time, BE.End_Time) / 3600 AS VARCHAR(2)), 2) + ':' +
+    RIGHT('00' + CAST((DATEDIFF(SECOND, BE.Start_Time, BE.End_Time) % 3600) / 60 AS VARCHAR(2)), 2) + ':' +
+    RIGHT('00' + CAST(DATEDIFF(SECOND, BE.Start_Time, BE.End_Time) % 60 AS VARCHAR(2)), 2) AS BreakDuration,
                         BM.Name as BreakType, 
                         BM.Active, 
                         BM.Max_Break_Time, 
@@ -172,7 +174,24 @@ namespace Hublog.Repository.Repositories
                 EndDateTime = endDate.AddDays(1)
             };
 
-            return await _dapper.GetAllAsync<UserBreakRecordModel>(query, parameters);
+            var result = await _dapper.GetAllAsync<UserBreakRecordModel>(query, parameters);
+
+            // Ensure the BreakDuration is in the correct format (hh:mm:ss)
+            foreach (var record in result)
+            {
+                if (!string.IsNullOrEmpty(record.BreakDuration) && record.BreakDuration.Contains(":"))
+                {
+                    // Ensure there are no invalid formats
+                    var timeParts = record.BreakDuration.Split(':');
+                    if (timeParts.Length == 3)
+                    {
+                        // Format to ensure "hh:mm:ss"
+                        record.BreakDuration = string.Format("{0:D2}:{1:D2}:{2:D2}", int.Parse(timeParts[0]), int.Parse(timeParts[1]), int.Parse(timeParts[2]));
+                    }
+                }
+            }
+
+            return result;
         }
         #endregion
 

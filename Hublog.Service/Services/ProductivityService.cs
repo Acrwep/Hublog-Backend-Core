@@ -56,7 +56,7 @@ namespace Hublog.Service.Services
         {
             return await _productivityRepository.GetTotal_Working_Time(organizationId, teamId, userId, fromDate, toDate);
         }
-        public async Task<List<DailyProductivityDuration>>GetProductivity_Trend(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        public async Task<dynamic> GetProductivity_Trend(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
             return await _productivityRepository.GetProductivity_Trend(organizationId, teamId, userId, fromDate, toDate);
         }
