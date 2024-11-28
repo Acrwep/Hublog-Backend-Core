@@ -90,5 +90,13 @@ namespace Hublog.API.Controllers
             return Ok(result);
 
         }
+        [HttpGet("GetProductivity_Trend")]
+        public async Task<IActionResult> GetProductivity_Trend(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            var result = await _productivityService.GetProductivity_Trend(organizationId, teamId, userId, fromDate, toDate);
+            return Ok(result);
+
+        }
+
     }
 }

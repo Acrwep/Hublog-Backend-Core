@@ -701,18 +701,19 @@ WHERE O.Id = @organizationId
                 var totalTimes = attendance?.TotalTimes ?? 0;
                 var breakDuration = breakData?.break_duration ?? 0;
 
-                
+                // Convert the durations from seconds to TimeSpan
+                var punchDurationTimeSpan = TimeSpan.FromSeconds(punchDuration);
+                var breakDurationTimeSpan = TimeSpan.FromSeconds(breakDuration);
+                var activeDurationTimeSpan = TimeSpan.FromSeconds(punchDuration - breakDuration);
+
                 if (punchDuration > 0)
                 {
                     return new
                     {
                         start_timing = date.ToString("yyyy-MM-dd"),
-                        punch_duration = punchDuration,
-                        //online_duration = totalTimes,
-                        break_duration = breakDuration,
-                        active_duration = punchDuration - breakDuration, 
-                        //idle_duration = totalTimes - punchDuration - breakDuration,
-                        //full_time = 28800 
+                        punch_duration = punchDurationTimeSpan.ToString(@"hh\:mm\:ss"),
+                        break_duration = breakDurationTimeSpan.ToString(@"hh\:mm\:ss"),
+                        active_duration = activeDurationTimeSpan.ToString(@"hh\:mm\:ss"),
                     };
                 }
                 return null; 
@@ -720,6 +721,65 @@ WHERE O.Id = @organizationId
 
             return new { data = mergedData };
 
+        }
+        public async Task<List<DailyProductivityDuration>> GetProductivity_Trend(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            // Get the team list
+            var teamQuery = @"
+        SELECT T.Id
+        FROM Team T
+        INNER JOIN Organization O ON T.OrganizationId = O.Id
+        WHERE O.Id = @OrganizationId
+        AND (@TeamId IS NULL OR T.Id = @TeamId)";
+
+            var teams = await _dapper.GetAllAsync<int>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
+
+            var dailyDurations = new List<DailyProductivityDuration>();
+
+            foreach (var team in teams)
+            {
+                teamId = team;
+
+                // Fetch app usage data for the team
+                var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
+
+                // Group usages by date
+                var groupedByDate = usages
+                    .GroupBy(u => u.UsageDate.Date) // Grouping by date
+                    .Select(g => new DailyProductivityDuration
+                    {
+                        Date = g.Key.ToString("yyyy-MM-dd"),
+                        TotalDuration = g.Sum(u => u.TotalSeconds),
+                        ProductiveDuration = g.Where(u => u.ProductivityName == "Productive").Sum(u => u.TotalSeconds),
+                        UnproductiveDuration = g.Where(u => u.ProductivityName == "Unproductive").Sum(u => u.TotalSeconds),
+                        NeutralDuration = g.Where(u => u.ProductivityName == "Neutral").Sum(u => u.TotalSeconds)
+                    })
+                    .ToList();
+
+                dailyDurations.AddRange(groupedByDate);
+            }
+
+            // Fill in missing dates with zero durations (if there are any gaps)
+            var dateRange = Enumerable.Range(0, (toDate - fromDate).Days + 1)
+                .Select(offset => fromDate.AddDays(offset).ToString("yyyy-MM-dd"))
+                .ToList();
+
+            foreach (var date in dateRange)
+            {
+                if (!dailyDurations.Any(d => d.Date == date))
+                {
+                    dailyDurations.Add(new DailyProductivityDuration
+                    {
+                        Date = date,
+                        TotalDuration = 0,
+                        ProductiveDuration = 0,
+                        UnproductiveDuration = 0,
+                        NeutralDuration = 0
+                    });
+                }
+            }
+
+            return dailyDurations.OrderBy(d => d.Date).ToList();
         }
 
     }
