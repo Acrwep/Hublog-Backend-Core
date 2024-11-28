@@ -52,5 +52,10 @@ namespace Hublog.Service.Services
         {
             return await _productivityRepository.MostTeamwiseProductivity(organizationId, teamId, fromDate, toDate);
         }
+        public async Task<dynamic> GetTotal_Working_Time(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            return await _productivityRepository.GetTotal_Working_Time(organizationId, teamId, userId, fromDate, toDate);
+        }
+
     }
 }

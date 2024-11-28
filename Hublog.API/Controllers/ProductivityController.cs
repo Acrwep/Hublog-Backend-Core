@@ -84,9 +84,9 @@ namespace Hublog.API.Controllers
 
         }
         [HttpGet("Total_Working_Time")]
-        public async Task<IActionResult> GetTotal_Working_Time(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        public async Task<IActionResult> GetTotal_Working_Time(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
-            var result = await _productivityService.MostTeamwiseProductivity(organizationId, teamId, fromDate, toDate);
+            var result = await _productivityService.GetTotal_Working_Time(organizationId, teamId, userId, fromDate, toDate);
             return Ok(result);
 
         }

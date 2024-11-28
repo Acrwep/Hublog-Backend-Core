@@ -1,6 +1,8 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Productivity;
+using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -631,7 +633,94 @@ WHERE O.Id = @organizationId
 
         }
 
+        public async Task<dynamic> GetTotal_Working_Time(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            string appUsageQuery = @"
+            SELECT 
+                  A.AttendanceDate as start_timing, 
+                   SUM(DATEDIFF(SECOND, '00:00:00', A.Total_Time)) AS TotalTimes,
+                   ISNULL(SUM(DATEDIFF(SECOND, A.Start_Time, A.End_Time)), 0) AS PunchDuration
+             FROM  
+                  Attendance A
+             INNER JOIN 
+                   Users Us ON A.UserId = Us.Id
+             INNER JOIN 
+                   Team U ON Us.TeamId = U.Id
+             INNER JOIN 
+                   Organization O ON U.OrganizationId = O.Id
+             WHERE 
+                   O.Id = @OrganizationId 
+                   AND (@UserId IS NULL OR Us.Id = @UserId)
+                   AND A.AttendanceDate BETWEEN @FromDate AND @ToDate
+                   AND (@TeamId IS NULL OR U.Id = @TeamId)
+             GROUP BY  
+                   A.AttendanceDate;";
+            string appUsageQuery1 = @"
+                  SELECT 
+                      BR.BreakDate, 
+                      ISNULL(SUM(DATEDIFF(SECOND, BR.Start_Time, BR.End_Time)), 0) AS break_duration
+                  FROM  
+                       BreakEntry BR
+                  INNER JOIN 
+                       Users Us ON BR.UserId = Us.Id
+                  INNER JOIN 
+                       Team U ON Us.TeamId = U.Id
+                  INNER JOIN 
+                       Organization O ON U.OrganizationId = O.Id
+                  WHERE 
+                       O.Id = @OrganizationId 
+                       AND (@UserId IS NULL OR Us.Id = @UserId)
+                       AND CAST(BR.BreakDate AS DATE) BETWEEN @FromDate AND @ToDate
+                       AND (@TeamId IS NULL OR U.Id = @TeamId)
+                 GROUP BY  
+                      BR.BreakDate;";
 
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                UserId = userId,
+                FromDate = fromDate,
+                ToDate = toDate
+            };
+
+            var appUsages = await _dapper.GetAllAsync<dynamic>(appUsageQuery, parameters);
+            var appUsages1 = await _dapper.GetAllAsync<dynamic>(appUsageQuery1, parameters);
+
+
+            var dateRange = Enumerable.Range(0, (toDate - fromDate).Days + 1)
+                                      .Select(d => fromDate.AddDays(d))
+                                      .ToList();
+
+            var mergedData = dateRange.Select(date =>
+            {
+                var attendance = appUsages.FirstOrDefault(a => a.start_timing.Date == date.Date);
+                var breakData = appUsages1.FirstOrDefault(b => b.BreakDate.Date == date.Date);
+
+                var punchDuration = attendance?.PunchDuration ?? 0;
+                var totalTimes = attendance?.TotalTimes ?? 0;
+                var breakDuration = breakData?.break_duration ?? 0;
+
+                
+                if (punchDuration > 0)
+                {
+                    return new
+                    {
+                        start_timing = date.ToString("yyyy-MM-dd"),
+                        punch_duration = punchDuration,
+                        //online_duration = totalTimes,
+                        break_duration = breakDuration,
+                        active_duration = punchDuration - breakDuration, 
+                        //idle_duration = totalTimes - punchDuration - breakDuration,
+                        //full_time = 28800 
+                    };
+                }
+                return null; 
+            }).Where(d => d != null).ToList(); 
+
+            return new { data = mergedData };
+
+        }
 
     }
 }
