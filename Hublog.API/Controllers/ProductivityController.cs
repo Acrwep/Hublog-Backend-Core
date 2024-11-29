@@ -97,6 +97,13 @@ namespace Hublog.API.Controllers
             return Ok(result);
 
         }
+        [HttpGet("GetEmployeeList")]
+        public async Task<IActionResult> GetEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            var result = await _productivityService.GetEmployeeList(organizationId, teamId, userId, fromDate, toDate);
+            return Ok(result);
+
+        }
 
     }
 }

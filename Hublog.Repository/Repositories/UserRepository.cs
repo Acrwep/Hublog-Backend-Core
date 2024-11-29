@@ -149,9 +149,9 @@ namespace Hublog.Repository.Repositories
                         BE.End_Time, 
                         BE.BreakEntryId, 
                         BE.Status,
-    RIGHT('00' + CAST(DATEDIFF(SECOND, BE.Start_Time, BE.End_Time) / 3600 AS VARCHAR(2)), 2) + ':' +
-    RIGHT('00' + CAST((DATEDIFF(SECOND, BE.Start_Time, BE.End_Time) % 3600) / 60 AS VARCHAR(2)), 2) + ':' +
-    RIGHT('00' + CAST(DATEDIFF(SECOND, BE.Start_Time, BE.End_Time) % 60 AS VARCHAR(2)), 2) AS BreakDuration,
+                        RIGHT('00' + CAST(DATEDIFF(SECOND, BE.Start_Time, BE.End_Time) / 3600 AS VARCHAR(2)), 2) + ':' +
+                        RIGHT('00' + CAST((DATEDIFF(SECOND, BE.Start_Time, BE.End_Time) % 3600) / 60 AS VARCHAR(2)), 2) + ':' +
+                        RIGHT('00' + CAST(DATEDIFF(SECOND, BE.Start_Time, BE.End_Time) % 60 AS VARCHAR(2)), 2) AS BreakDuration,
                         BM.Name as BreakType, 
                         BM.Active, 
                         BM.Max_Break_Time, 

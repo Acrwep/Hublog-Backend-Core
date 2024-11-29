@@ -60,5 +60,10 @@ namespace Hublog.Service.Services
         {
             return await _productivityRepository.GetProductivity_Trend(organizationId, teamId, userId, fromDate, toDate);
         }
+        public async Task<dynamic> GetEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            return await _productivityRepository.GetEmployeeList(organizationId, teamId, userId, fromDate, toDate);
+        }
     }
+
 }

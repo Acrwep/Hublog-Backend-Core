@@ -230,7 +230,7 @@ namespace Hublog.API.Controllers
 
         #region GetUserBreakRecordDetails
         [HttpGet("GetUserBreakRecordDetails")]
-        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetUserBreakRecordDetails([FromQuery] int userId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
         {
             try
