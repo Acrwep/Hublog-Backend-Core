@@ -45,6 +45,7 @@ namespace Hublog.Repository.Repositories
             var query = @"
         SELECT
             CONCAT(U.First_Name, ' ', U.Last_Name) AS Full_Name,
+           	T.Name as Team_Name,
             SY.DeviceId,
             SY.DeviceName,
             SY.Platform,

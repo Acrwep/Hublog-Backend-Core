@@ -1076,13 +1076,13 @@ ORDER BY
            
 
             var teamQuery = @"
-                         SELECT T.Id
+                         SELECT T.Id,T.Name
                           FROM Team T
                           INNER JOIN Organization O ON T.OrganizationId = O.Id
                           WHERE O.Id = @OrganizationId
                           AND (@TeamId IS NULL OR T.Id = @TeamId) ";
 
-            var teams = await _dapper.GetAllAsync<int>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
+            var teams = await _dapper.GetAllAsync<(int TeamId, string TeamName)>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
 
             var result = new List<dynamic>();
 
@@ -1090,8 +1090,9 @@ ORDER BY
             {
                 foreach (var team in teams)
                 {
+                    var TeamName = team.TeamName;
+                    teamId = team.TeamId;
 
-                    teamId = team;
                     var usagess = await GetAppUsagesSS(organizationId, teamId, userId, fromDate, toDate);
 
                     foreach (var us in usagess)
@@ -1190,6 +1191,7 @@ ORDER BY
 
                         dynamicItem.UserID = userIdd;
                         dynamicItem.full_Name = FullANme;
+                        dynamicItem.Team_Name = TeamName;
                         dynamicItem.AttendanceCount = AttendanceCount;
 
                         //dynamicItem.active_duration = TimeSpan.FromSeconds(activeDurationInSeconds).ToString(@"hh\:mm\:ss"); 
@@ -1226,7 +1228,8 @@ ORDER BY
                 foreach (var team in teams)
                 {
 
-                    teamId = team;
+                    var TeamName = team.TeamName;
+                    teamId = team.TeamId;
                     var usagess = await GetAppUsagesSS(organizationId, teamId, userId, fromDate, toDate);
 
 
@@ -1325,20 +1328,10 @@ ORDER BY
                         var dynamicItem = new ExpandoObject() as dynamic;
 
                         dynamicItem.UserID = userIdd;
+                        dynamicItem.Team_Name = TeamName;
                         dynamicItem.full_Name = FullANme;
                         dynamicItem.AttendanceCount = AttendanceCount;
 
-                        //dynamicItem.active_duration = TimeSpan.FromSeconds(activeDurationInSeconds).ToString(@"hh\:mm\:ss"); 
-                        //dynamicItem.break_duration = TimeSpan.FromSeconds(breakDurationInSeconds).ToString(@"hh\:mm\:ss");
-                        //dynamicItem.online_duration = TimeSpan.FromSeconds(onlineDurationInSeconds).ToString(@"hh\:mm\:ss");
-
-                        //dynamicItem.TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss");
-                        //dynamicItem.TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss");
-                        //dynamicItem.TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss");
-                        //dynamicItem.TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss");
-                        //dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
-
-                        //result.Add(dynamicItem);
                         dynamicItem.ActiveDuration = TimeSpan.FromSeconds(Convert.ToDouble(activeDurationInSeconds)).ToString(@"hh\:mm\:ss");
                         dynamicItem.BreakDuration = TimeSpan.FromSeconds(Convert.ToDouble(breakDurationInSeconds)).ToString(@"hh\:mm\:ss");
                         dynamicItem.OnlineDuration = TimeSpan.FromSeconds(Convert.ToDouble(onlineDurationInSeconds)).ToString(@"hh\:mm\:ss");
