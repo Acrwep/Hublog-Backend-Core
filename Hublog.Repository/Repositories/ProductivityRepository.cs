@@ -5,6 +5,8 @@ using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Dynamic;
 
@@ -594,7 +596,7 @@ WHERE O.Id = @organizationId
 
                 var totalDurationInSeconds = totalProductiveDuration;
 
-                GrandtotalTimeDuration = GrandtotalTimeDuration + (int)(totalseconds ?? 0);
+                //GrandtotalTimeDuration = GrandtotalTimeDuration + totalProductiveDuration;
 
                 if (totalDurationInSeconds > 0)
                 {
@@ -631,12 +633,15 @@ WHERE O.Id = @organizationId
 
             var bottomTeams = sortedTeams.Where(t => t.productive_duration == leastProductivePercent).ToList();
 
+            TimeSpan time = TimeSpan.FromSeconds(GrandtotalProductiveDuration);
+            string formattedTime = time.ToString(@"hh\:mm\:ss");
             var GrandTotalpercentage = GrandtotalTimeDuration > 0 ?
                                      (double)GrandtotalProductiveDuration / GrandtotalTimeDuration * 100 : 0.0;
 
             return new
             {
                 GrandTotalpercentage = GrandTotalpercentage,
+                GrandtotalTimeDuration = formattedTime,
                 data = new
                 {
                     top = topTeams,
@@ -1040,10 +1045,29 @@ ORDER BY
                               TotalBreakDurationInSeconds = bg != null ? bg.TotalBreakDurationInSeconds : 0,
                               OnlineDurationInHours = app.ActiveTimeInSeconds - (bg != null ? bg.TotalBreakDurationInSeconds : 0)
                           })
-               .Cast<dynamic>() // Cast each item to dynamic
+               .Cast<dynamic>() 
                .ToList();
 
-            return result;
+            var getUsers = @"
+                SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
+                FROM Users 
+                WHERE TeamId = @TeamId
+                AND (@UserId IS NULL OR Id = @UserId)";
+
+            var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters);
+
+            // Assuming 'usagess' and 'getUsers1' are lists of the same or compatible type
+            // Merge and process results
+            var tt = result.Concat(getUsers1)
+                .GroupBy(item => item.UserId)
+                .Select(group =>
+                {
+                    var usageEntry = result.FirstOrDefault(u => u.UserId == group.Key);
+                    return usageEntry ?? group.First();
+                })
+                .ToList();
+
+            return tt;
 
 
         }
@@ -1058,145 +1082,282 @@ ORDER BY
                           WHERE O.Id = @OrganizationId
                           AND (@TeamId IS NULL OR T.Id = @TeamId) ";
 
-            // Fetching teams using the proper method and data type
             var teams = await _dapper.GetAllAsync<int>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
 
-          
-
             var result = new List<dynamic>();
-            foreach (var team in teams)
+
+            if (userId.HasValue)
             {
-              
-                teamId = team;
-
-                var usagess = await GetAppUsagesSS(organizationId, teamId, userId, fromDate, toDate);
-
-                foreach (var us in usagess)
+                foreach (var team in teams)
                 {
-                    userId = us.UserId;
 
-                    int totalProductiveDuration = 0;
-                    int totalUnproductiveDuration = 0;
-                    int totalNeutralDuration = 0;
+                    teamId = team;
+                    var usagess = await GetAppUsagesSS(organizationId, teamId, userId, fromDate, toDate);
 
-                    var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
-
-
-                    // Calculate TotalUsage for each ApplicationName
-                    var totalUsages = usages
-                    .GroupBy(u => u.ApplicationName)
-                    .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
-                    .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
-
-                    // Initialize duration variables
-
-
-
-                    // Check against ImbuildAppsAndUrls and Categories tables
-                    foreach (var usage in usages)
+                    foreach (var us in usagess)
                     {
-                        usage.ApplicationName = usage.ApplicationName.ToLower();
+                        var userIdd = us.UserId;
+                        var FullANme = us.FullName;
 
-                        if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                        int totalProductiveDuration = 0;
+                        int totalUnproductiveDuration = 0;
+                        int totalNeutralDuration = 0;
+
+                        var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
+
+                        var totalUsages = usages
+                        .GroupBy(u => u.ApplicationName)
+                        .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
+                        .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
+
+                        foreach (var usage in usages)
                         {
-                            if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
-                            {
-                                usage.TotalSeconds = totalSeconds;
-                                usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
-                            }
+                            usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                            // Query for category and productivity details
-                            var imbuildAppQuery = @"
+                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                            {
+                                if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
+                                {
+                                    usage.TotalSeconds = totalSeconds;
+                                    usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
+                                }
+
+                                var imbuildAppQuery = @"
                         SELECT CategoryId 
                          FROM ImbuildAppsAndUrls 
                         WHERE Name LIKE '%' + @ApplicationName + '%'";
-                            var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName });
+                                var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName });
 
-                            if (categoryId.HasValue)
-                            {
-                                usage.CategoryId = categoryId.Value;
+                                if (categoryId.HasValue)
+                                {
+                                    usage.CategoryId = categoryId.Value;
 
-                                var categoryQuery = @"
+                                    var categoryQuery = @"
                         SELECT CategoryName, ProductivityId 
                         FROM Categories 
                          WHERE Id = @CategoryId";
 
-                                var category = await _dapper.QueryFirstOrDefaultAsync<(string CategoryName, int ProductivityId)>(categoryQuery, new { CategoryId = categoryId.Value });
+                                    var category = await _dapper.QueryFirstOrDefaultAsync<(string CategoryName, int ProductivityId)>(categoryQuery, new { CategoryId = categoryId.Value });
 
-                                if (category != default)
-                                {
-                                    usage.CategoryName = category.CategoryName;
+                                    if (category != default)
+                                    {
+                                        usage.CategoryName = category.CategoryName;
 
-                                    // Fetch ProductivityName from ProductivityAssign
-                                    var productivityQuery = @"
+                                        var productivityQuery = @"
                             SELECT Name FROM ProductivityAssign
                             WHERE Id = @ProductivityId";
 
-                                    var productivityName = await _dapper.QueryFirstOrDefaultAsync<string>(productivityQuery, new { ProductivityId = category.ProductivityId });
-                                    usage.ProductivityName = productivityName;
+                                        var productivityName = await _dapper.QueryFirstOrDefaultAsync<string>(productivityQuery, new { ProductivityId = category.ProductivityId });
+                                        usage.ProductivityName = productivityName;
 
-                                    // Add to the corresponding duration
-                                    switch (usage.ProductivityName)
-                                    {
-                                        case "Productive":
-                                            totalProductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Unproductive":
-                                            totalUnproductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Neutral":
-                                            totalNeutralDuration += usage.TotalSeconds;
-                                            break;
+                                        switch (usage.ProductivityName)
+                                        {
+                                            case "Productive":
+                                                totalProductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Unproductive":
+                                                totalUnproductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Neutral":
+                                                totalNeutralDuration += usage.TotalSeconds;
+                                                break;
+                                        }
                                     }
                                 }
+                                //else
+                                //{
+                                //    // Assign to Neutral if no category is found
+                                //    totalNeutralDuration += usage.TotalSeconds;
+                                //}
                             }
-                            //else
-                            //{
-                            //    // Assign to Neutral if no category is found
-                            //    totalNeutralDuration += usage.TotalSeconds;
-                            //}
                         }
+                        var AttendanceCount = us.AttendanceCount;
+                        var onlineDurationInSeconds = us.OnlineDurationInHours;
+                        var activeDurationInSeconds = us.ActiveTimeInSeconds;
+                        var breakDurationInSeconds = us.TotalBreakDurationInSeconds;
+                        var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
+
+                        var dateDifferenceInDays = (toDate - fromDate).TotalDays;
+
+                        if (dateDifferenceInDays <= 0)
+                        {
+                            dateDifferenceInDays = 1;
+                        }
+                        var percentageProductiveDuration = ((double)totalProductiveDuration / activeDurationInSeconds) * 100;
+
+
+                        var dynamicItem = new ExpandoObject() as dynamic;
+
+                        dynamicItem.UserID = userIdd;
+                        dynamicItem.full_Name = FullANme;
+                        dynamicItem.AttendanceCount = AttendanceCount;
+
+                        //dynamicItem.active_duration = TimeSpan.FromSeconds(activeDurationInSeconds).ToString(@"hh\:mm\:ss"); 
+                        //dynamicItem.break_duration = TimeSpan.FromSeconds(breakDurationInSeconds).ToString(@"hh\:mm\:ss");
+                        //dynamicItem.online_duration = TimeSpan.FromSeconds(onlineDurationInSeconds).ToString(@"hh\:mm\:ss");
+
+                        //dynamicItem.TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss");
+                        //dynamicItem.TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss");
+                        //dynamicItem.TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss");
+                        //dynamicItem.TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss");
+                        //dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
+
+                        //result.Add(dynamicItem);
+                        dynamicItem.ActiveDuration = TimeSpan.FromSeconds(Convert.ToDouble(activeDurationInSeconds)).ToString(@"hh\:mm\:ss");
+                        dynamicItem.BreakDuration = TimeSpan.FromSeconds(Convert.ToDouble(breakDurationInSeconds)).ToString(@"hh\:mm\:ss");
+                        dynamicItem.OnlineDuration = TimeSpan.FromSeconds(Convert.ToDouble(onlineDurationInSeconds)).ToString(@"hh\:mm\:ss");
+
+                        dynamicItem.TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss");
+                        dynamicItem.TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss");
+                        dynamicItem.TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss");
+                        dynamicItem.TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss");
+                        dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
+
+                        result.Add(dynamicItem);
                     }
-                    var AttendanceCount = us.AttendanceCount;
-                    var onlineDurationInSeconds = us.OnlineDurationInHours;
-                    var activeDurationInSeconds = us.ActiveTimeInSeconds;
-                    var breakDurationInSeconds = us.TotalBreakDurationInSeconds;
-                    // Create the result object
-                    var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
 
-                    var dateDifferenceInDays = (toDate - fromDate).TotalDays;
-
-                    if (dateDifferenceInDays <= 0)
-                    {
-                        dateDifferenceInDays = 1;
-                    }
-                     var percentageProductiveDuration =   ((double)totalProductiveDuration / activeDurationInSeconds) * 100;
-
-
-                    var dynamicItem = new ExpandoObject() as dynamic;
-
-                    dynamicItem.UserID= userId;
-                    dynamicItem.FullName = us.FullName;
-                    dynamicItem.AttendanceCount = AttendanceCount;
-                   
-                    dynamicItem.active_duration = TimeSpan.FromSeconds(activeDurationInSeconds).ToString(@"hh\:mm\:ss"); 
-                    dynamicItem.break_duration = TimeSpan.FromSeconds(breakDurationInSeconds).ToString(@"hh\:mm\:ss");
-                    dynamicItem.online_duration = TimeSpan.FromSeconds(onlineDurationInSeconds).ToString(@"hh\:mm\:ss");
-
-                    dynamicItem.TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss");
-                    dynamicItem.TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss");
-                    dynamicItem.TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss");
-                    dynamicItem.TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss");
-                    dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
-
-                    // Add the dynamic item to the result list
-                    result.Add(dynamicItem);
+                    
                 }
-                userId = null;
+
+                return result;
             }
+            else
+            {
+                foreach (var team in teams)
+                {
 
-            return result;
+                    teamId = team;
+                    var usagess = await GetAppUsagesSS(organizationId, teamId, userId, fromDate, toDate);
 
+
+                    foreach (var us in usagess)
+                    {
+                        var userIdd = us.UserId;
+                        var FullANme = us.FullName;
+
+                        int totalProductiveDuration = 0;
+                        int totalUnproductiveDuration = 0;
+                        int totalNeutralDuration = 0;
+
+                        var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
+
+                        var totalUsages = usages
+                        .GroupBy(u => u.ApplicationName)
+                        .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
+                        .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
+
+                        foreach (var usage in usages)
+                        {
+                            usage.ApplicationName = usage.ApplicationName.ToLower();
+
+                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                            {
+                                if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
+                                {
+                                    usage.TotalSeconds = totalSeconds;
+                                    usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
+                                }
+
+                                var imbuildAppQuery = @"
+                        SELECT CategoryId 
+                         FROM ImbuildAppsAndUrls 
+                        WHERE Name LIKE '%' + @ApplicationName + '%'";
+                                var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName });
+
+                                if (categoryId.HasValue)
+                                {
+                                    usage.CategoryId = categoryId.Value;
+
+                                    var categoryQuery = @"
+                        SELECT CategoryName, ProductivityId 
+                        FROM Categories 
+                         WHERE Id = @CategoryId";
+
+                                    var category = await _dapper.QueryFirstOrDefaultAsync<(string CategoryName, int ProductivityId)>(categoryQuery, new { CategoryId = categoryId.Value });
+
+                                    if (category != default)
+                                    {
+                                        usage.CategoryName = category.CategoryName;
+
+                                        var productivityQuery = @"
+                            SELECT Name FROM ProductivityAssign
+                            WHERE Id = @ProductivityId";
+
+                                        var productivityName = await _dapper.QueryFirstOrDefaultAsync<string>(productivityQuery, new { ProductivityId = category.ProductivityId });
+                                        usage.ProductivityName = productivityName;
+
+                                        switch (usage.ProductivityName)
+                                        {
+                                            case "Productive":
+                                                totalProductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Unproductive":
+                                                totalUnproductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Neutral":
+                                                totalNeutralDuration += usage.TotalSeconds;
+                                                break;
+                                        }
+                                    }
+                                }
+                                //else
+                                //{
+                                //    // Assign to Neutral if no category is found
+                                //    totalNeutralDuration += usage.TotalSeconds;
+                                //}
+                            }
+                        }
+                        var AttendanceCount = us.AttendanceCount;
+                        var onlineDurationInSeconds = us.OnlineDurationInHours;
+                        var activeDurationInSeconds = us.ActiveTimeInSeconds;
+                        var breakDurationInSeconds = us.TotalBreakDurationInSeconds;
+                        var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
+
+                        var dateDifferenceInDays = (toDate - fromDate).TotalDays;
+
+                        if (dateDifferenceInDays <= 0)
+                        {
+                            dateDifferenceInDays = 1;
+                        }
+                        var percentageProductiveDuration = ((double)totalProductiveDuration / activeDurationInSeconds) * 100;
+
+
+                        var dynamicItem = new ExpandoObject() as dynamic;
+
+                        dynamicItem.UserID = userIdd;
+                        dynamicItem.full_Name = FullANme;
+                        dynamicItem.AttendanceCount = AttendanceCount;
+
+                        //dynamicItem.active_duration = TimeSpan.FromSeconds(activeDurationInSeconds).ToString(@"hh\:mm\:ss"); 
+                        //dynamicItem.break_duration = TimeSpan.FromSeconds(breakDurationInSeconds).ToString(@"hh\:mm\:ss");
+                        //dynamicItem.online_duration = TimeSpan.FromSeconds(onlineDurationInSeconds).ToString(@"hh\:mm\:ss");
+
+                        //dynamicItem.TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss");
+                        //dynamicItem.TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss");
+                        //dynamicItem.TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss");
+                        //dynamicItem.TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss");
+                        //dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
+
+                        //result.Add(dynamicItem);
+                        dynamicItem.ActiveDuration = TimeSpan.FromSeconds(Convert.ToDouble(activeDurationInSeconds)).ToString(@"hh\:mm\:ss");
+                        dynamicItem.BreakDuration = TimeSpan.FromSeconds(Convert.ToDouble(breakDurationInSeconds)).ToString(@"hh\:mm\:ss");
+                        dynamicItem.OnlineDuration = TimeSpan.FromSeconds(Convert.ToDouble(onlineDurationInSeconds)).ToString(@"hh\:mm\:ss");
+
+                        dynamicItem.TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss");
+                        dynamicItem.TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss");
+                        dynamicItem.TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss");
+                        dynamicItem.TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss");
+                        dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
+
+                        result.Add(dynamicItem);
+                    }
+
+                    userId = null;
+                }
+
+                return result;
+
+            }
 
         }
     }
