@@ -74,10 +74,6 @@ namespace Hublog.API.Controllers
 
             var result = await _productivityService.InsertImbuildAppsAndUrls(id, model);
 
-            if (result == null)
-            {
-                return NotFound(new { message = "Failed to insert data." });
-            }
             return Ok(new { message = "Data inserted successfully", data = result });
         }
 
@@ -96,10 +92,6 @@ namespace Hublog.API.Controllers
 
             var result = await _productivityService.GetProductivityDurations(organizationId, teamId, userId, fromDate, toDate);
 
-            if (result == null)
-            {
-                return NotFound(new { message = "No productivity data found for the given parameters." });
-            }
 
             return Ok(result);
         }
@@ -119,11 +111,6 @@ namespace Hublog.API.Controllers
 
             var result = await _productivityService.TeamwiseProductivity(organizationId, teamId, fromDate, toDate);
 
-            if (result == null || !result.Any())
-            {
-                return NotFound(new { message = "No teamwise productivity data found for the given parameters." });
-            }
-
             return Ok(result);
         }
 
@@ -142,10 +129,6 @@ namespace Hublog.API.Controllers
 
             var result = await _productivityService.MostTeamwiseProductivity(organizationId, teamId, fromDate, toDate);
 
-            if (result == null || !result.Any())
-            {
-                return NotFound(new { message = "No teamwise productivity data found for the given parameters." });
-            }
 
             return Ok(result);
         }
@@ -168,11 +151,6 @@ namespace Hublog.API.Controllers
                 return BadRequest("FromDate cannot be greater than ToDate.");
             }
             var result = await _productivityService.GetTotal_Working_Time(organizationId, teamId, userId, fromDate, toDate);
-
-            if (result == null || result.Equals(0))
-            {
-                return NotFound(new { message = "No total working time data found for the given parameters." });
-            }
 
             return Ok(new { message = "Total working time data fetched successfully.", data = result });
         }
@@ -197,10 +175,6 @@ namespace Hublog.API.Controllers
 
             var result = await _productivityService.GetProductivity_Trend(organizationId, teamId, userId, fromDate, toDate);
 
-            if (result == null || !result.Any()) 
-            {
-                return NotFound(new { message = "No productivity trend data found for the given parameters." });
-            }
 
             return Ok(new { message = "Productivity trend data fetched successfully.", data = result });
         }
@@ -223,11 +197,6 @@ namespace Hublog.API.Controllers
                 return BadRequest("FromDate cannot be greater than ToDate.");
             }
             var result = await _productivityService.GetEmployeeList(organizationId, teamId, userId, fromDate, toDate);
-
-            if (result == null || !result.Any()) 
-            {
-                return NotFound(new { message = "No employee data found for the given parameters." });
-            }
 
             return Ok(new { message = "Employee list data fetched successfully.", data = result });
         }
