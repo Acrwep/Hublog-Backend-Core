@@ -95,7 +95,12 @@ namespace Hublog.Repository.Repositories
                A.UserId, 
                A.ApplicationName, 
                A.Details, 
-               SUM(DATEDIFF(SECOND, '00:00:00', A.TotalUsage)) AS TotalSeconds, 
+ SUM(
+        -- Convert TotalUsage into total seconds manually
+        CAST(SUBSTRING(A.TotalUsage, 1, CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+        CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) - CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+        CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) + 1, LEN(A.TotalUsage)) AS INT)  -- Seconds
+    ) AS TotalSeconds, 
                A.UsageDate
            FROM  
                ApplicationUsage A
@@ -122,7 +127,11 @@ namespace Hublog.Repository.Repositories
         U.UserId,
         U.Url AS ApplicationName,
         NULL AS Details,
-        SUM(DATEDIFF(SECOND, '00:00:00', U.TotalUsage)) AS TotalSeconds,
+ SUM(
+        CAST(SUBSTRING( U.TotalUsage, 1, CHARINDEX(':', U.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+        CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1, CHARINDEX(':',  U.TotalUsage, CHARINDEX(':', U.TotalUsage) + 1) - CHARINDEX(':',  U.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+        CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':', U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1) + 1, LEN( U.TotalUsage)) AS INT)  -- Seconds
+    ) AS TotalSeconds, 
         U.UsageDate
     FROM 
         UrlUsage U
@@ -170,7 +179,6 @@ namespace Hublog.Repository.Repositories
                 })
                 .ToList();
 
-            // Return the merged and grouped list
             return groupedUsages;
 
 
@@ -286,14 +294,21 @@ namespace Hublog.Repository.Repositories
                 }
                 var averageDurationInSeconds = totalProductiveDuration / dateDifferenceInDays;
 
+                string FormatDuration(long totalSeconds)
+                {
+                    var hours = totalSeconds / 3600; // Total hours
+                    var minutes = (totalSeconds % 3600) / 60; // Remaining minutes
+                    var seconds = totalSeconds % 60; // Remaining seconds
+                    return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+                }
 
                 result = new ProductivityDurations
                 {
-                    TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss"),
-                    TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss"),
-                    TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss"),
-                    TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss"),
-                    AverageDuratiopn = TimeSpan.FromSeconds(averageDurationInSeconds).ToString(@"hh\:mm\:ss")
+                    TotalProductiveDuration = FormatDuration(totalProductiveDuration),
+                    TotalUnproductiveDuration = FormatDuration(totalUnproductiveDuration),
+                    TotalNeutralDuration = FormatDuration(totalNeutralDuration),
+                    TotalDuration = FormatDuration(totalDurationInSeconds),
+                    AverageDuratiopn = FormatDuration((long)averageDurationInSeconds)
                 };
 
             }
@@ -308,7 +323,12 @@ namespace Hublog.Repository.Repositories
                A.UserId, 
                A.ApplicationName, 
                A.Details, 
-               SUM(DATEDIFF(SECOND, '00:00:00', A.TotalUsage)) AS TotalSeconds, 
+ SUM(
+        -- Convert TotalUsage into total seconds manually
+        CAST(SUBSTRING(A.TotalUsage, 1, CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+        CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) - CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+        CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) + 1, LEN(A.TotalUsage)) AS INT)  -- Seconds
+    ) AS TotalSeconds, 
                A.UsageDate
                FROM  
                    ApplicationUsage A
@@ -333,7 +353,11 @@ namespace Hublog.Repository.Repositories
              SELECT U.UserId,
                  U.Url AS ApplicationName,
                  U.Details,
-                 SUM(DATEDIFF(SECOND, '00:00:00', U.TotalUsage)) AS TotalSeconds,
+ SUM(
+        CAST(SUBSTRING( U.TotalUsage, 1, CHARINDEX(':', U.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+        CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1, CHARINDEX(':',  U.TotalUsage, CHARINDEX(':', U.TotalUsage) + 1) - CHARINDEX(':',  U.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+        CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':', U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1) + 1, LEN( U.TotalUsage)) AS INT)  -- Seconds
+    ) AS TotalSeconds, 
                  U.UsageDate
               FROM  
                  Urlusage U
@@ -366,7 +390,6 @@ namespace Hublog.Repository.Repositories
 
             var allUsages = appUsages.Concat(urlUsages).ToList();
 
-            // Return the merged list return allUsages;
             return allUsages;
             //var urlUsageQuery1 = @"select * imImbuildAppsAndUrls where name Like '' ",;
 
@@ -452,14 +475,21 @@ namespace Hublog.Repository.Repositories
 
                 var averageDurationInSeconds = totalProductiveDuration / dateDifferenceInDays;
 
+                string FormatDuration(long totalSeconds)
+                {
+                    var hours = totalSeconds / 3600; // Calculate total hours
+                    var minutes = (totalSeconds % 3600) / 60; // Calculate remaining minutes
+                    var seconds = totalSeconds % 60; // Calculate remaining seconds
+                    return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+                }
+
                 result.Add(new TeamProductivity
                 {
                     TeamName = team.TeamName,
-                    TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss"),
-                    TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss"),
-                    TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss"),
-                    TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss"),
-
+                    TotalProductiveDuration = FormatDuration(totalProductiveDuration),
+                    TotalNeutralDuration = FormatDuration(totalNeutralDuration),
+                    TotalUnproductiveDuration = FormatDuration(totalUnproductiveDuration),
+                    TotalDuration = FormatDuration(totalDurationInSeconds),
                 });
             }
 
@@ -514,6 +544,7 @@ namespace Hublog.Repository.Repositories
             var teamResults = new List<dynamic>();
             var GrandtotalTimeDuration = 0;
             var GrandtotalProductiveDuration = 0;
+            long abc =0;
             foreach (var team in teams)
             {
                 teamId = team.TeamId;
@@ -596,25 +627,32 @@ WHERE O.Id = @organizationId
 
                 var totalDurationInSeconds = totalProductiveDuration;
 
-                //GrandtotalTimeDuration = GrandtotalTimeDuration + totalProductiveDuration;
+                abc = abc + (totalseconds ?? 0);
 
                 if (totalDurationInSeconds > 0)
                 {
-
-                    var productivePercent = (double)totalProductiveDuration / totalseconds * 100;
+                    //var productivePercent = ((double)totalProductiveDuration / totalseconds) * 100;
+                    double productivePercent = (double)totalProductiveDuration / totalseconds.GetValueOrDefault() * 100;
                     if (productivePercent > 100)
                     {
                         productivePercent = 100;
 
                     }
+                    string FormatDuration(long totalSeconds)
+                    {
+                        var hours = totalSeconds / 3600; // Total hours
+                        var minutes = (totalSeconds % 3600) / 60; // Remaining minutes
+                        var seconds = totalSeconds % 60; // Remaining seconds
+                        return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+                    }
 
-
+                    // Build the result object with formatted durations
                     var teamResult = new
                     {
-                        productive_duration = totalProductiveDuration,
-                        unproductive_duration = totalUnproductiveDuration,
-                        neutral_duration = totalNeutralDuration,
-                        total_duration = totalDurationInSeconds,
+                        productive_duration = FormatDuration(totalProductiveDuration),
+                        unproductive_duration = FormatDuration(totalUnproductiveDuration),
+                        neutral_duration = FormatDuration(totalNeutralDuration),
+                        total_duration = FormatDuration(totalDurationInSeconds),
                         productive_percent = productivePercent,
                         team_name = team.TeamName
                     };
@@ -633,10 +671,15 @@ WHERE O.Id = @organizationId
 
             var bottomTeams = sortedTeams.Where(t => t.productive_duration == leastProductivePercent).ToList();
 
-            TimeSpan time = TimeSpan.FromSeconds(GrandtotalProductiveDuration);
-            string formattedTime = time.ToString(@"hh\:mm\:ss");
-            var GrandTotalpercentage = GrandtotalTimeDuration > 0 ?
-                                     (double)GrandtotalProductiveDuration / GrandtotalTimeDuration * 100 : 0.0;
+            // Calculate hours, minutes, and seconds manually
+            var totalHours = (int)(GrandtotalProductiveDuration / 3600); // Total hours
+            var totalMinutes = (int)((GrandtotalProductiveDuration % 3600) / 60); // Remaining minutes
+            var totalSeconds = (int)(GrandtotalProductiveDuration % 60); // Remaining seconds
+
+            // Format the time as "HH:mm:ss" with no 24-hour limit
+            string formattedTime = $"{totalHours:D2}:{totalMinutes:D2}:{totalSeconds:D2}";
+            var GrandTotalpercentage =
+                                   (double)GrandtotalProductiveDuration / abc * 100 ;
 
             return new
             {
@@ -656,7 +699,14 @@ WHERE O.Id = @organizationId
             string appUsageQuery = @"
             SELECT 
                   A.AttendanceDate as start_timing, 
-                   SUM(DATEDIFF(SECOND, '00:00:00', A.Total_Time)) AS TotalTimes,
+                   SUM(
+        CASE
+            WHEN CHARINDEX(':', A.Total_Time) > 0 THEN 
+                (CAST(SUBSTRING(A.Total_Time, 1, CHARINDEX(':', A.Total_Time) - 1) AS INT) * 3600) +
+                (CAST(SUBSTRING(A.Total_Time, CHARINDEX(':', A.Total_Time) + 1, LEN(A.Total_Time)) AS INT) * 60)
+            ELSE 0
+        END
+    ) AS TotalTimes, 
                    ISNULL(SUM(DATEDIFF(SECOND, A.Start_Time, A.End_Time)), 0) AS PunchDuration
              FROM  
                   Attendance A
@@ -724,16 +774,31 @@ WHERE O.Id = @organizationId
                 var breakDurationTimeSpan = TimeSpan.FromSeconds(breakDuration);
                 var activeDurationTimeSpan = TimeSpan.FromSeconds(punchDuration - breakDuration);
 
+                // Calculate total hours, minutes, and seconds, including overflow beyond 24 hours
+                int totalPunchHours = (int)punchDurationTimeSpan.TotalHours;
+                int punchMinutes = punchDurationTimeSpan.Minutes;
+                int punchSeconds = punchDurationTimeSpan.Seconds;
+
+                int totalBreakHours = (int)breakDurationTimeSpan.TotalHours;
+                int breakMinutes = breakDurationTimeSpan.Minutes;
+                int breakSeconds = breakDurationTimeSpan.Seconds;
+
+                int totalActiveHours = (int)activeDurationTimeSpan.TotalHours;
+                int activeMinutes = activeDurationTimeSpan.Minutes;
+                int activeSeconds = activeDurationTimeSpan.Seconds;
+
+                // Format the result as HH:mm:ss with total hours
                 if (punchDuration > 0)
                 {
                     return new
                     {
                         start_timing = date.ToString("yyyy-MM-dd"),
-                        punch_duration = punchDurationTimeSpan.ToString(@"hh\:mm\:ss"),
-                        break_duration = breakDurationTimeSpan.ToString(@"hh\:mm\:ss"),
-                        active_duration = activeDurationTimeSpan.ToString(@"hh\:mm\:ss"),
+                        punch_duration = $"{totalPunchHours:D2}:{punchMinutes:D2}:{punchSeconds:D2}",
+                        break_duration = $"{totalBreakHours:D2}:{breakMinutes:D2}:{breakSeconds:D2}",
+                        active_duration = $"{totalActiveHours:D2}:{activeMinutes:D2}:{activeSeconds:D2}",
                     };
                 }
+
                 return null;
             }).Where(d => d != null).ToList();
 
@@ -742,12 +807,18 @@ WHERE O.Id = @organizationId
         }
         public async Task<List<AppUsage>> GetAppUsagesS(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
+            //SUM(DATEDIFF(SECOND, '00:00:00', A.TotalUsage)) AS TotalSeconds,
             string appUsageQuery = @"
            SELECT 
                A.UserId, 
                A.ApplicationName, 
                A.Details, 
-               SUM(DATEDIFF(SECOND, '00:00:00', A.TotalUsage)) AS TotalSeconds, 
+ SUM(
+        -- Convert TotalUsage into total seconds manually
+        CAST(SUBSTRING(A.TotalUsage, 1, CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+        CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) - CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+        CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) + 1, LEN(A.TotalUsage)) AS INT)  -- Seconds
+    ) AS TotalSeconds, 
                A.UsageDate
            FROM  
                ApplicationUsage A
@@ -768,13 +839,17 @@ WHERE O.Id = @organizationId
                A.Details, 
                A.UsageDate;
         ";
-
+            //SUM(DATEDIFF(SECOND, '00:00:00', U.TotalUsage)) AS TotalSeconds,
             var urlUsageQuery = @"
     SELECT 
         U.UserId,
         U.Url AS ApplicationName,
         NULL AS Details,
-        SUM(DATEDIFF(SECOND, '00:00:00', U.TotalUsage)) AS TotalSeconds,
+ SUM(
+        CAST(SUBSTRING( U.TotalUsage, 1, CHARINDEX(':', U.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+        CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1, CHARINDEX(':',  U.TotalUsage, CHARINDEX(':', U.TotalUsage) + 1) - CHARINDEX(':',  U.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+        CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':', U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1) + 1, LEN( U.TotalUsage)) AS INT)  -- Seconds
+    ) AS TotalSeconds, 
         U.UsageDate
     FROM 
         UrlUsage U
@@ -944,11 +1019,20 @@ WHERE O.Id = @organizationId
 
             foreach (var duration in filteredDurations)
             {
-                // Format durations to hh:mm:ss and assign to the corresponding properties
-                duration.Total_Duration = TimeSpan.FromSeconds(duration.TotalDuration).ToString(@"hh\:mm\:ss");
-                duration.Productive_Duration = TimeSpan.FromSeconds(duration.ProductiveDuration).ToString(@"hh\:mm\:ss");
-                duration.Unproductive_Duration = TimeSpan.FromSeconds(duration.UnproductiveDuration).ToString(@"hh\:mm\:ss");
-                duration.Neutral_Duration = TimeSpan.FromSeconds(duration.NeutralDuration).ToString(@"hh\:mm\:ss");
+                // Helper function to format durations as "HH:mm:ss"
+                string FormatDuration(long totalSeconds)
+                {
+                    var hours = totalSeconds / 3600; // Total hours
+                    var minutes = (totalSeconds % 3600) / 60; // Remaining minutes
+                    var seconds = totalSeconds % 60; // Remaining seconds
+                    return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+                }
+
+                // Cast or round double to long before formatting
+                duration.Total_Duration = FormatDuration((long)Math.Round(duration.TotalDuration));
+                duration.Productive_Duration = FormatDuration((long)Math.Round(duration.ProductiveDuration));
+                duration.Unproductive_Duration = FormatDuration((long)Math.Round(duration.UnproductiveDuration));
+                duration.Neutral_Duration = FormatDuration((long)Math.Round(duration.NeutralDuration));
             }
 
             // Return the date-wise durations with the formatted durations
@@ -960,6 +1044,8 @@ WHERE O.Id = @organizationId
                 unproductive_Duration = duration.Unproductive_Duration,
                 neutral_Duration = duration.Neutral_Duration
             }).ToList();
+
+
         }
 
 
@@ -1099,7 +1185,6 @@ ORDER BY
                     {
                         var userIdd = us.UserId;
                         var FullANme = us.FullName;
-
                         int totalProductiveDuration = 0;
                         int totalUnproductiveDuration = 0;
                         int totalNeutralDuration = 0;
@@ -1173,9 +1258,11 @@ ORDER BY
                             }
                         }
                         var AttendanceCount = us.AttendanceCount;
-                        var onlineDurationInSeconds = us.OnlineDurationInHours;
-                        var activeDurationInSeconds = us.ActiveTimeInSeconds;
-                        var breakDurationInSeconds = us.TotalBreakDurationInSeconds;
+                        var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0; // Ensure no null value
+                        double? activeDurationInSeconds = us.ActiveTimeInSeconds;  // Nullable double
+
+                        activeDurationInSeconds = us.ActiveTimeInSeconds ?? 0.0;
+                        var breakDurationInSeconds = us.TotalBreakDurationInSeconds ?? 0.0;  // Ensure no null value
                         var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
 
                         var dateDifferenceInDays = (toDate - fromDate).TotalDays;
@@ -1184,9 +1271,22 @@ ORDER BY
                         {
                             dateDifferenceInDays = 1;
                         }
-                        var percentageProductiveDuration = ((double)totalProductiveDuration / activeDurationInSeconds) * 100;
+
+                        // Ensure no null values are passed to FormatDuration
+                        var percentageProductiveDuration = activeDurationInSeconds > 0 ? ((double)totalProductiveDuration / activeDurationInSeconds.Value) * 100 : 0.0; // Check before dividing
 
 
+
+                        // Helper function to format durations
+                        string FormatDuration(double totalSeconds)
+                        {
+                            var hours = (long)(totalSeconds / 3600); // Total hours
+                            var minutes = (long)((totalSeconds % 3600) / 60); // Remaining minutes
+                            var seconds = (long)(totalSeconds % 60); // Remaining seconds
+                            return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+                        }
+
+                        // Create a dynamic object
                         var dynamicItem = new ExpandoObject() as dynamic;
 
                         dynamicItem.UserID = userIdd;
@@ -1194,27 +1294,18 @@ ORDER BY
                         dynamicItem.Team_Name = TeamName;
                         dynamicItem.AttendanceCount = AttendanceCount;
 
-                        //dynamicItem.active_duration = TimeSpan.FromSeconds(activeDurationInSeconds).ToString(@"hh\:mm\:ss"); 
-                        //dynamicItem.break_duration = TimeSpan.FromSeconds(breakDurationInSeconds).ToString(@"hh\:mm\:ss");
-                        //dynamicItem.online_duration = TimeSpan.FromSeconds(onlineDurationInSeconds).ToString(@"hh\:mm\:ss");
+                        // Format durations using the helper function
+                        dynamicItem.ActiveDuration = FormatDuration(activeDurationInSeconds ?? 0.0);
+                        dynamicItem.BreakDuration = FormatDuration(breakDurationInSeconds);
+                        dynamicItem.OnlineDuration = FormatDuration(onlineDurationInSeconds);
 
-                        //dynamicItem.TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss");
-                        //dynamicItem.TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss");
-                        //dynamicItem.TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss");
-                        //dynamicItem.TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss");
-                        //dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
-
-                        //result.Add(dynamicItem);
-                        dynamicItem.ActiveDuration = TimeSpan.FromSeconds(Convert.ToDouble(activeDurationInSeconds)).ToString(@"hh\:mm\:ss");
-                        dynamicItem.BreakDuration = TimeSpan.FromSeconds(Convert.ToDouble(breakDurationInSeconds)).ToString(@"hh\:mm\:ss");
-                        dynamicItem.OnlineDuration = TimeSpan.FromSeconds(Convert.ToDouble(onlineDurationInSeconds)).ToString(@"hh\:mm\:ss");
-
-                        dynamicItem.TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss");
-                        dynamicItem.TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss");
-                        dynamicItem.TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss");
-                        dynamicItem.TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss");
+                        dynamicItem.TotalProductiveDuration = FormatDuration(totalProductiveDuration);
+                        dynamicItem.TotalUnproductiveDuration = FormatDuration(totalUnproductiveDuration);
+                        dynamicItem.TotalNeutralDuration = FormatDuration(totalNeutralDuration);
+                        dynamicItem.TotalDuration = FormatDuration(totalDurationInSeconds);
                         dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
 
+                        // Add the dynamic item to the result
                         result.Add(dynamicItem);
                     }
 
@@ -1235,7 +1326,7 @@ ORDER BY
 
                     foreach (var us in usagess)
                     {
-                        var userIdd = us.UserId;
+                        userId = us.UserId;
                         var FullANme = us.FullName;
 
                         int totalProductiveDuration = 0;
@@ -1311,9 +1402,11 @@ ORDER BY
                             }
                         }
                         var AttendanceCount = us.AttendanceCount;
-                        var onlineDurationInSeconds = us.OnlineDurationInHours;
-                        var activeDurationInSeconds = us.ActiveTimeInSeconds;
-                        var breakDurationInSeconds = us.TotalBreakDurationInSeconds;
+                        var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0; // Ensure no null value
+                        double? activeDurationInSeconds = us.ActiveTimeInSeconds;  // Nullable double
+
+                        activeDurationInSeconds = us.ActiveTimeInSeconds ?? 0.0;
+                        var breakDurationInSeconds = us.TotalBreakDurationInSeconds ?? 0.0;  // Ensure no null value
                         var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
 
                         var dateDifferenceInDays = (toDate - fromDate).TotalDays;
@@ -1322,27 +1415,39 @@ ORDER BY
                         {
                             dateDifferenceInDays = 1;
                         }
-                        var percentageProductiveDuration = ((double)totalProductiveDuration / activeDurationInSeconds) * 100;
 
+                        // Ensure no null values are passed to FormatDuration
+                        var percentageProductiveDuration = activeDurationInSeconds > 0 ? ((double)totalProductiveDuration / activeDurationInSeconds.Value) * 100 : 0.0; // Check before dividing
+
+                        // Helper function to format durations
+                        string FormatDuration(double totalSeconds)
+                        {
+                            var hours = (long)(totalSeconds / 3600); // Total hours
+                            var minutes = (long)((totalSeconds % 3600) / 60); // Remaining minutes
+                            var seconds = (long)(totalSeconds % 60); // Remaining seconds
+                            return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+                        }
 
                         var dynamicItem = new ExpandoObject() as dynamic;
 
-                        dynamicItem.UserID = userIdd;
+                        dynamicItem.UserID = userId;
                         dynamicItem.Team_Name = TeamName;
                         dynamicItem.full_Name = FullANme;
                         dynamicItem.AttendanceCount = AttendanceCount;
 
-                        dynamicItem.ActiveDuration = TimeSpan.FromSeconds(Convert.ToDouble(activeDurationInSeconds)).ToString(@"hh\:mm\:ss");
-                        dynamicItem.BreakDuration = TimeSpan.FromSeconds(Convert.ToDouble(breakDurationInSeconds)).ToString(@"hh\:mm\:ss");
-                        dynamicItem.OnlineDuration = TimeSpan.FromSeconds(Convert.ToDouble(onlineDurationInSeconds)).ToString(@"hh\:mm\:ss");
+                        // Format durations using the helper function, ensure no null values
+                        dynamicItem.ActiveDuration = FormatDuration(activeDurationInSeconds ?? 0.0);
+                        dynamicItem.BreakDuration = FormatDuration(breakDurationInSeconds);
+                        dynamicItem.OnlineDuration = FormatDuration(onlineDurationInSeconds);
 
-                        dynamicItem.TotalProductiveDuration = TimeSpan.FromSeconds(totalProductiveDuration).ToString(@"hh\:mm\:ss");
-                        dynamicItem.TotalUnproductiveDuration = TimeSpan.FromSeconds(totalUnproductiveDuration).ToString(@"hh\:mm\:ss");
-                        dynamicItem.TotalNeutralDuration = TimeSpan.FromSeconds(totalNeutralDuration).ToString(@"hh\:mm\:ss");
-                        dynamicItem.TotalDuration = TimeSpan.FromSeconds(totalDurationInSeconds).ToString(@"hh\:mm\:ss");
+                        dynamicItem.TotalProductiveDuration = FormatDuration(totalProductiveDuration);
+                        dynamicItem.TotalUnproductiveDuration = FormatDuration(totalUnproductiveDuration);
+                        dynamicItem.TotalNeutralDuration = FormatDuration(totalNeutralDuration);
+                        dynamicItem.TotalDuration = FormatDuration(totalDurationInSeconds);
                         dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
 
                         result.Add(dynamicItem);
+
                     }
 
                     userId = null;
