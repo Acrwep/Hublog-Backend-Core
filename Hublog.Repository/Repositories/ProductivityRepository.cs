@@ -318,65 +318,9 @@ namespace Hublog.Repository.Repositories
 
         public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
         {
-            string appUsageQuery = @"
-           SELECT 
-               A.UserId, 
-               A.ApplicationName, 
-               A.Details, 
- SUM(
-        -- Convert TotalUsage into total seconds manually
-        CAST(SUBSTRING(A.TotalUsage, 1, CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
-        CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) - CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
-        CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) + 1, LEN(A.TotalUsage)) AS INT)  -- Seconds
-    ) AS TotalSeconds, 
-               A.UsageDate
-               FROM  
-                   ApplicationUsage A
-               INNER JOIN 
-                   Users Us ON A.UserId = Us.Id
-               INNER JOIN 
-                   Team U ON us.TeamId = U.Id
-               INNER JOIN 
-                     Organization O ON U.OrganizationId = O.Id
-               WHERE  
-                  O.Id = @OrganizationId 
-                  AND A.UsageDate BETWEEN @FromDate AND @ToDate
-                  AND (@TeamId IS NULL OR U.Id = @TeamId)
-              GROUP BY 
-               A.UserId, 
-               A.ApplicationName, 
-               A.Details, 
-               A.UsageDate;
-        ";
+            string appUsageQuery = "GetAppUsage";
+            string urlUsageQuery = "GetUrlUsage";
 
-            var urlUsageQuery = @"
-             SELECT U.UserId,
-                 U.Url AS ApplicationName,
-                 U.Details,
- SUM(
-        CAST(SUBSTRING( U.TotalUsage, 1, CHARINDEX(':', U.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
-        CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1, CHARINDEX(':',  U.TotalUsage, CHARINDEX(':', U.TotalUsage) + 1) - CHARINDEX(':',  U.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
-        CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':', U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1) + 1, LEN( U.TotalUsage)) AS INT)  -- Seconds
-    ) AS TotalSeconds, 
-                 U.UsageDate
-              FROM  
-                 Urlusage U
-             INNER JOIN 
-                   Users Us ON U.UserId = Us.Id
-             INNER JOIN 
-                   Team T ON us.TeamId = T.Id
-             INNER JOIN 
-                   Organization O ON T.OrganizationId = O.Id
-             WHERE 
-               O.Id = @OrganizationId 
-               AND U.UsageDate BETWEEN @FromDate AND @ToDate
-               AND (@TeamId IS NULL OR T.Id = @TeamId)
-             GROUP BY 
-               U.UserId,
-               U.Url,
-               U.Details, 
-               U.UsageDate;"
-            ;
             var parameters = new
             {
                 OrganizationId = organizationId,
@@ -384,16 +328,14 @@ namespace Hublog.Repository.Repositories
                 FromDate = fromDate,
                 ToDate = toDate
             };
+            IEnumerable<AppUsage> appUsages;
+            IEnumerable<AppUsage> urlUsages;
 
-            var appUsages = await _dapper.GetAllAsync<AppUsage>(appUsageQuery, parameters);
-            var urlUsages = await _dapper.GetAllAsync<AppUsage>(urlUsageQuery, parameters);
+            appUsages = await _dapper.GetAllAsync<AppUsage>(appUsageQuery, parameters);
+            urlUsages = await _dapper.GetAllAsync<AppUsage>(urlUsageQuery, parameters);
 
             var allUsages = appUsages.Concat(urlUsages).ToList();
-
             return allUsages;
-            //var urlUsageQuery1 = @"select * imImbuildAppsAndUrls where name Like '' ",;
-
-
         }
         public async Task<List<TeamProductivity>> TeamwiseProductivity(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
         {
@@ -477,10 +419,10 @@ namespace Hublog.Repository.Repositories
 
                 string FormatDuration(long totalSeconds)
                 {
-                    var hours = totalSeconds / 3600; // Calculate total hours
-                    var minutes = (totalSeconds % 3600) / 60; // Calculate remaining minutes
-                    var seconds = totalSeconds % 60; // Calculate remaining seconds
-                    return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+                    var hours = totalSeconds / 3600; 
+                    var minutes = (totalSeconds % 3600) / 60;
+                    var seconds = totalSeconds % 60;
+                    return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; 
                 }
 
                 result.Add(new TeamProductivity
@@ -605,10 +547,6 @@ namespace Hublog.Repository.Repositories
                     
                 }
                 GrandtotalProductiveDuration += totalProductiveDuration;
-   //             SUM(
-   //    (CAST(SUBSTRING(A.Total_Time, 1, CHARINDEX(':', A.Total_Time) - 1) AS INT) * 3600) +
-   //    (CAST(SUBSTRING(A.Total_Time, CHARINDEX(':', A.Total_Time) + 1, LEN(A.Total_Time)) AS INT) * 60)
-   //) AS Total_Seconds
                 var query = @"SELECT 
     SUM(DATEDIFF(SECOND, A.[Start_Time], A.[End_Time])) AS Total_Seconds
 FROM Attendance A
@@ -660,23 +598,27 @@ WHERE O.Id = @organizationId
                     teamResults.Add(teamResult);
                 }
             }
-            
-            // Sort teams by productive percentage
-            var sortedTeams = teamResults.OrderByDescending(t => t.productive_duration).ToList();
 
-            // Identify the top team(s)
-            var topTeams = sortedTeams.TakeWhile(t => t.productive_percent == sortedTeams.First().productive_percent).ToList();
+            //var sortedTeams = teamResults.OrderByDescending(t => t.productive_duration).ToList();
+
+            //var topTeams = sortedTeams.TakeWhile(t => t.productive_percent == sortedTeams.First().productive_percent).ToList();
+
+            //var leastProductivePercent = sortedTeams.LastOrDefault()?.productive_duration ?? 0;
+
+            //var bottomTeams = sortedTeams.Where(t => t.productive_duration == leastProductivePercent).ToList();
+
+            var sortedTeams = teamResults.OrderByDescending(t => t.productive_duration).ToList();
+            var topTeams = sortedTeams.Take(3).ToList();
 
             var leastProductivePercent = sortedTeams.LastOrDefault()?.productive_duration ?? 0;
 
-            var bottomTeams = sortedTeams.Where(t => t.productive_duration == leastProductivePercent).ToList();
+            var bottomTeams = sortedTeams
+                .OrderBy(t => t.productive_duration).Take(3).ToList();
 
-            // Calculate hours, minutes, and seconds manually
             var totalHours = (int)(GrandtotalProductiveDuration / 3600); // Total hours
             var totalMinutes = (int)((GrandtotalProductiveDuration % 3600) / 60); // Remaining minutes
             var totalSeconds = (int)(GrandtotalProductiveDuration % 60); // Remaining seconds
 
-            // Format the time as "HH:mm:ss" with no 24-hour limit
             string formattedTime = $"{totalHours:D2}:{totalMinutes:D2}:{totalSeconds:D2}";
             var GrandTotalpercentage =
                                    (double)GrandtotalProductiveDuration / abc * 100 ;

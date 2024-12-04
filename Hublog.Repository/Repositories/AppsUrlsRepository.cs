@@ -28,8 +28,7 @@ namespace Hublog.Repository.Repositories
         SELECT 
             au.ApplicationName,
             COUNT(DISTINCT au.UserId) AS UserCount,
-            CONVERT(VARCHAR(8), DATEADD(SECOND, SUM(DATEDIFF(SECOND, 0, TRY_CAST(au.TotalUsage AS TIME))), 0), 108) AS TotalUsage,
-            au.UsageDate
+            CONVERT(VARCHAR(8), DATEADD(SECOND, SUM(DATEDIFF(SECOND, 0, TRY_CAST(au.TotalUsage AS TIME))), 0), 108) AS TotalUsage
         FROM 
             ApplicationUsage AS au
         JOIN 
@@ -40,9 +39,9 @@ namespace Hublog.Repository.Repositories
             AND (@TeamId IS NULL OR u.TeamId = @TeamId)  
             AND au.UsageDate BETWEEN @StartDate AND @EndDate
         GROUP BY 
-            au.ApplicationName, au.UsageDate  
+            au.ApplicationName
         ORDER BY 
-            au.UsageDate;";
+             au.ApplicationName;";
 
             var parameter = new { organizationId, teamid, userId, startDate, endDate };
 
@@ -59,8 +58,7 @@ SELECT
     COUNT(DISTINCT uu.UserId) AS UserCount,  
     CONVERT(VARCHAR(8), DATEADD(SECOND, SUM(
         DATEDIFF(SECOND, 0, TRY_CAST(uu.TotalUsage AS TIME))
-    ), 0), 108) AS TotalUsage,
-    uu.UsageDate
+    ), 0), 108) AS TotalUsage
 FROM 
     UrlUsage AS uu
 JOIN 
@@ -71,9 +69,9 @@ WHERE
     AND (@TeamId IS NULL OR u.TeamId = @TeamId)  
     AND uu.UsageDate BETWEEN @StartDate AND @EndDate
 GROUP BY 
-    uu.Url, uu.UsageDate  
+    uu.Url  
 ORDER BY 
-    uu.UsageDate;";
+   uu.Url;";
 
             var parameter = new { organizationId, teamid, userId, startDate, endDate };
 
@@ -140,8 +138,21 @@ ORDER BY
             };
 
             string query = "GetTopUrlUsage";
+            var result = await _dapper.GetSingleAsync<(string Url, long MaxUsageSeconds)>(
+                query,
+                parameters,
+                CommandType.StoredProcedure
+            );
 
-            return await _dapper.GetSingleAsync<(string Url, string MaxUsage)>(query, parameters, CommandType.StoredProcedure);
+            string FormatDuration(long totalSeconds)
+            {
+                var hours = totalSeconds / 3600;
+                var minutes = (totalSeconds % 3600) / 60;
+                var seconds = totalSeconds % 60;
+                return $"{hours}:{minutes:D2}:{seconds:D2}";
+            }
+
+            return (result.Url, FormatDuration(result.MaxUsageSeconds));
         }
 
         public async Task<(string ApplicationName, string MaxUsage)> GetTopAppUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
@@ -154,60 +165,31 @@ ORDER BY
                 @StartDate = startDate,
                 @EndDate = endDate
             };
-
             string query = "GetTopAppUsage";
 
-            return await _dapper.GetSingleAsync<(string Url, string MaxUsage)>(query, parameters, CommandType.StoredProcedure);
+            // Ensure the field names match the stored procedure output
+            var result = await _dapper.GetSingleAsync<(string ApplicationName, long TotalUsageSeconds)>(
+                query,
+                parameters,
+                CommandType.StoredProcedure
+            );
+
+            string FormatDuration(long totalSeconds)
+            {
+                var hours = totalSeconds / 3600;        
+                var minutes = (totalSeconds % 3600) / 60; 
+                var seconds = totalSeconds % 60;        
+                return $"{hours}:{minutes:D2}:{seconds:D2}"; 
+            }
+
+            return (result.ApplicationName, FormatDuration(result.TotalUsageSeconds));
         }
 
         public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
-            string appUsageQuery = @"
-           SELECT 
-               A.UserId, 
-               A.ApplicationName, 
-               A.Details, 
-               SUM(DATEDIFF(SECOND, '00:00:00', A.TotalUsage)) AS TotalSeconds, 
-               A.UsageDate
-           FROM  
-               ApplicationUsage A
-           INNER JOIN 
-               Users U ON A.UserId = U.Id
-           INNER JOIN 
-               Organization O ON U.OrganizationId = O.Id
-           WHERE  
-                  O.Id = @OrganizationId 
-                  AND A.UsageDate BETWEEN @FromDate AND @ToDate
-                  AND (@TeamId IS NULL OR U.TeamId = @TeamId)
-                  AND (@UserId IS NULL OR A.UserId = @UserId)
-           GROUP BY 
-               A.UserId, 
-               A.ApplicationName, 
-               A.Details, 
-               A.UsageDate;
-        ";
+            string appUsageQuery = "get_ApplicationUsage";
 
-            var urlUsageQuery = @"
-             SELECT U.UserId,
-                 U.Url AS ApplicationName,
-                 U.Details,
-                 SUM(DATEDIFF(SECOND, '00:00:00', U.TotalUsage)) AS TotalSeconds,
-                 U.UsageDate
-             FROM UrlUsage U
-             INNER JOIN 
-               Users Us ON U.UserId = Us.Id
-             INNER JOIN 
-               Organization O ON Us.OrganizationId = O.Id
-             WHERE 
-               O.Id = @OrganizationId 
-               AND U.UsageDate BETWEEN @FromDate AND @ToDate
-               AND (@TeamId IS NULL OR US.TeamId = @TeamId)
-               AND (@UserId IS NULL OR U.UserId = @UserId)
-             GROUP BY 
-               U.UserId,
-               U.Url,
-               U.Details, 
-               U.UsageDate;"
+            string urlUsageQuery = "Get_UrlUsage";
             ;
             var parameters = new
             {
@@ -217,17 +199,14 @@ ORDER BY
                 FromDate = fromDate,
                 ToDate = toDate
             };
+            IEnumerable<AppUsage> appUsages;
+            IEnumerable<AppUsage> urlUsages;
 
-            var appUsages = await _dapper.GetAllAsync<AppUsage>(appUsageQuery, parameters);
-            var urlUsages = await _dapper.GetAllAsync<AppUsage>(urlUsageQuery, parameters);
+            appUsages = await _dapper.GetAllAsync<AppUsage>(appUsageQuery, parameters);
+            urlUsages = await _dapper.GetAllAsync<AppUsage>(urlUsageQuery, parameters);
 
             var allUsages = appUsages.Concat(urlUsages).ToList();
-
-            // Return the merged list return allUsages;
             return allUsages;
-            //var urlUsageQuery1 = @"select * imImbuildAppsAndUrls where name Like '' ",;
-
-
         }
         public async Task<(string ApplicationName, string MaxUsage)> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
@@ -238,19 +217,15 @@ ORDER BY
                 WHERE O.Id = @OrganizationId
                 AND (@TeamId IS NULL OR T.Id = @TeamId) ";
 
-            // Fetching teams from the database
             var teams = await _dapper.GetAllAsync<int>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
 
-            // Dictionary to store usage time for each category across all teams
             var categoryTimeDictionary = new Dictionary<string, int>();
 
-            // Process each team
             foreach (var team in teams)
             {
                 teamId = team;
                 var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
 
-                // Process the usages and calculate total usage time for each application
                 var totalUsages = usages
                     .GroupBy(u => u.ApplicationName)
                     .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
@@ -260,7 +235,6 @@ ORDER BY
                 {
                     usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                    // Skip certain browsers if needed
                     if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
                     {
                         // Update usage time
@@ -299,7 +273,13 @@ ORDER BY
                     }
                 }
             }
-
+            string FormatDuration(double totalSeconds)
+            {
+                var totalHours = (long)(totalSeconds / 3600); // Total hours
+                var minutes = (long)((totalSeconds % 3600) / 60); // Remaining minutes
+                var seconds = (long)(totalSeconds % 60); // Remaining seconds
+                return $"{totalHours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+            }
             // Determine the most-used category after processing all teams
             string mostUsedCategoryName = null;
             int mostUsedCategoryTime = 0;
@@ -312,7 +292,7 @@ ORDER BY
             }
 
             // Return the result after processing all teams
-            return (mostUsedCategoryName, TimeSpan.FromSeconds(mostUsedCategoryTime).ToString(@"hh\:mm\:ss"));
+            return(mostUsedCategoryName, FormatDuration(mostUsedCategoryTime));
         }
 
     }
