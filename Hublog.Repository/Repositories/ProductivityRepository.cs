@@ -67,7 +67,7 @@ namespace Hublog.Repository.Repositories
         {
             var query = @"
         SELECT [id], [type], [name], [categoryid]
-        FROM [EMP6].[dbo].[ImbuildAppsAndUrls] 
+        FROM ImbuildAppsAndUrls
         WHERE [id] = @Id";
 
             var parameters = new { Id = id };
@@ -79,7 +79,7 @@ namespace Hublog.Repository.Repositories
         public async Task<bool> InsertImbuildAppsAndUrls(int id, MappingModel model)
         {
             var query = @"
-                UPDATE [EMP4].[dbo].[ImbuildAppsAndUrls]
+                UPDATE ImbuildAppsAndUrls
                 SET [CategoryId] = @NewCategoryId
                 WHERE [id] = @Id";
 
@@ -1060,7 +1060,7 @@ SELECT
     MAX(A.[AttendanceDate]) AS EndDate,
     SUM(DATEDIFF(SECOND, A.[Start_Time], A.[End_Time])) AS ActiveTimeInSeconds
 FROM 
-    [EMP4].[dbo].[Attendance] A
+    Attendance A
 INNER JOIN 
     Users U ON U.id = A.UserId
 INNER JOIN 
