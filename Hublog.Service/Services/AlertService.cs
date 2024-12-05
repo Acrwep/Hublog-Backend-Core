@@ -1,5 +1,6 @@
 ﻿using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Attendance;
+using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Interface;
 using Hublog.Repository.Repositories;
 using Hublog.Service.Interface;
@@ -28,6 +29,18 @@ namespace Hublog.Service.Services
         {
             var alerts = await _alertRepository.GetAlert(organizationId, userId, triggeredTime);
             return alerts;
+        }
+        public async Task<Alert_Rule> InsertAlertRule(Alert_Rule alert_Rule)
+        {
+            return await _alertRepository.InsertAlertRule(alert_Rule);
+        }
+        public async Task<Alert_Rule> UpdateAlertRule(Alert_Rule alert_Rule)
+        {
+            return await _alertRepository.UpdateAlertRule(alert_Rule);
+        }
+        public async Task<List<Alert_Rule>> GetAlertRule(string searchQuery)
+        {
+            return await _alertRepository.GetAlertRule(searchQuery);
         }
     }
 }

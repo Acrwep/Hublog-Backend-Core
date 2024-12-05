@@ -607,13 +607,13 @@ WHERE O.Id = @organizationId
 
             //var bottomTeams = sortedTeams.Where(t => t.productive_duration == leastProductivePercent).ToList();
 
-            var sortedTeams = teamResults.OrderByDescending(t => t.productive_duration).ToList();
+            var sortedTeams = teamResults.OrderByDescending(t => t.productive_percent).ToList();
             var topTeams = sortedTeams.Take(3).ToList();
 
-            var leastProductivePercent = sortedTeams.LastOrDefault()?.productive_duration ?? 0;
+            var leastProductivePercent = sortedTeams.LastOrDefault()?.productive_percent ?? 0;
 
             var bottomTeams = sortedTeams
-                .OrderBy(t => t.productive_duration).Take(3).ToList();
+                .OrderBy(t => t.productive_percent).Take(3).ToList();
 
             var totalHours = (int)(GrandtotalProductiveDuration / 3600); // Total hours
             var totalMinutes = (int)((GrandtotalProductiveDuration % 3600) / 60); // Remaining minutes

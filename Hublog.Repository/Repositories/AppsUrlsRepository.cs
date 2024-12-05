@@ -275,7 +275,7 @@ ORDER BY
                         var imbuildAppQuery = @"
     SELECT CategoryId 
     FROM ImbuildAppsAndUrls 
-    WHERE Name COLLATE SQL_Latin1_General_CP1_CI_AS LIKE '%' + @ApplicationName + '%'";
+    WHERE Name LIKE '%' + @ApplicationName + '%'";
                         var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName });
 
                         if (categoryId.HasValue)

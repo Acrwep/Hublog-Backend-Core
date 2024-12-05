@@ -1,5 +1,6 @@
 ﻿using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Attendance;
+using Hublog.Repository.Entities.Model.Break;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -9,5 +10,8 @@ namespace Hublog.Service.Interface
     {
         Task InsertAlert(List<Alert>  alert);
         Task<List<Alert>> GetAlert(int organizationId, int? userId, DateTime triggeredTime);
+        Task<Alert_Rule> InsertAlertRule(Alert_Rule alert_Rule);
+        Task<Alert_Rule> UpdateAlertRule(Alert_Rule alert_Rule);
+        Task<List<Alert_Rule>> GetAlertRule(string searchQuery);
     }
 }
