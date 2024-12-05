@@ -9,10 +9,10 @@ namespace Hublog.Repository.Entities.Model.AlertModel
     public class Alert_Rule
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public bool break_alert_status { get; set; }
         public int AlertThreshold { get; set; }
         public int PunchoutThreshold { get; set; }
         public bool Status { get; set; }
-        public int OrganizationId { get; set; } //(int, not null)
+        public int OrganizationId { get; set; } 
     }
 }

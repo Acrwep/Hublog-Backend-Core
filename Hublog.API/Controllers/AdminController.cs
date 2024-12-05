@@ -9,7 +9,7 @@ namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+    [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;

@@ -56,8 +56,8 @@ namespace Hublog.Repository.Repositories
         {
             try
             {
-                const string query = @"INSERT INTO Alert_Rule (Name, AlertThreshold,PunchoutThreshold, Status, OrganizationId)
-                VALUES (@Name, @AlertThreshold,@PunchoutThreshold, @Status, @OrganizationId);
+                const string query = @"INSERT INTO Alert_Rule (break_alert_status, AlertThreshold,PunchoutThreshold, Status, OrganizationId)
+                VALUES (@break_alert_status, @AlertThreshold,@PunchoutThreshold, @Status, @OrganizationId);
                 SELECT CAST(SCOPE_IDENTITY() as int)";
 
                 var createdBreakmaster = await _dapper.ExecuteAsync(query, alert_Rule);
@@ -75,7 +75,7 @@ namespace Hublog.Repository.Repositories
             try
             {
                 string query = @" UPDATE alert_Rule 
-                                  SET Name = @Name, AlertThreshold = @AlertThreshold,PunchoutThreshold=@PunchoutThreshold, Status = @Status, OrganizationId = @OrganizationId
+                                  SET break_alert_status = @break_alert_status, AlertThreshold = @AlertThreshold,PunchoutThreshold=@PunchoutThreshold, Status = @Status, OrganizationId = @OrganizationId
                                   WHERE Id = @Id"
                 ;
 
@@ -84,7 +84,7 @@ namespace Hublog.Repository.Repositories
                 if (result > 0)
                 {
                     string selectQuery = @"
-                                           SELECT Id, Name, AlertThreshold,PunchoutThreshold, Status, OrganizationId
+                                           SELECT Id, break_alert_status, AlertThreshold,PunchoutThreshold, Status, OrganizationId
                                            FROM alert_Rule
                                            WHERE Id = @Id";
 
@@ -109,7 +109,7 @@ namespace Hublog.Repository.Repositories
             SELECT * 
             FROM Alert_Rule 
             WHERE organizationId = @OrganizationId
-            AND (@SearchQuery IS NULL OR Name LIKE @SearchQuery)";
+            AND (@SearchQuery IS NULL OR break_alert_status LIKE @SearchQuery)";
 
                 var parameters = new
                 {

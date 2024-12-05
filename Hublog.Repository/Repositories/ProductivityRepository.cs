@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Data;
 using System.Dynamic;
 
 namespace Hublog.Repository.Repositories
@@ -392,19 +393,19 @@ namespace Hublog.Repository.Repositories
 
                                 switch (productivityName)
                                 {
-                                    case "Productive":
-                                        totalProductiveDuration += usage.TotalSeconds;
-                                        break;
-                                    case "Unproductive":
-                                        totalUnproductiveDuration += usage.TotalSeconds;
-                                        break;
-                                    case "Neutral":
-                                        totalNeutralDuration += usage.TotalSeconds;
-                                        break;
-                                }
+                                case "Productive":
+                                    totalProductiveDuration += usage.TotalSeconds;
+                                    break;
+                                case "Unproductive":
+                                    totalUnproductiveDuration += usage.TotalSeconds;
+                                    break;
+                                case "Neutral":
+                                    totalNeutralDuration += usage.TotalSeconds;
+                                    break;
                             }
                         }
                     }
+                }
                 }
 
                 var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
@@ -530,19 +531,19 @@ namespace Hublog.Repository.Repositories
                                 var productivityName = await _dapper.QueryFirstOrDefaultAsync<string>(productivityQuery, new { ProductivityId = category.ProductivityId });
 
                                 switch (productivityName)
-                                {
-                                    case "Productive":
-                                        totalProductiveDuration += usage.TotalSeconds;
-                                        break;
-                                    case "Unproductive":
-                                        totalUnproductiveDuration += usage.TotalSeconds;
-                                        break;
-                                    case "Neutral":
-                                        totalNeutralDuration += usage.TotalSeconds;
-                                        break;
-                                }
+                            {
+                                case "Productive":
+                                    totalProductiveDuration += usage.TotalSeconds;
+                                    break;
+                                case "Unproductive":
+                                    totalUnproductiveDuration += usage.TotalSeconds;
+                                    break;
+                                case "Neutral":
+                                    totalNeutralDuration += usage.TotalSeconds;
+                                    break;
                             }
                         }
+                    }
                     }
                     
                 }

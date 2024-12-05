@@ -1,8 +1,10 @@
-﻿using Hublog.Repository.Entities.Model.AlertModel;
+﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Service.Interface;
 using Hublog.Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -11,6 +13,7 @@ namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
     public class AlertController : ControllerBase
     {
         private readonly IAlertService _alertService;

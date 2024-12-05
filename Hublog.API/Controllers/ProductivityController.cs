@@ -1,12 +1,15 @@
-﻿using Hublog.Repository.Entities.Model.Productivity;
+﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Service.Interface;
 using Hublog.Service.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
     public class ProductivityController : ControllerBase
     {
         private readonly IProductivityService _productivityService;
