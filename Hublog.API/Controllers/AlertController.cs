@@ -101,11 +101,11 @@ namespace Hublog.API.Controllers
             }
         }
         [HttpGet("GetAlertRule")]
-        public async Task<IActionResult> GetAlertRule(string seachQuery = "")
+        public async Task<IActionResult> GetAlertRule(int organizationId, string? seachQuery = "")
         {
             try
             {
-                var breakMasters = await _alertService.GetAlertRule(seachQuery);
+                var breakMasters = await _alertService.GetAlertRule(organizationId,seachQuery);
                 return Ok(breakMasters);
             }
             catch (Exception ex)

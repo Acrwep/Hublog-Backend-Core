@@ -6,7 +6,7 @@ namespace Hublog.Service.Interface
     public interface IAdminService
     {
 
-        Task<List<BreakMaster>> GetBreakMasters(string searchQuery);
+        Task<List<BreakMaster>> GetBreakMasters(int organizationId, string? searchQuery);
 
         Task<BreakMaster> InsertBreakMaster(BreakMaster breakMaster);
 

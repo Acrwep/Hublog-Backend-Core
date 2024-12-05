@@ -3,16 +3,8 @@
   "WorkspaceRootPath": "D:\\GitHub\\Hublog-Backend-Core\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|d:\\github\\hublog-backend-core\\hublog.api\\controllers\\alertcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\alertcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|d:\\github\\hublog-backend-core\\hublog.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\entities\\model\\team.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\entities\\model\\team.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|d:\\github\\hublog-backend-core\\hublog.api\\extensions\\exceptionmiddleware.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -27,44 +19,52 @@
       "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\adminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|d:\\github\\hublog-backend-core\\hublog.service\\services\\alertservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\services\\alertservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|d:\\github\\hublog-backend-core\\hublog.service\\interface\\iadminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\interface\\iadminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\repositories\\alertrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\alertrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|d:\\github\\hublog-backend-core\\hublog.service\\interface\\ialertservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\interface\\ialertservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\interface\\iadminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\interface\\iadminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|d:\\github\\hublog-backend-core\\hublog.api\\controllers\\alertcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\alertcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\entities\\model\\alertmodel\\alert_rule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\entities\\model\\alertmodel\\alert_rule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|d:\\github\\hublog-backend-core\\hublog.service\\services\\alertservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\services\\alertservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\interface\\ialertrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\interface\\ialertrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\repositories\\appsurlsrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\appsurlsrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\interface\\iadminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\interface\\iadminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|d:\\github\\hublog-backend-core\\hublog.service\\interface\\ialertservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\interface\\ialertservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|d:\\github\\hublog-backend-core\\hublog.api\\controllers\\appsurlscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\appsurlscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\entities\\model\\team.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\entities\\model\\team.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\repositories\\appsurlsrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\appsurlsrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|d:\\github\\hublog-backend-core\\hublog.api\\controllers\\attendancedashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\attendancedashboardcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|d:\\github\\hublog-backend-core\\hublog.service\\interface\\iadminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\interface\\iadminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\entities\\model\\alertmodel\\alert_rule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\entities\\model\\alertmodel\\alert_rule.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|d:\\github\\hublog-backend-core\\hublog.repository\\entities\\model\\alertmodel\\alert.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -510,85 +510,176 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "AlertService.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\AlertService.cs",
-              "RelativeDocumentMoniker": "Hublog.Service\\Services\\AlertService.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\AlertService.cs",
-              "RelativeToolTip": "Hublog.Service\\Services\\AlertService.cs",
-              "ViewState": "AQIAAA8AAAAAAAAAAAAQwCMAAAAIAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T06:22:22.167Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 7,
               "Title": "AlertController.cs",
               "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AlertController.cs",
               "RelativeDocumentMoniker": "Hublog.API\\Controllers\\AlertController.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AlertController.cs*",
-              "RelativeToolTip": "Hublog.API\\Controllers\\AlertController.cs*",
-              "ViewState": "AQIAACsAAAAAAAAAAAAowDoAAABFAAAA",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AlertController.cs",
+              "RelativeToolTip": "Hublog.API\\Controllers\\AlertController.cs",
+              "ViewState": "AQIAAFUAAAAAAAAAAAAcwGcAAAA2AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-20T06:09:42.492Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "ExceptionMiddleware.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Extensions\\ExceptionMiddleware.cs",
-              "RelativeDocumentMoniker": "Hublog.API\\Extensions\\ExceptionMiddleware.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Extensions\\ExceptionMiddleware.cs",
-              "RelativeToolTip": "Hublog.API\\Extensions\\ExceptionMiddleware.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAIAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-12T08:44:40.616Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "AdminService.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\AdminService.cs",
-              "RelativeDocumentMoniker": "Hublog.Service\\Services\\AdminService.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\AdminService.cs",
-              "RelativeToolTip": "Hublog.Service\\Services\\AdminService.cs",
-              "ViewState": "AQIAAAYAAAAAAAAAAAAAABkAAAAIAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-23T04:28:57.158Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "AdminRepository.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AdminRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\AdminRepository.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AdminRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Repositories\\AdminRepository.cs",
-              "ViewState": "AQIAAC0AAAAAAAAAAAAowEIAAAAIAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-23T06:52:58.281Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "AdminController.cs",
               "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "Hublog.API\\Controllers\\AdminController.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "Hublog.API\\Controllers\\AdminController.cs",
-              "ViewState": "AQIAACsAAAAAAAAAAAAlwD8AAAAuAAAA",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AdminController.cs*",
+              "RelativeToolTip": "Hublog.API\\Controllers\\AdminController.cs*",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAA/AAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-12T08:19:13.919Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "IAdminRepository.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAdminRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Interface\\IAdminRepository.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAdminRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Interface\\IAdminRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAABDAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-12T11:48:32.447Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AdminRepository.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AdminRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\AdminRepository.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AdminRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Repositories\\AdminRepository.cs",
+              "ViewState": "AQIAACEAAAAAAAAAAAAlwEMAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-23T06:52:58.281Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IAdminService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IAdminService.cs",
+              "RelativeDocumentMoniker": "Hublog.Service\\Interface\\IAdminService.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IAdminService.cs",
+              "RelativeToolTip": "Hublog.Service\\Interface\\IAdminService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAABLAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-23T06:57:00.646Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "AdminService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\AdminService.cs",
+              "RelativeDocumentMoniker": "Hublog.Service\\Services\\AdminService.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\AdminService.cs",
+              "RelativeToolTip": "Hublog.Service\\Services\\AdminService.cs",
+              "ViewState": "AQIAAAsAAAAAAAAAAAAQwBkAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-23T04:28:57.158Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ExceptionMiddleware.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Extensions\\ExceptionMiddleware.cs",
+              "RelativeDocumentMoniker": "Hublog.API\\Extensions\\ExceptionMiddleware.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Extensions\\ExceptionMiddleware.cs",
+              "RelativeToolTip": "Hublog.API\\Extensions\\ExceptionMiddleware.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABIAAAAPAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-12T08:44:40.616Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "AlertRepository.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AlertRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\AlertRepository.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AlertRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Repositories\\AlertRepository.cs",
+              "ViewState": "AQIAAGQAAAAAAAAAAAAgwGsAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T06:19:27.734Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Alert_Rule.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\AlertModel\\Alert_Rule.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Entities\\Model\\AlertModel\\Alert_Rule.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\AlertModel\\Alert_Rule.cs",
+              "RelativeToolTip": "Hublog.Repository\\Entities\\Model\\AlertModel\\Alert_Rule.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAkAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-05T07:27:18.282Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AlertService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\AlertService.cs",
+              "RelativeDocumentMoniker": "Hublog.Service\\Services\\AlertService.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\AlertService.cs",
+              "RelativeToolTip": "Hublog.Service\\Services\\AlertService.cs",
+              "ViewState": "AQIAABoAAAAAAAAAAAAcwCsAAAAIAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T06:22:22.167Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "IAlertService.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IAlertService.cs",
+              "RelativeDocumentMoniker": "Hublog.Service\\Interface\\IAlertService.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IAlertService.cs",
+              "RelativeToolTip": "Hublog.Service\\Interface\\IAlertService.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAABHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T06:21:20.645Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "IAlertRepository.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAlertRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Interface\\IAlertRepository.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAlertRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Interface\\IAlertRepository.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAABGAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-20T06:17:58.99Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "AppsUrlsController.cs",
+              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AppsUrlsController.cs",
+              "RelativeDocumentMoniker": "Hublog.API\\Controllers\\AppsUrlsController.cs",
+              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AppsUrlsController.cs",
+              "RelativeToolTip": "Hublog.API\\Controllers\\AppsUrlsController.cs",
+              "ViewState": "AQIAABsAAAAAAAAAAAAowCcAAABhAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-11-15T08:41:30.182Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
               "Title": "Team.cs",
               "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\Team.cs",
               "RelativeDocumentMoniker": "Hublog.Repository\\Entities\\Model\\Team.cs",
@@ -601,46 +692,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "AlertRepository.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AlertRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\AlertRepository.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AlertRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Repositories\\AlertRepository.cs",
-              "ViewState": "AQIAAC8AAAAAAAAAAAAwwD8AAAAQAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T06:19:27.734Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "IAlertService.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IAlertService.cs",
-              "RelativeDocumentMoniker": "Hublog.Service\\Interface\\IAlertService.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IAlertService.cs",
-              "RelativeToolTip": "Hublog.Service\\Interface\\IAlertService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAoAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T06:21:20.645Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "IAlertRepository.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAlertRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Interface\\IAlertRepository.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAlertRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Interface\\IAlertRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAAoAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-20T06:17:58.99Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 14,
               "Title": "AppsUrlsRepository.cs",
               "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AppsUrlsRepository.cs",
               "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\AppsUrlsRepository.cs",
@@ -653,33 +705,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "IAdminRepository.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAdminRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Interface\\IAdminRepository.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAdminRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Interface\\IAdminRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-12T11:48:32.447Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "AppsUrlsController.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AppsUrlsController.cs",
-              "RelativeDocumentMoniker": "Hublog.API\\Controllers\\AppsUrlsController.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AppsUrlsController.cs",
-              "RelativeToolTip": "Hublog.API\\Controllers\\AppsUrlsController.cs",
-              "ViewState": "AQIAABsAAAAAAAAAAAAowCIAAAAJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-15T08:41:30.182Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 15,
               "Title": "AttendanceDashboardController.cs",
               "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AttendanceDashboardController.cs",
               "RelativeDocumentMoniker": "Hublog.API\\Controllers\\AttendanceDashboardController.cs",
@@ -688,32 +714,6 @@
               "ViewState": "AQIAADoAAAAAAAAAAAAcwB8AAABhAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-11-12T11:34:39.741Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "IAdminService.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IAdminService.cs",
-              "RelativeDocumentMoniker": "Hublog.Service\\Interface\\IAdminService.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IAdminService.cs",
-              "RelativeToolTip": "Hublog.Service\\Interface\\IAdminService.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-11-23T06:57:00.646Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Alert_Rule.cs",
-              "DocumentMoniker": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\AlertModel\\Alert_Rule.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Entities\\Model\\AlertModel\\Alert_Rule.cs",
-              "ToolTip": "D:\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\AlertModel\\Alert_Rule.cs",
-              "RelativeToolTip": "Hublog.Repository\\Entities\\Model\\AlertModel\\Alert_Rule.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAnAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-12-05T07:27:18.282Z",
               "EditorCaption": ""
             },
             {

@@ -15,9 +15,9 @@ namespace Hublog.Service.Services
             _adminRepository = adminRepository;
         }
 
-        public async Task<List<BreakMaster>> GetBreakMasters(string searchQuery)
+        public async Task<List<BreakMaster>> GetBreakMasters(int organizationId, string? searchQuery)
         {
-            return await _adminRepository.GetBreakMasters(searchQuery);
+            return await _adminRepository.GetBreakMasters(organizationId,searchQuery);
         }
 
         public async Task<BreakMaster> InsertBreakMaster(BreakMaster breakMaster)

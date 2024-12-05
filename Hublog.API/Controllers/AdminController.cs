@@ -82,11 +82,11 @@ namespace Hublog.API.Controllers
 
         #region GetBreakMaster
         [HttpGet("GetBreakMaster")]
-        public async Task<IActionResult> GetBreakMaster(string seachQuery = "")
+        public async Task<IActionResult> GetBreakMaster(int organizationId,string? seachQuery = "")
         {
             try
             {
-                var breakMasters = await _adminService.GetBreakMasters(seachQuery);
+                var breakMasters = await _adminService.GetBreakMasters(organizationId,seachQuery);
                 return Ok(breakMasters);
             }
             catch (Exception ex)

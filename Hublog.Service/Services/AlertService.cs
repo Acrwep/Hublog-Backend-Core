@@ -38,9 +38,9 @@ namespace Hublog.Service.Services
         {
             return await _alertRepository.UpdateAlertRule(alert_Rule);
         }
-        public async Task<List<Alert_Rule>> GetAlertRule(string searchQuery)
+        public async Task<List<Alert_Rule>> GetAlertRule(int organizationId, string? searchQuery)
         {
-            return await _alertRepository.GetAlertRule(searchQuery);
+            return await _alertRepository.GetAlertRule(organizationId,searchQuery);
         }
     }
 }

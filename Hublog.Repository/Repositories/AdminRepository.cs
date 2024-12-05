@@ -1,4 +1,5 @@
 ﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
@@ -68,13 +69,20 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region GetBreakMasters
-        public async Task<List<BreakMaster>> GetBreakMasters(string searchQuery)
+        public async Task<List<BreakMaster>> GetBreakMasters(int organizationId, string? searchQuery)
         {
             try
             {
-                var query = @"SELECT * FROM BreakMaster WHERE Name LIKE @SearchQuery";
-                var parameter = new { SearchQuery = $"%{searchQuery}%" };
-                return await _dapper.GetAllAsync<BreakMaster>(query, parameter);
+                var query = @"SELECT * FROM BreakMaster WHERE organizationId = @OrganizationId
+            AND (@SearchQuery IS NULL OR Name LIKE @SearchQuery)";
+
+                var parameters = new
+                {
+                    OrganizationId = organizationId,
+                    SearchQuery = searchQuery != null ? $"%{searchQuery}%" : null
+                };
+
+                return await _dapper.GetAllAsync<BreakMaster>(query, parameters);
             }
             catch (Exception ex)
             {

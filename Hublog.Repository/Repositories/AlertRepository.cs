@@ -100,17 +100,28 @@ namespace Hublog.Repository.Repositories
                 throw new Exception("Error updating Breakmaster", ex);
             }
         }
-        public async Task<List<Alert_Rule>> GetAlertRule(string searchQuery)
+        public async Task<List<Alert_Rule>> GetAlertRule(int organizationId, string? searchQuery)
         {
+
             try
             {
-                var query = @"SELECT * FROM Alert_Rule WHERE Name LIKE @SearchQuery";
-                var parameter = new { SearchQuery = $"%{searchQuery}%" };
-                return await _dapper.GetAllAsync<Alert_Rule>(query, parameter);
+                var query = @"
+            SELECT * 
+            FROM Alert_Rule 
+            WHERE organizationId = @OrganizationId
+            AND (@SearchQuery IS NULL OR Name LIKE @SearchQuery)";
+
+                var parameters = new
+                {
+                    OrganizationId = organizationId,
+                    SearchQuery = searchQuery != null ? $"%{searchQuery}%" : null
+                };
+
+                return await _dapper.GetAllAsync<Alert_Rule>(query, parameters);
             }
             catch (Exception ex)
             {
-                throw new Exception("Error fetching breakmaster record", ex);
+                throw new Exception("Error fetching alert rules", ex);
             }
         }
     }
