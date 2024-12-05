@@ -28,7 +28,12 @@ namespace Hublog.Repository.Repositories
         SELECT 
             au.ApplicationName,
             COUNT(DISTINCT au.UserId) AS UserCount,
-            CONVERT(VARCHAR(8), DATEADD(SECOND, SUM(DATEDIFF(SECOND, 0, TRY_CAST(au.TotalUsage AS TIME))), 0), 108) AS TotalUsage
+ SUM(
+        -- Convert TotalUsage into total seconds manually
+        CAST(SUBSTRING(au.TotalUsage, 1, CHARINDEX(':', au.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+        CAST(SUBSTRING(au.TotalUsage, CHARINDEX(':', au.TotalUsage) + 1, CHARINDEX(':', au.TotalUsage, CHARINDEX(':', au.TotalUsage) + 1) - CHARINDEX(':', au.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+        CAST(SUBSTRING(au.TotalUsage, CHARINDEX(':', au.TotalUsage, CHARINDEX(':', au.TotalUsage) + 1) + 1, LEN(au.TotalUsage)) AS INT)  -- Seconds
+    ) AS TotalUsage
         FROM 
             ApplicationUsage AS au
         JOIN 
@@ -44,8 +49,22 @@ namespace Hublog.Repository.Repositories
              au.ApplicationName;";
 
             var parameter = new { organizationId, teamid, userId, startDate, endDate };
+            //return await _dapper.GetAllAsync<GetApplicationUsage>(query, parameter);
+            var rawData = await _dapper.GetAllAsync<GetApplicationUsage>(query, parameter);
 
-            return await _dapper.GetAllAsync<GetApplicationUsage>(query, parameter);
+            foreach (var record in rawData)
+            {
+                record.TotalUsage = FormatDuration(long.Parse(record.TotalUsage)); 
+            }
+
+            return rawData;
+        }
+        private string FormatDuration(long totalSeconds)
+        {
+            var hours = totalSeconds / 3600; // Total hours
+            var minutes = (totalSeconds % 3600) / 60; // Remaining minutes
+            var seconds = totalSeconds % 60; // Remaining seconds
+            return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
         }
 
         #endregion
@@ -56,9 +75,11 @@ namespace Hublog.Repository.Repositories
 SELECT 
 	uu.Url,
     COUNT(DISTINCT uu.UserId) AS UserCount,  
-    CONVERT(VARCHAR(8), DATEADD(SECOND, SUM(
-        DATEDIFF(SECOND, 0, TRY_CAST(uu.TotalUsage AS TIME))
-    ), 0), 108) AS TotalUsage
+ SUM(
+        CAST(SUBSTRING( uu.TotalUsage, 1, CHARINDEX(':', uu.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+        CAST(SUBSTRING( uu.TotalUsage, CHARINDEX(':',  uu.TotalUsage) + 1, CHARINDEX(':',  uu.TotalUsage, CHARINDEX(':', uu.TotalUsage) + 1) - CHARINDEX(':',  uu.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+        CAST(SUBSTRING( uu.TotalUsage, CHARINDEX(':', uu.TotalUsage, CHARINDEX(':',  uu.TotalUsage) + 1) + 1, LEN( uu.TotalUsage)) AS INT)  -- Seconds
+    ) AS TotalUsage 
 FROM 
     UrlUsage AS uu
 JOIN 
@@ -75,7 +96,14 @@ ORDER BY
 
             var parameter = new { organizationId, teamid, userId, startDate, endDate };
 
-            return await _dapper.GetAllAsync<GetUrlUsage>(query, parameter);
+            //return await _dapper.GetAllAsync<GetUrlUsage>(query, parameter);
+            var rawData = await _dapper.GetAllAsync<GetUrlUsage>(query, parameter);
+
+            foreach (var record in rawData)
+            {
+                record.TotalUsage = FormatDuration(long.Parse(record.TotalUsage));
+            }
+            return rawData;
         }
 
         //public async Task<int> InsertApplicationUsageAsync(ApplicationUsage applicationUsage)
@@ -244,11 +272,10 @@ ORDER BY
                             usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
                         }
 
-                        // Query for category details
                         var imbuildAppQuery = @"
     SELECT CategoryId 
     FROM ImbuildAppsAndUrls 
-    WHERE Name LIKE '%' + @ApplicationName + '%'";
+    WHERE Name COLLATE SQL_Latin1_General_CP1_CI_AS LIKE '%' + @ApplicationName + '%'";
                         var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName });
 
                         if (categoryId.HasValue)
