@@ -5,6 +5,7 @@ using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Hublog.Service.Interface;
+using System.Diagnostics;
 
 namespace Hublog.Service.Services
 {
@@ -247,6 +248,14 @@ namespace Hublog.Service.Services
         public async Task<List<UserTotalBreakModel>> GetUserTotalBreak(int organizationId, int userId, DateTime startDate, DateTime endDate)
         {
             return await _userRepository.GetUserTotalBreak(organizationId, userId, startDate, endDate);
+        }
+        public async Task<UserActivity> Insert_Active_Time(UserActivity activity)
+        {
+            return await _userRepository.Insert_Active_Time(activity);
+        }
+        public async Task<List<UserActivity>> Get_Active_Time(int userid, DateTime startDate, DateTime endDate)
+        {
+            return await _userRepository.Get_Active_Time(userid, startDate, endDate);
         }
     }
 }

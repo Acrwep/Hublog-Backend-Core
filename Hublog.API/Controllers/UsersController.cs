@@ -1,12 +1,15 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Service.Interface;
+using Hublog.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 using System.Security.Claims;
 
 namespace Hublog.API.Controllers
@@ -369,6 +372,46 @@ namespace Hublog.API.Controllers
             catch(Exception ex) 
             {
                 return BadRequest("An error occured while processing your request");
+            }
+        }
+        [HttpPost("Insert_Active_Time")]
+        public async Task<IActionResult> Insert_Active_Time(UserActivity activity)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var createdBreakMaster = await _userService.Insert_Active_Time(activity);
+                    if (createdBreakMaster != null)
+                    {
+                        return CreatedAtAction(nameof(Insert_Active_Time), new { id = createdBreakMaster.Id }, createdBreakMaster);
+                    }
+                    else
+                    {
+                        return StatusCode(500, "Could not create Breakmaster");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Model state is not valid");
+            }
+        }
+        [HttpGet("Get_Active_Time")]
+        public async Task<IActionResult> Get_Active_Time(int userid, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var breakMasters = await _userService.Get_Active_Time(userid, startDate, endDate);
+                return Ok(breakMasters);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error.");
             }
         }
     }

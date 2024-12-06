@@ -3,6 +3,8 @@ using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
+using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace Hublog.Repository.Interface
 {
@@ -35,5 +37,7 @@ namespace Hublog.Repository.Interface
         Task<int> DeleteUser(int userId);
 
         Task<List<UserTotalBreakModel>> GetUserTotalBreak(int organizationId, int userId, DateTime startDate, DateTime endDate);
+        Task<UserActivity> Insert_Active_Time(UserActivity activity);
+        Task<List<UserActivity>> Get_Active_Time(int userid, DateTime startDate, DateTime endDate);
     }
 }

@@ -3,12 +3,14 @@ using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Login;
 using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Newtonsoft.Json;
 using System.Data;
+using System.Diagnostics;
 
 namespace Hublog.Repository.Repositories
 {
@@ -67,7 +69,8 @@ namespace Hublog.Repository.Repositories
 
         #region InsertAttendance
         public async Task<int> InsertAttendanceAsync(UserAttendanceModel model)
-        {
+        
+       {
             try
             {
                 var parameters = new DynamicParameters();
@@ -457,5 +460,51 @@ namespace Hublog.Repository.Repositories
 
             return await _dapper.GetAllAsyncs<UserTotalBreakModel>(query, parameter, commandType: CommandType.StoredProcedure);
         }
+        public async Task<UserActivity> Insert_Active_Time(UserActivity activity)
+        {
+            try
+            {
+                string query = @"INSERT INTO UserActivity (Userid, TriggeredTime)
+                         VALUES (@Userid, @TriggeredTime);
+                         SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                var createdBreakmaster = await _dapper.ExecuteAsync(query, activity);
+                activity.Id = createdBreakmaster; 
+                return activity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error creating Breakmaster", ex);
+            }
+        }
+
+        public async Task<List<UserActivity>> Get_Active_Time(int userid, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var query = @"
+                           SELECT * 
+                           FROM UserActivity
+                           WHERE UserId = @UserId
+                           AND TriggeredTime >= @StartDate
+                           AND TriggeredTime < DATEADD(DAY, 1, @EndDate)";
+
+                var parameters = new
+                {
+                    UserId = userid,
+                    StartDate = startDate,
+                    EndDate = endDate
+                };
+
+                var result=await _dapper.GetAllAsync<UserActivity>(query, parameters);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching user activity", ex);
+            }
+        }
+
+
     }
 }
