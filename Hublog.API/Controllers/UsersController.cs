@@ -414,5 +414,32 @@ namespace Hublog.API.Controllers
                 return StatusCode(500, "Internal server error.");
             }
         }
+        [HttpPost("Insert_IdealActivity")]
+        public async Task<IActionResult> Insert_IdealActivity(IdealActivity activity)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var createdBreakMaster = await _userService.Insert_IdealActivity(activity);
+                    if (createdBreakMaster != null)
+                    {
+                        return CreatedAtAction(nameof(Insert_IdealActivity), new { id = createdBreakMaster.Id }, createdBreakMaster);
+                    }
+                    else
+                    {
+                        return StatusCode(500, "Could not create Breakmaster");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Model state is not valid");
+            }
+        }
     }
 }

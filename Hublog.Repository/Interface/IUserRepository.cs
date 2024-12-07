@@ -39,5 +39,6 @@ namespace Hublog.Repository.Interface
         Task<List<UserTotalBreakModel>> GetUserTotalBreak(int organizationId, int userId, DateTime startDate, DateTime endDate);
         Task<UserActivity> Insert_Active_Time(UserActivity activity);
         Task<List<UserActivity>> Get_Active_Time(int userid, DateTime startDate, DateTime endDate);
+        Task<IdealActivity> Insert_IdealActivity(IdealActivity activity);
     }
 }

@@ -40,5 +40,7 @@ namespace Hublog.Service.Interface
 
         Task<UserActivity> Insert_Active_Time(UserActivity activity);
         Task<List<UserActivity>> Get_Active_Time(int userid, DateTime startDate, DateTime endDate);
+
+        Task<IdealActivity> Insert_IdealActivity(IdealActivity activity);
     }
 }

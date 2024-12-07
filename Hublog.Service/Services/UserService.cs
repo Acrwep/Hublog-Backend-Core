@@ -257,5 +257,9 @@ namespace Hublog.Service.Services
         {
             return await _userRepository.Get_Active_Time(userid, startDate, endDate);
         }
+        public async Task<IdealActivity> Insert_IdealActivity(IdealActivity activity)
+        {
+            return await _userRepository.Insert_IdealActivity(activity);
+        }
     }
 }

@@ -505,6 +505,32 @@ namespace Hublog.Repository.Repositories
             }
         }
 
+        public async Task<IdealActivity> Insert_IdealActivity(IdealActivity activity)
+        {
+            try
+            {
+                string query = @"
+            INSERT INTO Ideal_Activity (userid, organisationid, Ideal_Activity_Time)
+            VALUES (@UserId, @OrganisationId, @IdealActivityTime);
+            SELECT CAST(SCOPE_IDENTITY() as int);";
+
+                // Ensure the parameter names match the properties of the 'activity' object
+                var parameters = new
+                {
+                    UserId = activity.UserId,
+                    OrganisationId = activity.OrganizationId,
+                    IdealActivityTime = activity.IdealTime
+                };
+
+                var createdActivityId = await _dapper.ExecuteScalarAsync<int>(query, parameters);
+                activity.Id = createdActivityId;
+                return activity;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error creating IdealActivity", ex);
+            }
+        }
 
     }
 }
