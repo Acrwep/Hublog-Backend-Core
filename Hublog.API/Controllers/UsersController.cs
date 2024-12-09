@@ -68,7 +68,7 @@ namespace Hublog.API.Controllers
             try
             {
                 await _userService.InsertAttendance(model);
-                return Ok("InsertAttendance Success");
+                return Ok(model);
             }
             catch (Exception ex)
             {
@@ -119,7 +119,7 @@ namespace Hublog.API.Controllers
 
         #region GetUserAttendanceDetails
         [HttpGet("GetUserAttendanceDetails")]
-        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]   
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetUserAttendanceDetails([FromQuery] int organizationId ,[FromQuery] int userId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
         {
             try
@@ -186,7 +186,7 @@ namespace Hublog.API.Controllers
 
         #region GetAvailableBreak
         [HttpPost("GetAvailableBreak")]
-        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetAvailableBreak([FromBody] GetModels model)
         {
             if (!ModelState.IsValid)
@@ -216,7 +216,7 @@ namespace Hublog.API.Controllers
 
         #region GetBreakMasterById
         [HttpGet("GetBreakMasterById")]
-        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetBreakMasterById(int id)
         {
             try
@@ -233,7 +233,7 @@ namespace Hublog.API.Controllers
 
         #region GetUserBreakRecordDetails
         [HttpGet("GetUserBreakRecordDetails")]
-        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetUserBreakRecordDetails([FromQuery] int userId, [FromQuery] DateTime? startDate = null, [FromQuery] DateTime? endDate = null)
         {
             try
@@ -402,6 +402,7 @@ namespace Hublog.API.Controllers
             }
         }
         [HttpGet("Get_Active_Time")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> Get_Active_Time(int userid, DateTime startDate, DateTime endDate)
         {
             try
@@ -415,6 +416,7 @@ namespace Hublog.API.Controllers
             }
         }
         [HttpPost("Insert_IdealActivity")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> Insert_IdealActivity(IdealActivity activity)
         {
             if (ModelState.IsValid)
