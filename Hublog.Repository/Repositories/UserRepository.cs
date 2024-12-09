@@ -83,6 +83,7 @@ namespace Hublog.Repository.Repositories
                 parameters.Add("@Total_Time", null);
                 parameters.Add("@Late_Time", null);
                 parameters.Add("@Status", model.Status);
+                parameters.Add("@@Punchout_type", null);
                 Console.WriteLine(startTimeFormatted);
                 var result = await _dapper.ExecuteAsync("SP_InsertAttendance", parameters, CommandType.StoredProcedure);
 
@@ -128,7 +129,8 @@ namespace Hublog.Repository.Repositories
                 ISNULL(CONVERT(VARCHAR, DATEADD(SECOND, DATEDIFF(SECOND, A.Start_Time, A.End_Time), 0), 108),
                                                                         '0001-01-01T00:00:00') AS Total_Time,
                 A.Late_Time, 
-                A.Status 
+                A.Status ,
+                A.Punchout_type
                 FROM Users U
                 INNER JOIN Attendance A ON U.Id = A.UserId
                 WHERE U.Id = @UserId AND U.OrganizationId = @OrganizationId

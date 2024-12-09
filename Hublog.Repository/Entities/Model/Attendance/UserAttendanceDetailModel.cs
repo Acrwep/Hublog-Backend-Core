@@ -12,5 +12,6 @@
         public string Total_Time { get; set; }
         public DateTime Late_Time { get; set; }
         public int Status { get; set; }
+        public string? Punchout_type { get; set; }
     }
 }

@@ -12,5 +12,6 @@
         public DateTime? Total_Time { get; set; } //(datetime,  null)
         public DateTime? Late_Time { get; set; } //(datetime,  null)
         public int Status { get; set; } //(int, not null)
+        public string? Punchout_type { get; set; }
     }
 }
