@@ -42,166 +42,139 @@ namespace Hublog.API.Controllers
         [HttpGet("GetImbuildAppsAndUrls")]
         public async Task<IActionResult> GetImbuildAppsAndUrls()
         {
-            var categories = await _productivityService.GetImbuildAppsAndUrls();
-            if (categories != null && categories.Any()) 
-                return Ok(new { message = "ProductivityId updated successfully.", data = categories });
-            else
-                return NotFound(new { message = "Categories not found" });
+            try
+            {
+                var categories = await _productivityService.GetImbuildAppsAndUrls();
+                if (categories != null && categories.Any())
+                    return Ok(new { message = "ProductivityId updated successfully.", data = categories });
+                else
+                    return NotFound(new { message = "Categories not found" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("GetByIdImbuildAppsAndUrls")]
         public async Task<IActionResult> GetByIdImbuildAppsAndUrls(int id)
         {
-            var categories = await _productivityService.GetByIdImbuildAppsAndUrls(id);
+            try
+            {
+                var categories = await _productivityService.GetByIdImbuildAppsAndUrls(id);
 
-            if (categories != null) 
-                return Ok(categories);
-            else
-                return NotFound(new { message = "Category not found" });
+              if (categories != null) 
+                  return Ok(categories);
+              else
+                  return NotFound(new { message = "Category not found" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPut("InsertImbuildAppsAndUrls/{id}")]
         public async Task<IActionResult> InsertImbuildAppsAndUrls(int id, [FromBody] MappingModel model)
         {
-            if (id <= 0)
+            try
             {
-                return BadRequest("Invalid ID.");
+                 var result = await _productivityService.InsertImbuildAppsAndUrls(id, model);
+
+                 return Ok(new { message = "Data inserted successfully", data = result });
             }
-            if (model == null)
+            catch (Exception ex)
             {
-                return BadRequest("Model cannot be null.");
+                return BadRequest(ex.Message);
             }
-
-            if (model.CategoryId == null)
-            {
-                return BadRequest("CategoryId is required.");
-            }
-
-            var result = await _productivityService.InsertImbuildAppsAndUrls(id, model);
-
-            return Ok(new { message = "Data inserted successfully", data = result });
         }
 
         [HttpGet("GetProductivityBreakDown")]
         public async Task<IActionResult> GetProductivityDurations(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
-            if (organizationId <= 0)
+            try
             {
-                return BadRequest("Invalid organization ID.");
+                var result = await _productivityService.GetProductivityDurations(organizationId, teamId, userId, fromDate, toDate);
+                return Ok(result);
             }
-
-            if (fromDate == default || toDate == default)
+            catch (Exception ex)
             {
-                return BadRequest("Invalid date range.");
+                return BadRequest(ex.Message);
             }
-
-            var result = await _productivityService.GetProductivityDurations(organizationId, teamId, userId, fromDate, toDate);
-
-
-            return Ok(result);
         }
 
         [HttpGet("Teamwise_Productivity")]
         public async Task<IActionResult> TeamwiseProductivity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
-            if (organizationId <= 0)
-            {
-                return BadRequest("Invalid organization ID.");
-            }
+           try
+           { 
+                var result = await _productivityService.TeamwiseProductivity(organizationId, teamId, fromDate, toDate);
 
-            if (fromDate == default || toDate == default)
-            {
-                return BadRequest("Invalid date range.");
-            }
-
-            var result = await _productivityService.TeamwiseProductivity(organizationId, teamId, fromDate, toDate);
-
-            return Ok(result);
+                return Ok(result);
+           }
+           catch (Exception ex)
+           {
+                return BadRequest(ex.Message);
+           }
         }
 
         [HttpGet("Most&Least_Teamwise_Productivity")]
         public async Task<IActionResult> MostTeamwiseProductivity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
-            if (organizationId <= 0)
+            try
             {
-                return BadRequest("Invalid organization ID.");
-            }
+                 var result = await _productivityService.MostTeamwiseProductivity(organizationId, teamId, fromDate, toDate);
 
-            if (fromDate == default || toDate == default)
+                 return Ok(result);
+            }
+            catch (Exception ex)
             {
-                return BadRequest("Invalid date range.");
+                 return BadRequest(ex.Message);
             }
-
-            var result = await _productivityService.MostTeamwiseProductivity(organizationId, teamId, fromDate, toDate);
-
-
-            return Ok(result);
         }
 
         [HttpGet("Total_Working_Time")]
         public async Task<IActionResult> GetTotal_Working_Time(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
-            if (organizationId <= 0)
+            try
             {
-                return BadRequest("Invalid organization ID.");
-            }
+                var result = await _productivityService.GetTotal_Working_Time(organizationId, teamId, userId, fromDate, toDate);
 
-            if (fromDate == default || toDate == default)
+                return Ok(new { message = "Total working time data fetched successfully.", data = result });
+            }
+            catch (Exception ex)
             {
-                return BadRequest("Invalid date range.");
+                return BadRequest(ex.Message);
             }
-
-            if (fromDate > toDate)
-            {
-                return BadRequest("FromDate cannot be greater than ToDate.");
-            }
-            var result = await _productivityService.GetTotal_Working_Time(organizationId, teamId, userId, fromDate, toDate);
-
-            return Ok(new { message = "Total working time data fetched successfully.", data = result });
         }
 
         [HttpGet("GetProductivity_Trend")]
         public async Task<IActionResult> GetProductivity_Trend(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
-            if (organizationId <= 0)
-            {
-                return BadRequest("Invalid organization ID.");
-            }
+             try
+             {
 
-            if (fromDate == default || toDate == default)
-            {
-                return BadRequest("Invalid date range.");
-            }
+                  var result = await _productivityService.GetProductivity_Trend(organizationId, teamId, userId, fromDate, toDate);
 
-            if (fromDate > toDate)
-            {
-                return BadRequest("FromDate cannot be greater than ToDate.");
-            }
-
-            var result = await _productivityService.GetProductivity_Trend(organizationId, teamId, userId, fromDate, toDate);
-
-
-            return Ok(new { message = "Productivity trend data fetched successfully.", data = result });
+                  return Ok(new { message = "Productivity trend data fetched successfully.", data = result });
+             }
+             catch (Exception ex)
+             {
+                 return BadRequest(ex.Message);
+             }
         }
 
         [HttpGet("GetEmployeeList")]
         public async Task<IActionResult> GetEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
-            if (organizationId <= 0)
-            {
-                return BadRequest("Invalid organization ID.");
-            }
+           try
+           {
+               var result = await _productivityService.GetEmployeeList(organizationId, teamId, userId, fromDate, toDate);
 
-            if (fromDate == default || toDate == default)
-            {
-                return BadRequest("Invalid date range.");
-            }
-
-            if (fromDate > toDate)
-            {
-                return BadRequest("FromDate cannot be greater than ToDate.");
-            }
-            var result = await _productivityService.GetEmployeeList(organizationId, teamId, userId, fromDate, toDate);
-
-            return Ok(new { message = "Employee list data fetched successfully.", data = result });
+               return Ok(new { message = "Employee list data fetched successfully.", data = result });
+           }
+           catch (Exception ex)
+           {
+               return BadRequest(ex.Message);
+           }
         }
 
 

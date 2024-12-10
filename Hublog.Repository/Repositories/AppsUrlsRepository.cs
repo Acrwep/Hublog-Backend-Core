@@ -252,21 +252,32 @@ ORDER BY
             foreach (var team in teams)
             {
                 teamId = team;
-                var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
+                var urlUsageQuery = "Get_CombinedUsageData";
+                var parameters = new
+                {
+                    OrganizationId = organizationId,
+                    TeamId = teamId,
+                    UserId = userId,
+                    FromDate = fromDate,
+                    ToDate = toDate
+                };
+                IEnumerable<App_UrlModel> usages = await _dapper.GetAllAsync<App_UrlModel>(urlUsageQuery, parameters);
+
+                //var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
 
                 var totalUsages = usages
-                    .GroupBy(u => u.ApplicationName)
-                    .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
-                    .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
+                    .GroupBy(u => u.Name)
+                   .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
+                   .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
 
                 foreach (var usage in usages)
                 {
-                    usage.ApplicationName = usage.ApplicationName.ToLower();
+                    usage.Name = usage.Name.ToLower();
 
-                    if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                    if (usage.Name != "chrome" && usage.Name != "msedge" && usage.Name != "firefox" && usage.Name != "opera")
                     {
                         // Update usage time
-                        if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
+                        if (totalUsages.TryGetValue(usage.Name, out var totalSeconds))
                         {
                             usage.TotalSeconds = totalSeconds;
                             usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
@@ -276,7 +287,7 @@ ORDER BY
     SELECT CategoryId 
     FROM ImbuildAppsAndUrls 
     WHERE Name LIKE '%' + @ApplicationName + '%'";
-                        var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName });
+                        var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.Name });
 
                         if (categoryId.HasValue)
                         {

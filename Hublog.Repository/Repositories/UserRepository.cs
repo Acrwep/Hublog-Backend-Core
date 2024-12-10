@@ -85,8 +85,8 @@ namespace Hublog.Repository.Repositories
                 parameters.Add("@Status", model.Status);
                 parameters.Add("@Punchout_type", model.Punchout_type);
                 Console.WriteLine(startTimeFormatted);
-                //var result = await _dapper.ExecuteAsync("SP_InsertAttendance", parameters, CommandType.StoredProcedure);
-                var result = await _dapper.ExecuteScalarAsync<int>("SP_InsertAttendance", parameters, CommandType.StoredProcedure);
+                var result = await _dapper.ExecuteAsync("SP_InsertAttendance", parameters, CommandType.StoredProcedure);
+
                 return result;
             }
             catch (Exception ex)
