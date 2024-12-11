@@ -4,12 +4,13 @@ using Hublog.Service.Interface;
 using Hublog.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+    //[Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
     public class ProductivityController : ControllerBase
     {
         private readonly IProductivityService _productivityService;
@@ -40,11 +41,11 @@ namespace Hublog.API.Controllers
                 return NotFound(new { message = "Category not found." });
         }
         [HttpGet("GetImbuildAppsAndUrls")]
-        public async Task<IActionResult> GetImbuildAppsAndUrls()
+        public async Task<IActionResult> GetImbuildAppsAndUrls(string userSearchQuery = "",string type="",string category="")
         {
             try
             {
-                var categories = await _productivityService.GetImbuildAppsAndUrls();
+                var categories = await _productivityService.GetImbuildAppsAndUrls(userSearchQuery, type, category);
                 if (categories != null && categories.Any())
                     return Ok(new { message = "ProductivityId updated successfully.", data = categories });
                 else
@@ -66,6 +67,20 @@ namespace Hublog.API.Controllers
                   return Ok(categories);
               else
                   return NotFound(new { message = "Category not found" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("AddImbuildAppsAndUrls")]
+        public async Task<IActionResult> AddImbuildAppsAndUrls(MappingModel mappingModel)
+        {
+            try
+            {
+                var result = await _productivityService.AddImbuildAppsAndUrls(mappingModel);
+
+                return Ok(new { message = "Data inserted successfully", data = result });
             }
             catch (Exception ex)
             {

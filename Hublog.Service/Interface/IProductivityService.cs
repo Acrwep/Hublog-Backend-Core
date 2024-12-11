@@ -5,9 +5,10 @@ namespace Hublog.Service.Interface
 {
     public interface IProductivityService
     {
-        Task<List<MappingModel>> GetImbuildAppsAndUrls(); 
+        Task<List<MappingModel>> GetImbuildAppsAndUrls(string userSearchQuery, string type, string category); 
         Task<List<MappingModel>> GetByIdImbuildAppsAndUrls( int id);
         Task<bool> InsertImbuildAppsAndUrls(int id, MappingModel model);
+        Task<bool> AddImbuildAppsAndUrls(MappingModel mappingModel);
         Task<List<CategoryModel>> GetCategoryProductivity(string categoryName);
 
         Task<bool> UpdateProductivityId(int categoryId, int? productivityId);

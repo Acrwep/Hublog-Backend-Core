@@ -55,15 +55,40 @@ namespace Hublog.Repository.Repositories
 
             return await _dapper.ExecuteAsync(query, parameters);
         }
-        public async Task<List<MappingModel>> GetImbuildAppsAndUrls()
+        public async Task<List<MappingModel>> GetImbuildAppsAndUrls(string userSearchQuery, string type, string category)
         {
             //var query = "SELECT I.Type, I.Name " +
             //            "FROM ImbuildAppsAndUrls I " +
             //            "LEFT JOIN Categories C ON C.ProductivityId = I.CategoryId";
 
             // You can include the filtering logic here
-            var query = "Select * From ImbuildAppsAndUrls";
-            return await _dapper.GetAllAsync<MappingModel>(query);
+            var query = @"SELECT *
+             FROM ImbuildAppsAndUrls
+             WHERE 
+    (
+        (@userSearchQuery IS NULL OR @userSearchQuery = '') 
+        AND (@type IS NULL OR @type = '') 
+        AND (@category IS NULL OR @category = '')
+    )
+    OR
+    (
+        (@userSearchQuery IS NULL OR @userSearchQuery = '' OR Name LIKE '%' + @userSearchQuery + '%') 
+        AND (@type IS NULL OR @type = '' OR Type = @type)
+        AND (
+            (@category = 'mapped' AND CategoryId IS NOT NULL) OR 
+            (@category = 'unmapped' AND CategoryId IS NULL) OR 
+            @category IS NULL OR @category = ''
+        )
+    )";
+            var parameters = new
+            {
+                userSearchQuery = userSearchQuery,
+                type = type,
+                category = category
+            };
+
+            var result=await _dapper.GetAllAsync<MappingModel>(query, parameters);
+            return result;
         }
         public async Task<List<MappingModel>> GetByIdImbuildAppsAndUrls(int id)
         {
@@ -90,6 +115,23 @@ namespace Hublog.Repository.Repositories
 
             return affectedRows > 0;
         }
+        public async Task<bool> AddImbuildAppsAndUrls(MappingModel mappingModel)
+        {
+            var query = @"
+        INSERT INTO [ImbuildAppsAndUrls] ([Name], [Type], [CategoryId])
+        VALUES (@Name, @Type, @CategoryId)";
+
+            var parameters = new
+            {
+                Name = mappingModel.Name,
+                Type = mappingModel.Type,
+                CategoryId = mappingModel.CategoryId
+            };
+
+            var affectedRows = await _dapper.ExecuteAsync(query, parameters);
+            return affectedRows > 0;
+        }
+
         public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
             string appUsageQuery = @"

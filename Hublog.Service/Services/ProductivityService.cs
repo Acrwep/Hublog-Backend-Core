@@ -23,9 +23,9 @@ namespace Hublog.Service.Services
             var rowsAffected = await _productivityRepository.UpdateProductivityId(categoryId, productivityId);
             return rowsAffected > 0;
         }
-        public async Task<List<MappingModel>> GetImbuildAppsAndUrls()
+        public async Task<List<MappingModel>> GetImbuildAppsAndUrls(string userSearchQuery, string type, string category)
         {
-            return await _productivityRepository.GetImbuildAppsAndUrls(); 
+            return await _productivityRepository.GetImbuildAppsAndUrls(userSearchQuery, type, category); 
         }
         public async Task<List<MappingModel>> GetByIdImbuildAppsAndUrls(int id)
         {
@@ -34,6 +34,10 @@ namespace Hublog.Service.Services
         public async Task<bool> InsertImbuildAppsAndUrls(int id, MappingModel model)
         {
             return await _productivityRepository.InsertImbuildAppsAndUrls(id, model);
+        }
+        public async Task<bool> AddImbuildAppsAndUrls(MappingModel mappingModel)
+        {
+            return await _productivityRepository.AddImbuildAppsAndUrls(mappingModel);
         }
         public async Task<ProductivityDurations> GetProductivityDurations(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate) 
         {
