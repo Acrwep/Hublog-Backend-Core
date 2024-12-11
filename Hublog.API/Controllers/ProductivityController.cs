@@ -41,11 +41,11 @@ namespace Hublog.API.Controllers
                 return NotFound(new { message = "Category not found." });
         }
         [HttpGet("GetImbuildAppsAndUrls")]
-        public async Task<IActionResult> GetImbuildAppsAndUrls(string userSearchQuery = "",string type="",string category="")
+        public async Task<IActionResult> GetImbuildAppsAndUrls(int OrganizationId,string userSearchQuery = "",string type="",string category="")
         {
             try
             {
-                var categories = await _productivityService.GetImbuildAppsAndUrls(userSearchQuery, type, category);
+                var categories = await _productivityService.GetImbuildAppsAndUrls(OrganizationId,userSearchQuery, type, category);
                 if (categories != null && categories.Any())
                     return Ok(new { message = "ProductivityId updated successfully.", data = categories });
                 else

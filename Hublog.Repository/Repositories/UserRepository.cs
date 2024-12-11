@@ -70,7 +70,9 @@ namespace Hublog.Repository.Repositories
         #region InsertAttendance
         public async Task<int> InsertAttendanceAsync(UserAttendanceModel model)
         
-       {
+       
+        
+        {
             try
             {
                 var parameters = new DynamicParameters();
@@ -86,6 +88,17 @@ namespace Hublog.Repository.Repositories
                 parameters.Add("@Punchout_type", model.Punchout_type);
                 Console.WriteLine(startTimeFormatted);
                 var result = await _dapper.ExecuteAsync("SP_InsertAttendance", parameters, CommandType.StoredProcedure);
+                var deleteQuery = @"
+            DELETE UA
+FROM UserActivity UA
+INNER JOIN Attendance A ON A.UserId = UA.UserId
+WHERE UA.TriggeredTime < DATEADD(DAY, -10, @AttendanceDate)
+AND A.UserId = @UserId;
+        ";
+
+                var deleteResult = await _dapper.ExecuteAsync(deleteQuery, new { UserId = model.UserId, AttendanceDate = model.AttendanceDate }, CommandType.Text);
+
+
 
                 return result;
             }

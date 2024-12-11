@@ -12,5 +12,6 @@ namespace Hublog.Repository.Entities.Model.Productivity
         public string Type { get; set; }
         public string Name { get; set; }
         public int? CategoryId { get; set; }
+        public int OrganizationId { get; set; }
     }
 }

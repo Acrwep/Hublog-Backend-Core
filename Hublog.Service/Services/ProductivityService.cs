@@ -23,9 +23,9 @@ namespace Hublog.Service.Services
             var rowsAffected = await _productivityRepository.UpdateProductivityId(categoryId, productivityId);
             return rowsAffected > 0;
         }
-        public async Task<List<MappingModel>> GetImbuildAppsAndUrls(string userSearchQuery, string type, string category)
+        public async Task<List<MappingModel>> GetImbuildAppsAndUrls(int OrganizationId,string userSearchQuery, string type, string category)
         {
-            return await _productivityRepository.GetImbuildAppsAndUrls(userSearchQuery, type, category); 
+            return await _productivityRepository.GetImbuildAppsAndUrls(OrganizationId,userSearchQuery, type, category); 
         }
         public async Task<List<MappingModel>> GetByIdImbuildAppsAndUrls(int id)
         {

@@ -55,16 +55,20 @@ namespace Hublog.Repository.Repositories
 
             return await _dapper.ExecuteAsync(query, parameters);
         }
-        public async Task<List<MappingModel>> GetImbuildAppsAndUrls(string userSearchQuery, string type, string category)
+        public async Task<List<MappingModel>> GetImbuildAppsAndUrls(int OrganizationId,string userSearchQuery, string type, string category)
         {
             //var query = "SELECT I.Type, I.Name " +
             //            "FROM ImbuildAppsAndUrls I " +
             //            "LEFT JOIN Categories C ON C.ProductivityId = I.CategoryId";
 
             // You can include the filtering logic here
-            var query = @"SELECT *
-             FROM ImbuildAppsAndUrls
+            var query = @"SELECT I.id,I.[name],I.[type],I.[CategoryId],I.[OrganizationId]
+             FROM ImbuildAppsAndUrls I
+inner join Organization O 
+on O.id=I.OrganizationId
              WHERE 
+    I.OrganizationId=@OrganizationId
+    and
     (
         (@userSearchQuery IS NULL OR @userSearchQuery = '') 
         AND (@type IS NULL OR @type = '') 
@@ -72,16 +76,17 @@ namespace Hublog.Repository.Repositories
     )
     OR
     (
-        (@userSearchQuery IS NULL OR @userSearchQuery = '' OR Name LIKE '%' + @userSearchQuery + '%') 
-        AND (@type IS NULL OR @type = '' OR Type = @type)
+        (@userSearchQuery IS NULL OR @userSearchQuery = '' OR I.Name LIKE '%' + @userSearchQuery + '%') 
+        AND (@type IS NULL OR @type = '' OR I.Type = @type)
         AND (
-            (@category = 'mapped' AND CategoryId IS NOT NULL) OR 
-            (@category = 'unmapped' AND CategoryId IS NULL) OR 
+            (@category = 'mapped' AND I.CategoryId IS NOT NULL) OR 
+            (@category = 'unmapped' AND I.CategoryId IS NULL) OR 
             @category IS NULL OR @category = ''
         )
     )";
             var parameters = new
             {
+                OrganizationId= OrganizationId,
                 userSearchQuery = userSearchQuery,
                 type = type,
                 category = category
@@ -118,14 +123,15 @@ namespace Hublog.Repository.Repositories
         public async Task<bool> AddImbuildAppsAndUrls(MappingModel mappingModel)
         {
             var query = @"
-        INSERT INTO [ImbuildAppsAndUrls] ([Name], [Type], [CategoryId])
-        VALUES (@Name, @Type, @CategoryId)";
+        INSERT INTO [ImbuildAppsAndUrls] ([Name], [Type], [CategoryId],[OrganizationId])
+        VALUES (@Name, @Type, @CategoryId,@OrganizationId)";
 
             var parameters = new
             {
                 Name = mappingModel.Name,
                 Type = mappingModel.Type,
-                CategoryId = mappingModel.CategoryId
+                CategoryId = mappingModel.CategoryId,
+                OrganizationId= mappingModel.OrganizationId
             };
 
             var affectedRows = await _dapper.ExecuteAsync(query, parameters);
