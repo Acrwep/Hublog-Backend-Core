@@ -6,6 +6,7 @@ using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -134,8 +135,19 @@ on O.id=I.OrganizationId
                 OrganizationId= mappingModel.OrganizationId
             };
 
-            var affectedRows = await _dapper.ExecuteAsync(query, parameters);
-            return affectedRows > 0;
+            try
+            {
+                var affectedRows = await _dapper.ExecuteAsync(query, parameters);
+                return affectedRows > 0;
+            }
+            catch (SqlException ex) when (ex.Number == 2627 || ex.Number == 2601) // Unique constraint violation numbers
+            {
+                throw new Exception($"The name '{mappingModel.Name}' already exists. Please use a different name.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while adding the record.", ex);
+            }
         }
 
         public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
