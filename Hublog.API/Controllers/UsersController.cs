@@ -402,7 +402,7 @@ namespace Hublog.API.Controllers
             }
         }
         [HttpGet("Get_Active_Time")]
-        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> Get_Active_Time(int userid, DateTime startDate, DateTime endDate)
         {
             try
@@ -416,7 +416,7 @@ namespace Hublog.API.Controllers
             }
         }
         [HttpPost("Insert_IdealActivity")]
-        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> Insert_IdealActivity(IdealActivity activity)
         {
             if (ModelState.IsValid)

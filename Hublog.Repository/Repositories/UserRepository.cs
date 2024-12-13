@@ -525,8 +525,8 @@ AND A.UserId = @UserId;
             try
             {
                 string query = @"
-            INSERT INTO Ideal_Activity (userid, organisationid, Ideal_Activity_Time)
-            VALUES (@UserId, @OrganisationId, @IdealActivityTime);
+            INSERT INTO Ideal (userid, organisationid, Ideal_duration,Ideal_Datetime)
+            VALUES (@UserId, @OrganisationId, @Ideal_duration,@Ideal_Datetime);
             SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 // Ensure the parameter names match the properties of the 'activity' object
@@ -534,7 +534,8 @@ AND A.UserId = @UserId;
                 {
                     UserId = activity.UserId,
                     OrganisationId = activity.OrganizationId,
-                    IdealActivityTime = activity.IdealTime
+                    Ideal_duration = activity.Ideal_duration,
+                    Ideal_DateTime = activity.Ideal_DateTime
                 };
 
                 var createdActivityId = await _dapper.ExecuteScalarAsync<int>(query, parameters);

@@ -60,6 +60,9 @@ namespace Hublog.API.Extensions
             services.AddScoped<IAlertService, AlertService>();
             services.AddScoped<IAlertRepository, AlertRepository>();
 
+            services.AddScoped<IActivityService, ActivityService>();
+            services.AddScoped<IActivityRepository, ActivityRepository>();
+
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

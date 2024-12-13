@@ -11,7 +11,8 @@ namespace Hublog.Repository.Entities.Model.UserModels
         public int Id { get; set; }
         public int UserId { get; set; }
         public int OrganizationId { get; set; }
-        public int IdealTime { get; set; }
+        public int Ideal_duration { get; set; }
+        public DateTime Ideal_DateTime { get; set; }
 
     }
 }

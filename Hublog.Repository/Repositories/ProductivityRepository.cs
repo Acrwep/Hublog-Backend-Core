@@ -576,6 +576,7 @@ on O.id=I.OrganizationId
 
                 }
                 GrandtotalProductiveDuration += totalProductiveDuration;
+                //var Totalproductivitypercentage = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
                 var query = @"SELECT 
     SUM(DATEDIFF(SECOND, A.[Start_Time], A.[End_Time])) AS Total_Seconds
 FROM Attendance A
@@ -598,7 +599,7 @@ WHERE O.Id = @organizationId
 
                 if (totalDurationInSeconds > 0)
                 {
-                    //var productivePercent = ((double)totalProductiveDuration / totalseconds) * 100;
+                    //double productivePercent = ((double)totalProductiveDuration/Totalproductivitypercentage) * 100;
                     double productivePercent = (double)totalProductiveDuration / totalseconds.GetValueOrDefault() * 100;
                     if (productivePercent > 100)
                     {
