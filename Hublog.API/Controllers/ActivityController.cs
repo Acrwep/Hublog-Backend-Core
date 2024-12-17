@@ -28,5 +28,19 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("Most&Least_Teamwise_Activity")]
+        public async Task<IActionResult> MostLeast_Teamwise_Activity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            try
+            {
+                var result = await _activityService.MostLeast_Teamwise_Activity(organizationId, teamId, fromDate, toDate);
+
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

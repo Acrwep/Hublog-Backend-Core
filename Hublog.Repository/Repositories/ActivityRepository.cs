@@ -76,11 +76,29 @@ namespace Hublog.Repository.Repositories
 
 
             }
+            var sortedTeams = breakdown
+        .Select(team => new
+        {
+            TeamName = team.TeamName,
+            ActiveTime = team.ActiveTime ?? 0,
+            IdleDuration = team.IdleDuration ?? 0,
+            TotalDuration = (team.ActiveTime ?? 0) + (team.IdleDuration ?? 0),
+            ActiveTimePercent = ((team.ActiveTime ?? 0) + (team.IdleDuration ?? 0)) == 0
+                ? 0 // Avoid division by zero
+                : ((team.ActiveTime ?? 0) * 100.0) / ((team.ActiveTime ?? 0) + (team.IdleDuration ?? 0))
+        })
+        .OrderByDescending(team => team.ActiveTimePercent)
+        .ToList();
+
+            var topTeams = sortedTeams .Where(team => team.ActiveTimePercent > 0).Take(3) .ToList();
+            var bottomTeams = sortedTeams.OrderBy(team => team.ActiveTimePercent).Take(3).ToList();
+
 
             // Calculate overall totals and percentage
             double totalDuration = totalActiveDuration + totalIdealDuration;
             double totalActiveTimePer = (totalDuration == 0) ? 0 : (totalActiveDuration / totalDuration) * 100;
             var dateDifferenceInDays = (toDate - fromDate).TotalDays;
+            dateDifferenceInDays++;
             var averageDurationInSeconds = totalActiveDuration / dateDifferenceInDays;
 
             // Prepare final result
@@ -99,12 +117,93 @@ namespace Hublog.Repository.Repositories
                     active_time = FormatDuration((long)(team.ActiveTime ?? 0)), // Convert to long
                     idle_duration = FormatDuration((long)(team.IdleDuration ?? 0)), // Convert to long
                     duration = FormatDuration((long)((team.ActiveTime ?? 0) + (team.IdleDuration ?? 0))) // Convert to long
+                }).ToList(),
+                top = topTeams.Select(team => new
+                {
+                    ActiveTime = FormatDuration(team.ActiveTime),
+                    IdleDuration = FormatDuration(team.IdleDuration),
+                    total_duration = FormatDuration(team.TotalDuration),
+                    ActiveTimePercent = double.IsFinite(team.ActiveTimePercent) ? team.ActiveTimePercent : 0, // Validate percentage
+                    team_name = team.TeamName
+                }).ToList(),
+                bottom = bottomTeams.Select(team => new
+                {
+                    ActiveTime = FormatDuration(team.ActiveTime),
+                    IdleDuration = FormatDuration(team.IdleDuration),
+                    total_duration = FormatDuration(team.TotalDuration),
+                    ActiveTimePercent = double.IsFinite(team.ActiveTimePercent) ? team.ActiveTimePercent : 0, // Validate percentage
+                    team_name = team.TeamName
                 }).ToList()
             };
 
             return result;
         }
-      
+        public async Task<dynamic> MostLeast_Teamwise_Activity(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
+        {
+            var teamQuery = @"
+        SELECT T.Id, T.Name 
+        FROM Team T
+        INNER JOIN Organization O ON T.OrganizationId = O.Id
+        WHERE O.Id = @OrganizationId
+        AND (@TeamId IS NULL OR T.Id = @TeamId)";
+
+            var teams = await _dapper.GetAllAsync<(int TeamId, string TeamName)>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
+
+            if (!teams.Any())
+            {
+                return new
+                {
+                    GrandTotalpercentage = 0.0,
+                    data = new
+                    {
+                        top = new[]
+                        {
+                    new
+                    {
+                        total_active_time = 0,
+                        total_idle_duration = 0,
+                        total_duration = 0,
+                        total_active_time_per = 0.0,
+                        team_name = "N/A"
+                    }
+                },
+                        bottom = new[]
+                        {
+
+                    new
+                    {
+                        total_active_time = 0,
+                        total_idle_duration = 0,
+                        total_duration = 0,
+                        total_active_time_per = 0.0,
+                        team_name = "N/A"
+                    }
+                }
+                    }
+                };
+            }
+
+            var teamResults = new List<dynamic>();
+            var GrandtotalTimeDuration = 0;
+            var GrandtotalProductiveDuration = 0;
+            long abc = 0;
+            foreach (var team in teams)
+            {
+                teamId = team.TeamId;
+                //var usages = await GetAppUsages(organizationId, teamId, fromDate, toDate);
+                var urlUsageQuery = "Get_App_Url_Data";
+                var parameters = new
+                {
+                    OrganizationId = organizationId,
+                    TeamId = teamId,
+                    FromDate = fromDate,
+                    ToDate = toDate
+                };
+                IEnumerable<Activity_Duration> usages = await _dapper.GetAllAsync<Activity_Duration>(urlUsageQuery, parameters);
+
+            }
+            return teamResults;
+        }
 
     }
 }

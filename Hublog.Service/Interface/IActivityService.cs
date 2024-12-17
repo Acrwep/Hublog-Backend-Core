@@ -12,5 +12,7 @@ namespace Hublog.Service.Interface
     public interface IActivityService
     {
         Task<object> GetActivityBreakDown(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate);
+        Task<dynamic> MostLeast_Teamwise_Activity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate);
+
     }
 }
