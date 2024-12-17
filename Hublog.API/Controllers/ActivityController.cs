@@ -1,4 +1,5 @@
 ﻿using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Service.Interface;
 using Hublog.Service.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -29,11 +30,11 @@ namespace Hublog.API.Controllers
             }
         }
         [HttpGet("Most&Least_Teamwise_Activity")]
-        public async Task<IActionResult> MostLeast_Teamwise_Activity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        public async Task<IActionResult>Date_wise_Activity(int organizationId, int? teamId,int? userid,[FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
             try
             {
-                var result = await _activityService.MostLeast_Teamwise_Activity(organizationId, teamId, fromDate, toDate);
+                var result = await _activityService.Date_wise_Activity(organizationId, teamId, userid, fromDate, toDate);
 
                 return Ok(result);
             }

@@ -40,6 +40,8 @@ namespace Hublog.Repository.Repositories
 
             int totalActiveDuration = 0;
             int totalIdealDuration = 0;
+            int totalBreakDuration = 0;
+            int totalOnlineDuration = 0;
             List<Activity_Duration> breakdown = new List<Activity_Duration>();
 
             foreach (var team in teams)
@@ -60,10 +62,17 @@ namespace Hublog.Repository.Repositories
                 // Handle null `breakMaster`
                 int activeTime = breakMaster?.ActiveTime ?? 0;
                 int idleTime = breakMaster?.IdleDuration ?? 0;
+                int BreakTime = breakMaster?.BreakDuration ?? 0;
+                int OnlineTime = breakMaster?.OnlineTime ?? 0;
+                int WorkingTime = activeTime;
 
                 // Update totals
-                totalActiveDuration += activeTime;
+                totalActiveDuration += activeTime-(idleTime + BreakTime);
                 totalIdealDuration += idleTime;
+                totalBreakDuration += BreakTime;
+                totalOnlineDuration += activeTime-BreakTime;
+                OnlineTime = activeTime - BreakTime;
+                activeTime -= (idleTime + BreakTime);
 
                 // Prepare breakdown for each team
                 breakdown.Add(new Activity_Duration
@@ -71,7 +80,9 @@ namespace Hublog.Repository.Repositories
                     TeamName = team.Name,
                     ActiveTime = activeTime,
                     IdleDuration = idleTime,
-                    Duration = activeTime + idleTime
+                    BreakDuration= BreakTime,
+                    OnlineTime = OnlineTime,
+                    Duration = WorkingTime
                 });
 
 
@@ -82,10 +93,12 @@ namespace Hublog.Repository.Repositories
             TeamName = team.TeamName,
             ActiveTime = team.ActiveTime ?? 0,
             IdleDuration = team.IdleDuration ?? 0,
-            TotalDuration = (team.ActiveTime ?? 0) + (team.IdleDuration ?? 0),
-            ActiveTimePercent = ((team.ActiveTime ?? 0) + (team.IdleDuration ?? 0)) == 0
+            BreakDuration = team.BreakDuration ?? 0,
+            OnlineTime = team.OnlineTime ?? 0,
+            TotalDuration = team.Duration ?? 0,
+            ActiveTimePercent = ((team.OnlineTime ?? 0) + (team.IdleDuration ?? 0)) == 0
                 ? 0 // Avoid division by zero
-                : ((team.ActiveTime ?? 0) * 100.0) / ((team.ActiveTime ?? 0) + (team.IdleDuration ?? 0))
+                : ((team.OnlineTime ?? 0) * 100.0) / ((team.OnlineTime ?? 0) + (team.IdleDuration ?? 0))
         })
         .OrderByDescending(team => team.ActiveTimePercent)
         .ToList();
@@ -95,11 +108,11 @@ namespace Hublog.Repository.Repositories
 
 
             // Calculate overall totals and percentage
-            double totalDuration = totalActiveDuration + totalIdealDuration;
-            double totalActiveTimePer = (totalDuration == 0) ? 0 : (totalActiveDuration / totalDuration) * 100;
+            double totalDuration = totalOnlineDuration + totalIdealDuration;
+            double totalActiveTimePer = (totalDuration == 0) ? 0 : (totalOnlineDuration / totalDuration) * 100;
             var dateDifferenceInDays = (toDate - fromDate).TotalDays;
             dateDifferenceInDays++;
-            var averageDurationInSeconds = totalActiveDuration / dateDifferenceInDays;
+            var averageDurationInSeconds = totalOnlineDuration / dateDifferenceInDays;
 
             // Prepare final result
             var result = new
@@ -109,19 +122,23 @@ namespace Hublog.Repository.Repositories
                     total_active_time = FormatDuration(totalActiveDuration),
                     total_active_time_per = totalActiveTimePer,
                     total_idle_duration = FormatDuration(totalIdealDuration),
-                    AverageDuratiopn = FormatDuration((long)averageDurationInSeconds)
+                    total_Online_Duration = FormatDuration(totalOnlineDuration),
+                    AverageDuration = FormatDuration((long)averageDurationInSeconds)
                 },
                 teams = breakdown.Select(team => new
                 {
                     team_name = team.TeamName,
                     active_time = FormatDuration((long)(team.ActiveTime ?? 0)), // Convert to long
                     idle_duration = FormatDuration((long)(team.IdleDuration ?? 0)), // Convert to long
-                    duration = FormatDuration((long)((team.ActiveTime ?? 0) + (team.IdleDuration ?? 0))) // Convert to long
+                    BreakDuration = FormatDuration((long)(team.BreakDuration ?? 0)), // Convert to long
+                    OnlineTime = FormatDuration((long)(team.OnlineTime ?? 0)), // Convert to long
+                    duration = FormatDuration((long)(team.Duration ?? 0))// Convert to long
                 }).ToList(),
                 top = topTeams.Select(team => new
                 {
                     ActiveTime = FormatDuration(team.ActiveTime),
                     IdleDuration = FormatDuration(team.IdleDuration),
+                    OnlineTime = FormatDuration(team.OnlineTime),
                     total_duration = FormatDuration(team.TotalDuration),
                     ActiveTimePercent = double.IsFinite(team.ActiveTimePercent) ? team.ActiveTimePercent : 0, // Validate percentage
                     team_name = team.TeamName
@@ -130,6 +147,7 @@ namespace Hublog.Repository.Repositories
                 {
                     ActiveTime = FormatDuration(team.ActiveTime),
                     IdleDuration = FormatDuration(team.IdleDuration),
+                    OnlineTime = FormatDuration(team.OnlineTime),
                     total_duration = FormatDuration(team.TotalDuration),
                     ActiveTimePercent = double.IsFinite(team.ActiveTimePercent) ? team.ActiveTimePercent : 0, // Validate percentage
                     team_name = team.TeamName
@@ -138,72 +156,98 @@ namespace Hublog.Repository.Repositories
 
             return result;
         }
-        public async Task<dynamic> MostLeast_Teamwise_Activity(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
+        public async Task<dynamic> Date_wise_Activity(int organizationId, int? teamId,int? userid, DateTime fromDate, DateTime toDate)
         {
+            // Query to fetch teams
             var teamQuery = @"
-        SELECT T.Id, T.Name 
-        FROM Team T
-        INNER JOIN Organization O ON T.OrganizationId = O.Id
-        WHERE O.Id = @OrganizationId
-        AND (@TeamId IS NULL OR T.Id = @TeamId)";
+    SELECT T.Id, T.Name 
+    FROM Team T
+    INNER JOIN Organization O ON T.OrganizationId = O.Id
+    WHERE O.Id = @OrganizationId
+    AND (@TeamId IS NULL OR T.Id = @TeamId)";
 
+            // Get list of teams
             var teams = await _dapper.GetAllAsync<(int TeamId, string TeamName)>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
+            var dateWiseDurations = new List<DailyActivityDuration>();
 
-            if (!teams.Any())
-            {
-                return new
-                {
-                    GrandTotalpercentage = 0.0,
-                    data = new
-                    {
-                        top = new[]
-                        {
-                    new
-                    {
-                        total_active_time = 0,
-                        total_idle_duration = 0,
-                        total_duration = 0,
-                        total_active_time_per = 0.0,
-                        team_name = "N/A"
-                    }
-                },
-                        bottom = new[]
-                        {
-
-                    new
-                    {
-                        total_active_time = 0,
-                        total_idle_duration = 0,
-                        total_duration = 0,
-                        total_active_time_per = 0.0,
-                        team_name = "N/A"
-                    }
-                }
-                    }
-                };
-            }
-
-            var teamResults = new List<dynamic>();
-            var GrandtotalTimeDuration = 0;
-            var GrandtotalProductiveDuration = 0;
-            long abc = 0;
             foreach (var team in teams)
             {
-                teamId = team.TeamId;
-                //var usages = await GetAppUsages(organizationId, teamId, fromDate, toDate);
-                var urlUsageQuery = "Get_App_Url_Data";
+                // Fetch usage data for each team
                 var parameters = new
                 {
                     OrganizationId = organizationId,
-                    TeamId = teamId,
+                    TeamId = team.TeamId,
+                    UserId= userid,
                     FromDate = fromDate,
                     ToDate = toDate
                 };
-                IEnumerable<Activity_Duration> usages = await _dapper.GetAllAsync<Activity_Duration>(urlUsageQuery, parameters);
 
+                var usages = await _dapper.GetAllAsync<DailyActivityDuration>("Datewise_Activity", parameters);
+
+                // Populate daily durations
+                var dailyDurations = usages
+                    .GroupBy(u => u.Date)
+                    .ToDictionary(
+                        g => g.Key,
+                        g => new DailyActivityDuration
+                        {
+                            Date = g.Key,
+                            OnlineTime = g.Sum(u => u.ActiveTime - u.BreakDuration),
+                            IdleDuration = g.Sum(u => u.IdleDuration),
+                            BreakDuration=g.Sum(u => u.BreakDuration),
+                            ActiveDuration= g.Sum(u => u.ActiveTime - (u.IdleDuration + u.BreakDuration)),
+                            TotalDuration = g.Sum(u => u.ActiveTime)
+                        });
+
+                dateWiseDurations.AddRange(dailyDurations.Values);
             }
-            return teamResults;
+
+            // Aggregate and format results
+            var filteredDurations = dateWiseDurations
+                .GroupBy(d => d.Date)
+                .Select(g => new DailyActivityDuration
+                {
+                    Date = g.Key,
+                    TotalDuration = g.Sum(d => d.TotalDuration),
+                    OnlineTime = g.Sum(d => d.OnlineTime),
+                    IdleDuration = g.Sum(d => d.IdleDuration),
+                    BreakDuration=g.Sum(d => d.BreakDuration),
+                    ActiveDuration=g.Sum(d=>d.ActiveDuration)
+                })
+                .Where(d => d.TotalDuration > 0)
+                .OrderBy(d => d.Date)
+                .ToList();
+
+            // Format durations as "HH:mm:ss"
+            foreach (var duration in filteredDurations)
+            {
+                string FormatDuration(long totalSeconds)
+                {
+                    var hours = totalSeconds / 3600;
+                    var minutes = (totalSeconds % 3600) / 60;
+                    var seconds = totalSeconds % 60;
+                    return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
+                }
+
+                duration.Total_Duration = FormatDuration((long)Math.Round(duration.TotalDuration));
+                duration.Online_Time = FormatDuration((long)Math.Round(duration.OnlineTime));
+                duration.Idle_Duration = FormatDuration((long)Math.Round(duration.IdleDuration));
+                duration.Break_Duration = FormatDuration((long)Math.Round(duration.BreakDuration));
+                duration.Active_Duration = FormatDuration((long)Math.Round(duration.ActiveDuration));
+            }
+
+            // Return formatted results
+            return filteredDurations.Select(d => new
+            {
+                date = d.Date,
+                total_Duration = d.Total_Duration,
+                Online_Time = d.Online_Time,
+                Idle_Duration = d.Idle_Duration,
+                Break_Duration = d.Break_Duration,
+                Active_Duration=d.Active_Duration
+            }).ToList();
         }
+
 
     }
 }

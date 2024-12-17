@@ -24,9 +24,9 @@ namespace Hublog.Service.Services
         {
             return await _IActivityService.GetActivityBreakDown(organizationId, teamId, userId, fromDate, toDate);
         }
-        public async Task<object> MostLeast_Teamwise_Activity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        public async Task<object>Date_wise_Activity(int organizationId, int? teamId, int? userid, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
-            return await _IActivityService.MostLeast_Teamwise_Activity(organizationId, teamId, fromDate, toDate);
+            return await _IActivityService.Date_wise_Activity(organizationId, teamId, userid, fromDate, toDate);
         }
     }
 }
