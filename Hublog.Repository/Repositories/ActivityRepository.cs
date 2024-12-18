@@ -112,10 +112,16 @@ namespace Hublog.Repository.Repositories
             var topTeams = sortedTeams .Where(team => team.ActiveTimePercent > 0).Take(3) .ToList();
             var bottomTeams = sortedTeams.OrderBy(team => team.ActiveTimePercent).Take(3).ToList();
 
+            var percentageStats = new
+            {
+                GreaterThan75Active = sortedTeams.Count(team => team.ActiveTimePercent > 75),
+                Between50And75Active = sortedTeams.Count(team => team.ActiveTimePercent >= 50 && team.ActiveTimePercent <= 75),
+                LessThan50Active = sortedTeams.Count(team => team.ActiveTimePercent < 50)
+            };
 
             // Calculate overall totals and percentage
             double totalDuration = totalOnlineDuration + totalIdealDuration;
-            double totalActiveTimePer = (totalDuration == 0) ? 0 : (totalActiveDuration / total_Duration) * 100;
+            double totalActiveTimePer = (total_Duration == 0) ? 0 : ((double)totalActiveDuration / total_Duration) * 100;
             var dateDifferenceInDays = (toDate - fromDate).TotalDays;
             dateDifferenceInDays++;
             var averageDurationInSeconds = totalOnlineDuration / dateDifferenceInDays;
@@ -159,7 +165,13 @@ namespace Hublog.Repository.Repositories
                     total_duration = FormatDuration(team.TotalDuration),
                     ActiveTimePercent = double.IsFinite(team.ActiveTimePercent) ? team.ActiveTimePercent : 0, // Validate percentage
                     team_name = team.TeamName
-                }).ToList()
+                }).ToList(),
+                percentages = new
+                {
+                    GreaterThan75Active = percentageStats.GreaterThan75Active,
+                    Between50And75Active = percentageStats.Between50And75Active,
+                    LessThan50Active = percentageStats.LessThan50Active
+                }
             };
 
             return result;
