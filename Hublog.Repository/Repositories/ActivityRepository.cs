@@ -42,6 +42,7 @@ namespace Hublog.Repository.Repositories
             int totalIdealDuration = 0;
             int totalBreakDuration = 0;
             int totalOnlineDuration = 0;
+            int total_Duration = 0;
             List<Activity_Duration> breakdown = new List<Activity_Duration>();
 
             foreach (var team in teams)
@@ -71,6 +72,7 @@ namespace Hublog.Repository.Repositories
                 totalIdealDuration += idleTime;
                 totalBreakDuration += BreakTime;
                 totalOnlineDuration += activeTime-BreakTime;
+                total_Duration += activeTime;
                 OnlineTime = activeTime - BreakTime;
                 activeTime -= (idleTime + BreakTime);
 
@@ -96,9 +98,9 @@ namespace Hublog.Repository.Repositories
             BreakDuration = team.BreakDuration ?? 0,
             OnlineTime = team.OnlineTime ?? 0,
             TotalDuration = team.Duration ?? 0,
-            ActiveTimePercent = ((team.OnlineTime ?? 0) + (team.IdleDuration ?? 0)) == 0
-                ? 0 // Avoid division by zero
-                : ((team.OnlineTime ?? 0) * 100.0) / ((team.OnlineTime ?? 0) + (team.IdleDuration ?? 0))
+            ActiveTimePercent = team.Duration.HasValue && team.Duration > 0
+        ? ((team.ActiveTime ?? 0) / (double)(team.Duration ?? 0)) * 100
+        : 0
         })
         .OrderByDescending(team => team.ActiveTimePercent)
         .ToList();
@@ -109,7 +111,7 @@ namespace Hublog.Repository.Repositories
 
             // Calculate overall totals and percentage
             double totalDuration = totalOnlineDuration + totalIdealDuration;
-            double totalActiveTimePer = (totalDuration == 0) ? 0 : (totalOnlineDuration / totalDuration) * 100;
+            double totalActiveTimePer = (totalDuration == 0) ? 0 : (totalActiveDuration / totalDuration) * 100;
             var dateDifferenceInDays = (toDate - fromDate).TotalDays;
             dateDifferenceInDays++;
             var averageDurationInSeconds = totalOnlineDuration / dateDifferenceInDays;
@@ -123,6 +125,8 @@ namespace Hublog.Repository.Repositories
                     total_active_time_per = totalActiveTimePer,
                     total_idle_duration = FormatDuration(totalIdealDuration),
                     total_Online_Duration = FormatDuration(totalOnlineDuration),
+                    total_Break_Duration = FormatDuration(totalBreakDuration),
+                    total_Duration = FormatDuration(total_Duration),
                     AverageDuration = FormatDuration((long)averageDurationInSeconds)
                 },
                 teams = breakdown.Select(team => new
@@ -221,14 +225,6 @@ namespace Hublog.Repository.Repositories
             // Format durations as "HH:mm:ss"
             foreach (var duration in filteredDurations)
             {
-                string FormatDuration(long totalSeconds)
-                {
-                    var hours = totalSeconds / 3600;
-                    var minutes = (totalSeconds % 3600) / 60;
-                    var seconds = totalSeconds % 60;
-                    return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
-                }
-
                 duration.Total_Duration = FormatDuration((long)Math.Round(duration.TotalDuration));
                 duration.Online_Time = FormatDuration((long)Math.Round(duration.OnlineTime));
                 duration.Idle_Duration = FormatDuration((long)Math.Round(duration.IdleDuration));

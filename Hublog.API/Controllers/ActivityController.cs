@@ -29,7 +29,7 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("Most&Least_Teamwise_Activity")]
+        [HttpGet("Date_wise_Activity")]
         public async Task<IActionResult>Date_wise_Activity(int organizationId, int? teamId,int? userid,[FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
             try
