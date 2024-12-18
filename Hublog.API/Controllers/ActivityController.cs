@@ -43,5 +43,19 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("GetActivityEmployeeList")]
+        public async Task<IActionResult> GetActivityEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            try
+            {
+                var result = await _activityService.GetActivityEmployeeList(organizationId, teamId, userId, fromDate, toDate);
+
+                return Ok(new { message = "Employee list data fetched successfully.", data = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

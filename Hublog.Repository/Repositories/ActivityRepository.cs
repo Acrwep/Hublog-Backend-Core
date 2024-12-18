@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,6 +12,8 @@ using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Interface;
+using Microsoft.AspNetCore.Mvc;
+using Dapper;
 
 namespace Hublog.Repository.Repositories
 {
@@ -111,7 +115,7 @@ namespace Hublog.Repository.Repositories
 
             // Calculate overall totals and percentage
             double totalDuration = totalOnlineDuration + totalIdealDuration;
-            double totalActiveTimePer = (totalDuration == 0) ? 0 : (totalActiveDuration / totalDuration) * 100;
+            double totalActiveTimePer = (totalDuration == 0) ? 0 : (totalActiveDuration / total_Duration) * 100;
             var dateDifferenceInDays = (toDate - fromDate).TotalDays;
             dateDifferenceInDays++;
             var averageDurationInSeconds = totalOnlineDuration / dateDifferenceInDays;
@@ -243,7 +247,42 @@ namespace Hublog.Repository.Repositories
                 Active_Duration=d.Active_Duration
             }).ToList();
         }
+        public async Task<dynamic> GetActivityEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+            // Define the query and parameters
+            var urlUsageQuery = "userswise_Activity";  // Stored procedure name
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                UserId = userId,
+                FromDate = fromDate,
+                ToDate = toDate
+            };
 
+            var result = await _dapper.GetAllAsyncs<User_Activity>(
+          urlUsageQuery,
+          parameters,
+          commandType: CommandType.StoredProcedure
+      );
 
+            var data = result.Select(r => new
+            {
+                UserID = r.UserId,
+                Team_Name = r.TeamName,
+                full_Name = r.FullName,
+                AttendanceCount = r.AttendanceCount,
+                TodalTime = FormatDuration(r.TodalTime ?? 0),
+                BreakDuration = FormatDuration(r.BreakDuration ?? 0),
+                IdleDuration = FormatDuration(r.IdleDuration ?? 0),
+                ActiveTime = FormatDuration(r.ActiveTime ?? 0),
+                OnlineTime = FormatDuration(r.OnlineTime ?? 0),
+                ActivePercentage = (r.TodalTime.HasValue && r.TodalTime.Value > 0)
+                        ? Math.Round((double)r.ActiveTime.Value / r.TodalTime.Value * 100, 2)
+                        : 0
+            }).ToList();
+
+            return data;
+        }
     }
 }

@@ -13,6 +13,6 @@ namespace Hublog.Service.Interface
     {
         Task<object> GetActivityBreakDown(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate);
         Task<dynamic> Date_wise_Activity(int organizationId, int? teamId, int? userid, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate);
-
+        Task<dynamic> GetActivityEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate);
     }
 }
