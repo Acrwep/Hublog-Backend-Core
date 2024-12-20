@@ -288,7 +288,7 @@ namespace Hublog.Repository.Repositories
                 BreakDuration = FormatDuration(r.BreakDuration ?? 0),
                 IdleDuration = FormatDuration(r.IdleDuration ?? 0),
                 ActiveTime = FormatDuration(r.ActiveTime ?? 0),
-                OnlineTime = FormatDuration(r.OnlineTime ?? 0),
+                online_duration = FormatDuration(r.OnlineTime ?? 0),
                 ActivePercentage = (r.TodalTime.HasValue && r.TodalTime.Value > 0)
                         ? Math.Round((double)r.ActiveTime.Value / r.TodalTime.Value * 100, 2)
                         : 0
