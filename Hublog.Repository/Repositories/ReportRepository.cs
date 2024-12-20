@@ -77,6 +77,7 @@ namespace Hublog.Repository.Repositories
             var parameter = new
             {
                 TeamId = teamId,
+                UserId=userId,
                 OrganizationId = organizationId,
                 Year = year,
                 Month = month
@@ -86,73 +87,30 @@ namespace Hublog.Repository.Repositories
         }
         #endregion
 
-
+        public string FormatDuration(long totalSeconds)
+        {
+            var hours = totalSeconds / 3600; // Total hours
+            var minutes = (totalSeconds % 3600) / 60; // Remaining minutes
+            var seconds = totalSeconds % 60; // Remaining seconds
+            return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+        }
         public async Task<List<CombinedUsageDto>> GetCombinedUsageReport(int organizationId, int? teamId, int? userId, string type, DateTime startDate, DateTime endDate)
         {
-            var query = @"
-        WITH CombinedUsage AS (
-            SELECT 
-                'URL' AS Type,
-                UrlUsage.Url AS Details,
-                DATEDIFF(SECOND, 0, CAST(UrlUsage.TotalUsage AS TIME)) AS TotalUsage, 
-                UrlUsage.UsageDate,
-                Users.OrganizationId,
-                Users.TeamId,
-                Users.Id AS UserId
-            FROM 
-                UrlUsage
-            JOIN 
-                Users ON Users.Id = UrlUsage.UserId
-            WHERE 
-                UrlUsage.TotalUsage IS NOT NULL
-
-            UNION ALL
-
-            SELECT 
-                'Application' AS Type,
-                ApplicationUsage.ApplicationName AS Details,
-                DATEDIFF(SECOND, 0, CAST(ApplicationUsage.TotalUsage AS TIME)) AS TotalUsage, 
-                ApplicationUsage.UsageDate,
-                Users.OrganizationId,
-                Users.TeamId,
-                Users.Id AS UserId
-            FROM 
-                ApplicationUsage
-            JOIN 
-                Users ON Users.Id = ApplicationUsage.UserId
-            WHERE 
-                ApplicationUsage.TotalUsage IS NOT NULL
-        )
-        SELECT
-            Type,
-            Details,
-            CONVERT(VARCHAR(8), DATEADD(SECOND, SUM(TotalUsage), 0), 108) AS TotalUsage,
-            SUM(TotalUsage) * 100.0 / NULLIF((SELECT SUM(TotalUsage) FROM CombinedUsage WHERE OrganizationId = @OrganizationId), 0) AS UsagePercentage
-        FROM 
-            CombinedUsage
-        WHERE 
-            OrganizationId = @OrganizationId
-            AND (@TeamId IS NULL OR TeamId = @TeamId)
-            AND (@UserId IS NULL OR UserId = @UserId)
-            AND (@Type IS NULL OR Type = @Type)
-            AND UsageDate BETWEEN @StartDate AND @EndDate
-        GROUP BY
-            Type,
-            Details
-        ORDER BY
-            TotalUsage DESC;";
+            var query = "Apps_Url_reports";
 
             var parameters = new
             {
                 OrganizationId = organizationId,
                 TeamId = teamId,
                 UserId = userId,
-                Type = type,
-                StartDate = startDate,
-                EndDate = endDate
+                Type=type,
+                startDate = startDate,
+                endDate = endDate
             };
 
-            return await _dapper.GetAllAsync<CombinedUsageDto>(query, parameters);
+            var result = await _dapper.GetAllAsync<CombinedUsageDto>(query, parameters);
+
+            return result;
         }
 
     }

@@ -118,7 +118,7 @@ namespace Hublog.API.Controllers
         #endregion
 
         [HttpGet("combined")]
-        public async Task<IActionResult> GetCombinedUsage(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate, string type = null)
+        public async Task<IActionResult> GetCombinedUsage(int organizationId, int? teamId, int? userId, string type, DateTime startDate, DateTime endDate)
         {
             var result = await _reportService.GetCombinedUsageReport(organizationId, teamId, userId, type, startDate, endDate);
             return Ok(result);
