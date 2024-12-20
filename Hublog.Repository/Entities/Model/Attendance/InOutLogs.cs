@@ -8,5 +8,7 @@
         public DateTime End_Time { get; set; }
         public DateTime AttendanceDate { get; set; }
         public string DayStatus { get; set; }
+        public int PresentCount { get; set; }
+        public int AbsentCount { get; set; }
     }
 }

@@ -67,11 +67,12 @@ namespace Hublog.API.Controllers
             {
                 OrganizationId = organizationId,
                 users = attendanceLogs
-                    .GroupBy(x => new { x.UserId, x.Full_Name,x.Team_Name })
+                    .GroupBy(x => new { x.UserId, x.Full_Name,x.Team_Name,x.PresentCount })
                     .Select(g => new
                     {
                         Full_Name = g.Key.Full_Name,
                         Team_Name = g.Key.Team_Name,
+                        PresentCount = g.Sum(x => x.PresentCount),
                         logs = g.Select(r => new
                         {
                             date = r.AttendanceDate.ToString("yyyy-MM-dd"),
@@ -98,11 +99,14 @@ namespace Hublog.API.Controllers
             {
                 OrganizationId = organizationId,
                 users = inOutLogs
-                        .GroupBy(u => new { u.Full_Name, u.Team_Name })
+                        .GroupBy(u => new { u.Full_Name, u.Team_Name,u.PresentCount,u.AbsentCount })
                         .Select(s => new
                         {
                             Full_Name = s.Key.Full_Name,
                             Team_Name=s.Key.Team_Name,
+                            PresentCount = s.Sum(x => x.PresentCount),
+                            //AbsentCount = daysInMonth - s.Sum(x => x.PresentCount) - sundaysCount,
+
                             logs = s.Select(ss => new
                             {
                                 date = ss.AttendanceDate.ToString("yyyy-MM-dd"),

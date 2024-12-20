@@ -8,5 +8,6 @@
         public string Total_Time { get; set; }
         public DateTime AttendanceDate { get; set; }
         public string DayStatus { get; set; }
+        public int PresentCount { get; set; }
     }
 }

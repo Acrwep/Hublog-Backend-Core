@@ -65,7 +65,8 @@ namespace Hublog.Repository.Repositories
                 Month = month
             };
 
-            return await _dapper.GetAllAsyncs<AttedndanceLog>(query, parameter, commandType: CommandType.StoredProcedure);
+           var repor= await _dapper.GetAllAsyncs<AttedndanceLog>(query, parameter, commandType: CommandType.StoredProcedure);
+            return repor;
         }
         #endregion
 
@@ -82,8 +83,8 @@ namespace Hublog.Repository.Repositories
                 Year = year,
                 Month = month
             };
-
-            return await _dapper.GetAllAsyncs<InOutLogs>(query, parameter, commandType: CommandType.StoredProcedure);
+            var repor = await _dapper.GetAllAsyncs<InOutLogs>(query, parameter, commandType: CommandType.StoredProcedure);
+            return repor;
         }
         #endregion
 
