@@ -1,8 +1,10 @@
 ﻿using Hublog.Repository.Entities.DTO;
+using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Interface;
 using Hublog.Service.Interface;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.Service.Services
 {
@@ -36,6 +38,10 @@ namespace Hublog.Service.Services
         public async Task<List<CombinedUsageDto>> GetCombinedUsageReport(int organizationId, int? teamId, int? userId,string type, DateTime startDate, DateTime endDate)
         {
             return await _reportRepository.GetCombinedUsageReport(organizationId, teamId, userId, type, startDate, endDate);
+        }
+        public async Task<List<dynamic>> DynamicReport([FromQuery] DynamicReportRequest request)
+        {
+            return await _reportRepository.DynamicReport(request);
         }
     }
 }

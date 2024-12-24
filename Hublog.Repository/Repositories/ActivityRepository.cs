@@ -284,7 +284,7 @@ namespace Hublog.Repository.Repositories
                 Team_Name = r.TeamName,
                 full_Name = r.FullName,
                 AttendanceCount = r.AttendanceCount,
-                TodalTime = FormatDuration(r.TodalTime ?? 0),
+                total_wokingtime = FormatDuration(r.TodalTime ?? 0),
                 BreakDuration = FormatDuration(r.BreakDuration ?? 0),
                 IdleDuration = FormatDuration(r.IdleDuration ?? 0),
                 ActiveTime = FormatDuration(r.ActiveTime ?? 0),

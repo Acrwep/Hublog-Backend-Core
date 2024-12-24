@@ -1,6 +1,8 @@
 ﻿using Hublog.Repository.Entities.DTO;
+using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.Service.Interface
 {
@@ -15,5 +17,6 @@ namespace Hublog.Service.Interface
         Task<List<InOutLogs>> GetMonthlyInOutReport(int? userId, int? teamId, int organizationId, int year, int month);
 
         Task<List<CombinedUsageDto>> GetCombinedUsageReport(int organizationId, int? teamId, int? userId, string type, DateTime startDate, DateTime endDate);
+        Task<List<dynamic>> DynamicReport([FromQuery] DynamicReportRequest request);
     }
 }

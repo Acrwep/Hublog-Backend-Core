@@ -1,4 +1,7 @@
-﻿using Hublog.Repository.Common;
+﻿using System.Collections.Generic;
+using System.Xml.Linq;
+using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -127,5 +130,12 @@ namespace Hublog.API.Controllers
             var result = await _reportService.GetCombinedUsageReport(organizationId, teamId, userId, type, startDate, endDate);
             return Ok(result);
         }
+        [HttpGet("DynamicReport")]
+        public async Task<IActionResult> DynamicReport([FromQuery] DynamicReportRequest request)
+        {
+            var result = await _reportService.DynamicReport(request);
+            return Ok(result);
+        }
+
     }
 }

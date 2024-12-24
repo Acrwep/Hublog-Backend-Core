@@ -8,6 +8,7 @@
         public DateTime BreakDate { get; set; }
         public DateTime Start_Time { get; set; }
         public DateTime End_Time { get; set; }
+        public string BreakDuration { get; set; }
         public int TeamId { get; set; }
         public int OrganizationId { get; set; }
     }

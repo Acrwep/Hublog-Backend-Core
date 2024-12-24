@@ -1110,7 +1110,6 @@ ORDER BY
         }
         public async Task<dynamic> GetEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
-           
 
             var teamQuery = @"
                          SELECT T.Id,T.Name
@@ -1209,9 +1208,9 @@ ORDER BY
                         }
                         var AttendanceCount = us.AttendanceCount;
                         var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0; // Ensure no null value
-                        double? activeDurationInSeconds = us.ActiveTimeInSeconds;  // Nullable double
+                        double? total_wokingtimeInSeconds = us.ActiveTimeInSeconds;  // Nullable double
 
-                        activeDurationInSeconds = us.ActiveTimeInSeconds ?? 0.0;
+                        total_wokingtimeInSeconds = us.ActiveTimeInSeconds ?? 0.0;
                         var breakDurationInSeconds = us.TotalBreakDurationInSeconds ?? 0.0;  // Ensure no null value
                         var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
 
@@ -1223,7 +1222,7 @@ ORDER BY
                         }
 
                         // Ensure no null values are passed to FormatDuration
-                        var percentageProductiveDuration = activeDurationInSeconds > 0 ? ((double)totalProductiveDuration / activeDurationInSeconds.Value) * 100 : 0.0; 
+                        var percentageProductiveDuration = total_wokingtimeInSeconds > 0 ? ((double)totalProductiveDuration / total_wokingtimeInSeconds.Value) * 100 : 0.0; 
 
                         // Helper function to format durations
                         string FormatDuration(double totalSeconds)
@@ -1243,7 +1242,7 @@ ORDER BY
                         dynamicItem.AttendanceCount = AttendanceCount;
 
                         // Format durations using the helper function
-                        dynamicItem.ActiveDuration = FormatDuration(activeDurationInSeconds ?? 0.0);
+                        dynamicItem.ActiveDuration = FormatDuration(total_wokingtimeInSeconds ?? 0.0);
                         dynamicItem.BreakDuration = FormatDuration(breakDurationInSeconds);
                         dynamicItem.OnlineDuration = FormatDuration(onlineDurationInSeconds);
 
@@ -1349,9 +1348,9 @@ ORDER BY
                         }
                         var AttendanceCount = us.AttendanceCount;
                         var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0; // Ensure no null value
-                        double? activeDurationInSeconds = us.ActiveTimeInSeconds;  // Nullable double
+                        double? total_wokingtimeInSeconds = us.ActiveTimeInSeconds;  // Nullable double
 
-                        activeDurationInSeconds = us.ActiveTimeInSeconds ?? 0.0;
+                        total_wokingtimeInSeconds = us.ActiveTimeInSeconds ?? 0.0;
                         var breakDurationInSeconds = us.TotalBreakDurationInSeconds ?? 0.0;  // Ensure no null value
                         var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
 
@@ -1363,7 +1362,7 @@ ORDER BY
                         }
 
                         // Ensure no null values are passed to FormatDuration
-                        var percentageProductiveDuration = activeDurationInSeconds > 0 ? ((double)totalProductiveDuration / activeDurationInSeconds.Value) * 100 : 0.0; // Check before dividing
+                        var percentageProductiveDuration = total_wokingtimeInSeconds > 0 ? ((double)totalProductiveDuration / total_wokingtimeInSeconds.Value) * 100 : 0.0; // Check before dividing
 
                         // Helper function to format durations
                         string FormatDuration(double totalSeconds)
@@ -1382,7 +1381,7 @@ ORDER BY
                         dynamicItem.AttendanceCount = AttendanceCount;
 
                         // Format durations using the helper function, ensure no null values
-                        dynamicItem.ActiveDuration = FormatDuration(activeDurationInSeconds ?? 0.0);
+                        dynamicItem.total_wokingtime = FormatDuration(total_wokingtimeInSeconds ?? 0.0);
                         dynamicItem.BreakDuration = FormatDuration(breakDurationInSeconds);
                         dynamicItem.OnlineDuration = FormatDuration(onlineDurationInSeconds);
 
