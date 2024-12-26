@@ -659,7 +659,7 @@ namespace Hublog.Repository.Repositories
         }
         public async Task<List<dynamic>> DynamicDetailReport([FromQuery] DynamicReportRequest request)
         {
-            var query = "GetAttendanceReport12";
+            var query = "GetAttendanceReport012";
 
             var parameters = new
             {
@@ -753,7 +753,7 @@ namespace Hublog.Repository.Repositories
                     var TeamName = team.TeamName;
                     var teamId = team.TeamId;
 
-                    var urlUsageQuery = "GetAppUsagesSS";
+                    var urlUsageQuery = "Datewise_Activity1";
                     var parameters1 = new
                     {
                         OrganizationId = request.OrganizationId,

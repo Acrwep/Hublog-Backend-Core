@@ -1242,7 +1242,7 @@ ORDER BY
                         dynamicItem.AttendanceCount = AttendanceCount;
 
                         // Format durations using the helper function
-                        dynamicItem.ActiveDuration = FormatDuration(total_wokingtimeInSeconds ?? 0.0);
+                        dynamicItem.total_wokingtime = FormatDuration(total_wokingtimeInSeconds ?? 0.0);
                         dynamicItem.BreakDuration = FormatDuration(breakDurationInSeconds);
                         dynamicItem.OnlineDuration = FormatDuration(onlineDurationInSeconds);
 
