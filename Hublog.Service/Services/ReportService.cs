@@ -43,5 +43,9 @@ namespace Hublog.Service.Services
         {
             return await _reportRepository.DynamicReport(request);
         }
+        public async Task<List<dynamic>> DynamicDetailReport([FromQuery] DynamicReportRequest request)
+        {
+            return await _reportRepository.DynamicDetailReport(request);
+        }
     }
 }

@@ -18,5 +18,6 @@ namespace Hublog.Service.Interface
 
         Task<List<CombinedUsageDto>> GetCombinedUsageReport(int organizationId, int? teamId, int? userId, string type, DateTime startDate, DateTime endDate);
         Task<List<dynamic>> DynamicReport([FromQuery] DynamicReportRequest request);
+        Task<List<dynamic>> DynamicDetailReport([FromQuery] DynamicReportRequest request);
     }
 }

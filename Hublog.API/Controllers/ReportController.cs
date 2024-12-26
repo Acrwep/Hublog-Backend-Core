@@ -136,6 +136,12 @@ namespace Hublog.API.Controllers
             var result = await _reportService.DynamicReport(request);
             return Ok(result);
         }
+        [HttpGet("DynamicDetailReport")]
+        public async Task<IActionResult> DynamicDetailReport([FromQuery] DynamicReportRequest request)
+        {
+            var result = await _reportService.DynamicDetailReport(request);
+            return Ok(result);
+        }
 
     }
 }

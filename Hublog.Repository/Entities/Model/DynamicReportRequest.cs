@@ -22,6 +22,10 @@ namespace Hublog.Repository.Entities.Model
         public bool? TeamName { get; set; }
         public bool? Manager { get; set; }
 
+        //@PunchIntime@PunchOuttime Output
+        public bool? PunchIntime { get; set; }
+        public bool? PunchOuttime { get; set; }
+
         // Working Time (Filter Parameters)
         public bool? TotalWorkingtime { get; set; }
         public bool? TotalOnlinetime { get; set; }
@@ -31,6 +35,7 @@ namespace Hublog.Repository.Entities.Model
         // Activity (Filter Parameters)
         public bool? TotalActivetime { get; set; }
         public bool? ActivitePercent { get; set; }
+        public bool? AverageActivetime { get; set; }
         public bool? TotalIdletime { get; set; }
         public bool? AverageIdletime { get; set; }
 
@@ -44,6 +49,7 @@ namespace Hublog.Repository.Entities.Model
         public bool? Averageneutraltime { get; set; }
 
         // Correct Data Types for Output (String fields for time values)\
+        public DateTime Date { get; set; }
         public int? Id { get; set; }
         public string FirstNameOutput { get; set; }
         public string LastNameOutput { get; set; }
@@ -51,12 +57,16 @@ namespace Hublog.Repository.Entities.Model
         public string EmailOutput { get; set; }
         public string TeamNameOutput { get; set; }
 
+        public string PunchIntimeOutput { get; set; }
+        public string PunchOuttimeOutput { get; set; }
+
         // Time-based output properties (Renamed to avoid conflict)
         public string TotalWorkingtimeOutput { get; set; }
         public string TotalOnlinetimeOutput { get; set; }
         public string TotalBreaktimeOutput { get; set; }
         public string AverageBreaktimeOutput { get; set; }
         public string TotalActivetimeOutput { get; set; }
+        public string AverageActivetimeOutput { get; set; }
         public string ActivitePercentOutput { get; set; }
         public string TotalIdletimeOutput { get; set; }
         public string AverageIdletimeOutput { get; set; }
