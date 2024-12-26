@@ -215,7 +215,7 @@ namespace Hublog.Repository.Repositories
         }
         public async Task<List<dynamic>> DynamicReport([FromQuery] DynamicReportRequest request)
         {
-            var query = "GetAttendanceReport1234";
+            var query = "DynamicReport";
 
             var parameters = new
             {
@@ -584,13 +584,6 @@ namespace Hublog.Repository.Repositories
 
                         var dynamicItem = new ExpandoObject() as dynamic;
                         dynamicItem.UserId = userIdd;
-                        //dynamicItem.Full_Name = FullName;
-                        //dynamicItem.Team_Name = TeamName;
-                        //dynamicItem.AttendanceCount = AttendanceCount;
-
-                        //dynamicItem.ActiveDuration = FormatDuration(activeDurationInSeconds ?? 0.0);
-                        //dynamicItem.BreakDuration = FormatDuration(breakDurationInSeconds);
-                        //dynamicItem.OnlineDuration = FormatDuration(onlineDurationInSeconds);
                         dynamicItem.Total_Productivetime = FormatDuration(totalProductiveDuration);
                         dynamicItem.TotalUnproductiveDuration = FormatDuration(totalUnproductiveDuration);
                         dynamicItem.TotalNeutralDuration = FormatDuration(totalNeutralDuration);
@@ -659,7 +652,7 @@ namespace Hublog.Repository.Repositories
         }
         public async Task<List<dynamic>> DynamicDetailReport([FromQuery] DynamicReportRequest request)
         {
-            var query = "GetAttendanceReport012";
+            var query = "DynamicDetailReport";
 
             var parameters = new
             {
@@ -753,7 +746,7 @@ namespace Hublog.Repository.Repositories
                     var TeamName = team.TeamName;
                     var teamId = team.TeamId;
 
-                    var urlUsageQuery = "Datewise_Activity1";
+                    var urlUsageQuery = "Datewise_Dynamic_Detail_Report";
                     var parameters1 = new
                     {
                         OrganizationId = request.OrganizationId,
@@ -764,22 +757,6 @@ namespace Hublog.Repository.Repositories
                     };
 
                     IEnumerable<dynamic> results = await _dapper.GetAllAsync<dynamic>(urlUsageQuery, parameters1);
-                //    var getUsers = @"
-                //SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
-                //FROM Users 
-                //WHERE TeamId = @TeamId
-                //AND (@UserId IS NULL OR Id = @UserId)";
-
-                //    var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters1);
-
-                    ////var combinedResults = results.Concat(getUsers1)
-                    //    .GroupBy(item => item.UserId)
-                    //    .Select(group =>
-                    //    {
-                    //        var usageEntry = results.FirstOrDefault(u => u.UserId == group.Key);
-                    //        return usageEntry ?? group.First();
-                    //    })
-                    //    .ToList();
 
                     foreach (var us in results)
                     {
@@ -850,12 +827,6 @@ namespace Hublog.Repository.Repositories
                         var dynamicItem = new ExpandoObject() as dynamic;
                         dynamicItem.UserId = userIdd;
                         dynamicItem.Date = fromDate;
-                        //dynamicItem.Full_Name = FullName;
-                        //dynamicItem.Team_Name = TeamName;
-
-                        //dynamicItem.ActiveDuration = FormatDuration(activeDurationInSeconds ?? 0.0);
-                        //dynamicItem.OnlineDuration = FormatDuration(onlineDurationInSeconds);
-
                         dynamicItem.Total_Productivetime = FormatDuration(totalProductiveDuration);
                         dynamicItem.TotalUnproductiveDuration = FormatDuration(totalUnproductiveDuration);
                         dynamicItem.TotalNeutralDuration = FormatDuration(totalNeutralDuration);
@@ -949,7 +920,7 @@ namespace Hublog.Repository.Repositories
                     var TeamName = team.TeamName;
                     var teamId = team.TeamId;
 
-                    var urlUsageQuery = "Datewise_Activity1";
+                    var urlUsageQuery = "Datewise_Dynamic_Detail_Report";
                     var parameters1 = new
                     {
                         OrganizationId = request.OrganizationId,
