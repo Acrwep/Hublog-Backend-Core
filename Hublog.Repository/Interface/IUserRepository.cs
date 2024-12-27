@@ -17,6 +17,7 @@ namespace Hublog.Repository.Interface
         Task SaveUserScreenShot(UserScreenShot userScreenShot);
 
         Task<List<UserAttendanceDetailModel>> GetUserAttendanceDetails(int organizationId, int userId, DateTime startDate, DateTime endDate);
+        Task<List<UserAttendanceDetailModel>> GetUserPunchInOutDetails(int userId, int organizationId, DateTime date);
         Task<List<UserAttendanceDetailModel>> UpdateUserAttendanceDetails([FromBody] AttendanceUpdate request);
         Task<List<Users>> GetUsersByTeamId(int teamId); 
 

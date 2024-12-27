@@ -140,6 +140,13 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
+        [HttpGet("GetUserPunchInOutDetails")]
+        public async Task<IActionResult> GetUserPunchInOutDetails(int userId,int organizationId,DateTime date)
+        {
+            var updatedUser = await _userService.GetUserPunchInOutDetails(userId, organizationId, date);
+
+            return Ok(updatedUser);
+        }
         [HttpPut("UpdateUserAttendanceDetails")]
         public async Task<IActionResult> UpdateUserAttendanceDetails([FromBody] AttendanceUpdate request)
         {

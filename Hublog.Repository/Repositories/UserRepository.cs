@@ -131,24 +131,6 @@ AND A.UserId = @UserId;
         #region GetUserAttendanceDetails
         public async Task<List<UserAttendanceDetailModel>> GetUserAttendanceDetails(int organizationId, int userId, DateTime startDate, DateTime endDate)   
         {
-            //var query = @"
-            //SELECT 
-            //    U.First_Name AS FirstName, 
-            //    U.Email, 
-            //    U.EmployeeID AS EmployeeId, 
-            //    U.Active, 
-            //    A.AttendanceDate, 
-            //    A.Start_Time, 
-            //    A.End_Time, 
-            //    ISNULL(CONVERT(VARCHAR, DATEADD(SECOND, DATEDIFF(SECOND, A.Start_Time, A.End_Time), 0), 108),
-            //                                                            '0001-01-01T00:00:00') AS Total_Time,
-            //    A.Late_Time, 
-            //    A.Status ,
-            //    A.Punchout_type
-            //    FROM Users U
-            //    INNER JOIN Attendance A ON U.Id = A.UserId
-            //    WHERE U.Id = @UserId AND U.OrganizationId = @OrganizationId
-            //      AND A.AttendanceDate BETWEEN @StartDate AND @EndDate";
             var query = "GetAttendanceDetails";
 
             var parameters = new { OrganizationId = organizationId, UserId = userId, StartDate = startDate, EndDate = endDate };
@@ -156,6 +138,18 @@ AND A.UserId = @UserId;
             return await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
         }
         #endregion
+        public async Task<List<UserAttendanceDetailModel>> GetUserPunchInOutDetails(int userId, int organizationId, DateTime date)
+        {
+            var query = "sp_GetUserPunchInOutDetails";
+            var parameters = new
+            {
+                UserId = userId,
+                OrganizationId = organizationId,
+                Date = date
+            };
+
+            return await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
+        }
         public async Task<List<UserAttendanceDetailModel>> UpdateUserAttendanceDetails([FromBody] AttendanceUpdate request)
         {
             var query = "AttendanceDetails_Update"; 

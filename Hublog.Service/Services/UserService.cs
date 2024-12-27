@@ -116,7 +116,7 @@ namespace Hublog.Service.Services
 
                 var record = records.FirstOrDefault(r => r.AttendanceDate.Date == date.Date);
 
-                if (record != null)
+                if (record != null && TimeSpan.TryParse(record.Total_Time, out var totalTime) && totalTime.TotalMinutes > 0)
                 {
                     daysPresent++;
                 }
@@ -135,6 +135,10 @@ namespace Hublog.Service.Services
             return (records, summary);
         }
         #endregion
+        public async Task<List<UserAttendanceDetailModel>> GetUserPunchInOutDetails(int userId, int organizationId, DateTime date)
+        {
+            return await _userRepository.GetUserPunchInOutDetails(userId, organizationId, date);
+        }
         public async Task<List<UserAttendanceDetailModel>> UpdateUserAttendanceDetails([FromBody] AttendanceUpdate request)
         {
             return await _userRepository.UpdateUserAttendanceDetails(request);
