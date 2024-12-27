@@ -8,6 +8,7 @@ using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data;
 using System.Diagnostics;
@@ -155,7 +156,18 @@ AND A.UserId = @UserId;
             return await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
         }
         #endregion
+        public async Task<List<UserAttendanceDetailModel>> UpdateUserAttendanceDetails([FromBody] AttendanceUpdate request)
+        {
+            var query = "AttendanceDetails_Update"; 
+            var parameters = new
+            {
+                UserId = request.UserId,
+                OrganizationId = request.OrganizationId,
+                Date = request.Date
+            };
 
+            return await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
+        }
         #region GetUserBreakRecordDetails
         public async Task<List<UserBreakRecordModel>> GetUserBreakRecordDetails(int userId, DateTime startDate, DateTime endDate)
         {

@@ -5,6 +5,7 @@ using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Hublog.Service.Interface;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace Hublog.Service.Services
@@ -134,7 +135,10 @@ namespace Hublog.Service.Services
             return (records, summary);
         }
         #endregion
-
+        public async Task<List<UserAttendanceDetailModel>> UpdateUserAttendanceDetails([FromBody] AttendanceUpdate request)
+        {
+            return await _userRepository.UpdateUserAttendanceDetails(request);
+        }
         #region GetUsersByTeamId
         public async Task<object> GetUsersByTeamId(int teamId)  
         {

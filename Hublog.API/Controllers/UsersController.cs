@@ -140,6 +140,13 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
+        [HttpPut("UpdateUserAttendanceDetails")]
+        public async Task<IActionResult> UpdateUserAttendanceDetails([FromBody] AttendanceUpdate request)
+        {
+                var updatedUser = await _userService.UpdateUserAttendanceDetails(request);
+
+                    return Ok(updatedUser);
+        }
 
         #region GetUsersByTeamId
         [HttpGet("GetUsersByTeamId")]

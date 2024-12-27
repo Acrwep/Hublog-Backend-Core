@@ -4,6 +4,7 @@ using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.UserModels;
+using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace Hublog.Service.Interface
@@ -17,7 +18,7 @@ namespace Hublog.Service.Interface
         Task SaveUserScreenShot(UserScreenshotDTO userScreenshotDTO);
 
         Task<(List<UserAttendanceDetailModel> Records, AttendanceSummaryModel Summary)> GetUserAttendanceDetails(int organizationId, int userId, DateTime? startDate, DateTime? endDate);
-
+        Task<List<UserAttendanceDetailModel>> UpdateUserAttendanceDetails([FromBody] AttendanceUpdate request);
         Task<object> GetUsersByTeamId(int teamId);  
 
         Task<List<Users>> GetUsersByOrganizationId(int organizationId);
