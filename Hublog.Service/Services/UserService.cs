@@ -135,9 +135,9 @@ namespace Hublog.Service.Services
             return (records, summary);
         }
         #endregion
-        public async Task<List<UserAttendanceDetailModel>> GetUserPunchInOutDetails(int userId, int organizationId, DateTime date)
+        public async Task<List<UserAttendanceDetailModel>> GetUserPunchInOutDetails(int userId, int organizationId, DateTime startDate, DateTime endDate)
         {
-            return await _userRepository.GetUserPunchInOutDetails(userId, organizationId, date);
+            return await _userRepository.GetUserPunchInOutDetails(userId, organizationId, startDate, endDate);
         }
         public async Task<List<UserAttendanceDetailModel>> UpdateUserAttendanceDetails([FromBody] AttendanceUpdate request)
         {

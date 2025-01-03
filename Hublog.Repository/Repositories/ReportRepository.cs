@@ -35,7 +35,8 @@ namespace Hublog.Repository.Repositories
                 TeamId = teamId
             };
 
-            return await _dapper.GetAllAsyncs<AttendanceReport>(query, parameters, commandType: CommandType.StoredProcedure);
+            var kk= await _dapper.GetAllAsyncs<AttendanceReport>(query, parameters, commandType: CommandType.StoredProcedure);
+            return kk;
         }
         #endregion
 

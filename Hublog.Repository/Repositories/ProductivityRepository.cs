@@ -578,13 +578,14 @@ on O.id=I.OrganizationId
                 GrandtotalProductiveDuration += totalProductiveDuration;
                 //var Totalproductivitypercentage = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
                 var query = @"SELECT 
-    SUM(DATEDIFF(SECOND, A.[Start_Time], A.[End_Time])) AS Total_Seconds
+    COALESCE(SUM(DATEDIFF(SECOND, 0, A.Total_Time)), 0) AS Total_Seconds
 FROM Attendance A
 INNER JOIN Users U ON U.Id = A.UserId
 INNER JOIN Team T ON T.Id = U.TeamId
 INNER JOIN Organization O ON O.Id = T.OrganizationId
 WHERE O.Id = @organizationId
   AND (@teamId IS NULL OR T.Id = @teamId)
+  AND a.Total_Time IS NOT NULL   
   AND A.AttendanceDate >= @fromDate
   AND A.AttendanceDate <= @toDate;";
 
@@ -660,7 +661,7 @@ WHERE O.Id = @organizationId
             ELSE 0
         END
     ) AS TotalTimes, 
-                   ISNULL(SUM(DATEDIFF(SECOND, A.Start_Time, A.End_Time)), 0) AS PunchDuration
+                   COALESCE(SUM(DATEDIFF(SECOND, 0, a.Total_Time)), 0) AS PunchDuration
              FROM  
                   Attendance A
              INNER JOIN 
@@ -672,6 +673,7 @@ WHERE O.Id = @organizationId
              WHERE 
                    O.Id = @OrganizationId 
                    AND (@UserId IS NULL OR Us.Id = @UserId)
+                    AND a.Total_Time IS NOT NULL 
                    AND A.AttendanceDate BETWEEN @FromDate AND @ToDate
                    AND (@TeamId IS NULL OR U.Id = @TeamId)
              GROUP BY  
@@ -1011,7 +1013,7 @@ SELECT
     COUNT(DISTINCT CONVERT(DATE, A.[AttendanceDate])) AS AttendanceCount,
     MIN(A.[AttendanceDate]) AS StartDate, 
     MAX(A.[AttendanceDate]) AS EndDate,
-    SUM(DATEDIFF(SECOND, A.[Start_Time], A.[End_Time])) AS ActiveTimeInSeconds
+    COALESCE(SUM(DATEDIFF(SECOND, 0, a.Total_Time)), 0) AS ActiveTimeInSeconds
 FROM 
     Attendance A
 INNER JOIN 
@@ -1026,8 +1028,7 @@ WHERE
     AND (@UserId IS NULL OR A.UserId = @UserId)
     AND A.[AttendanceDate] >= @fromDate 
     AND A.[AttendanceDate] < DATEADD(DAY, 1, @toDate)
-    AND A.[Start_Time] IS NOT NULL 
-    AND A.[End_Time] IS NOT NULL
+    AND a.Total_Time IS NOT NULL      
 GROUP BY 
     A.[UserId], u.[First_Name], u.[Last_Name]";
 

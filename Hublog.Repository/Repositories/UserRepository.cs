@@ -138,14 +138,17 @@ AND A.UserId = @UserId;
             return await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
         }
         #endregion
-        public async Task<List<UserAttendanceDetailModel>> GetUserPunchInOutDetails(int userId, int organizationId, DateTime date)
+        public async Task<List<UserAttendanceDetailModel>> GetUserPunchInOutDetails(int userId, int organizationId, DateTime startDate, DateTime endDate)
         {
             var query = "sp_GetUserPunchInOutDetails";
             var parameters = new
             {
                 UserId = userId,
                 OrganizationId = organizationId,
-                Date = date
+                StartDate = startDate,
+                EndDate = endDate
+
+
             };
 
             return await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
@@ -160,7 +163,8 @@ AND A.UserId = @UserId;
                 Date = request.Date
             };
 
-            return await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
+            var keys=await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
+            return keys;
         }
         #region GetUserBreakRecordDetails
         public async Task<List<UserBreakRecordModel>> GetUserBreakRecordDetails(int userId, DateTime startDate, DateTime endDate)
