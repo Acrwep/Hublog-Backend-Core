@@ -653,15 +653,7 @@ WHERE O.Id = @organizationId
             string appUsageQuery = @"
             SELECT 
                   A.AttendanceDate as start_timing, 
-                   SUM(
-        CASE
-            WHEN CHARINDEX(':', A.Total_Time) > 0 THEN 
-                (CAST(SUBSTRING(A.Total_Time, 1, CHARINDEX(':', A.Total_Time) - 1) AS INT) * 3600) +
-                (CAST(SUBSTRING(A.Total_Time, CHARINDEX(':', A.Total_Time) + 1, LEN(A.Total_Time)) AS INT) * 60)
-            ELSE 0
-        END
-    ) AS TotalTimes, 
-                   COALESCE(SUM(DATEDIFF(SECOND, 0, a.Total_Time)), 0) AS PunchDuration
+                   COALESCE(SUM(DATEDIFF(SECOND, '00:00:00', CONVERT(TIME, A.Total_Time))), 0) AS PunchDuration
              FROM  
                   Attendance A
              INNER JOIN 
@@ -721,7 +713,6 @@ WHERE O.Id = @organizationId
                 var breakData = appUsages1.FirstOrDefault(b => b.BreakDate.Date == date.Date);
 
                 var punchDuration = attendance?.PunchDuration ?? 0;
-                var totalTimes = attendance?.TotalTimes ?? 0;
                 var breakDuration = breakData?.break_duration ?? 0;
 
                 // Convert the durations from seconds to TimeSpan
