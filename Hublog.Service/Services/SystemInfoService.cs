@@ -1,6 +1,8 @@
 ﻿using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
+using Hublog.Repository.Repositories;
 using Hublog.Service.Interface;
 
 namespace Hublog.Service.Services
@@ -30,7 +32,7 @@ namespace Hublog.Service.Services
             }
         }
 
-        public async Task<List<SystemInfoDto>> GetSystemInfo(int organizationId, int? userid, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
+        public async Task<object> GetSystemInfo(int organizationId, int? userid, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
         {
             return await _systemInfoRepository.GetSystemInfo(organizationId,userid, teamId, userSearchQuery, platformSearchQuery, systemTypeSearchQuery);
         }
@@ -38,6 +40,10 @@ namespace Hublog.Service.Services
         public async Task<UserStatistics> GetSystemInfoCount(int organizationId, int? teamId, int? userId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
         {
             return await _systemInfoRepository.GetSystemInfoCount(organizationId, teamId, userId, userSearchQuery, platformSearchQuery, systemTypeSearchQuery);
+        }
+        public async Task<IEnumerable<Hublog.Repository.Entities.Model.Version>> GetHublogVersion()
+        {
+            return await _systemInfoRepository.GetHublogVersion();
         }
     }
 }

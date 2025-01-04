@@ -2,6 +2,7 @@
 {
     public class SystemInfoDto
     {
+        public int? Id { get; set; }
         public string Full_Name { get; set; }
         public string Team_Name { get; set; }
         public string DeviceId { get; set; }

@@ -578,7 +578,7 @@ on O.id=I.OrganizationId
                 GrandtotalProductiveDuration += totalProductiveDuration;
                 //var Totalproductivitypercentage = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
                 var query = @"SELECT 
-    COALESCE(SUM(DATEDIFF(SECOND, 0, A.Total_Time)), 0) AS Total_Seconds
+    COALESCE(SUM( DATEDIFF(SECOND, 0, TRY_CONVERT(TIME, a.Total_Time)) ), 0) AS Total_Seconds
 FROM Attendance A
 INNER JOIN Users U ON U.Id = A.UserId
 INNER JOIN Team T ON T.Id = U.TeamId
@@ -653,7 +653,7 @@ WHERE O.Id = @organizationId
             string appUsageQuery = @"
             SELECT 
                   A.AttendanceDate as start_timing, 
-                   COALESCE(SUM(DATEDIFF(SECOND, '00:00:00', CONVERT(TIME, A.Total_Time))), 0) AS PunchDuration
+                   COALESCE(SUM( DATEDIFF(SECOND, 0, TRY_CONVERT(TIME, a.Total_Time)) ), 0) AS PunchDuration
              FROM  
                   Attendance A
              INNER JOIN 
@@ -1004,7 +1004,7 @@ SELECT
     COUNT(DISTINCT CONVERT(DATE, A.[AttendanceDate])) AS AttendanceCount,
     MIN(A.[AttendanceDate]) AS StartDate, 
     MAX(A.[AttendanceDate]) AS EndDate,
-    COALESCE(SUM(DATEDIFF(SECOND, 0, a.Total_Time)), 0) AS ActiveTimeInSeconds
+    COALESCE(SUM( DATEDIFF(SECOND, 0, TRY_CONVERT(TIME, a.Total_Time)) ), 0) AS ActiveTimeInSeconds
 FROM 
     Attendance A
 INNER JOIN 

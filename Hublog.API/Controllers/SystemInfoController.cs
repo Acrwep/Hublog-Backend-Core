@@ -37,7 +37,6 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("GetSystemInfo")]
-        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         public async Task<IActionResult> GetSystemInfo(int organizationId, int? userid, int? teamId = null, string userSearchQuery = "", string platformSearchQuery = "", string systemTypeSearchQuery = "")
         {
             try
@@ -56,6 +55,13 @@ namespace Hublog.API.Controllers
         public async Task<IActionResult> GetSystemInfoCount(int organizationId, int? teamId = null, int? userId = null, string userSearchQuery = "", string platformSearchQuery = "", string systemTypeSearchQuery = "")
         {
             var result = await _systemInfoService.GetSystemInfoCount(organizationId, teamId, userId, userSearchQuery, platformSearchQuery, systemTypeSearchQuery);
+            return Ok(result);
+        }
+        [HttpGet("GetHublogVersion")]
+        //[Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+        public async Task<IActionResult> GetHublogVersion()
+        {
+            var result = await _systemInfoService.GetHublogVersion();
             return Ok(result);
         }
     }

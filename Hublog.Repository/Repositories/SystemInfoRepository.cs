@@ -1,7 +1,9 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
+using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Hublog.Repository.Repositories
 {
@@ -34,60 +36,61 @@ namespace Hublog.Repository.Repositories
         {
             var sql = @"
                     UPDATE SystemInfo 
-                    SET Status = @Status 
+                    SET 
+                        UserId = @UserId,
+                        DeviceId =@DeviceId,
+                        DeviceName = @DeviceName,
+                        Platform = @Platform,
+                        OSName = @OSName,
+                        OSBuild = @OSBuild,
+                        SystemType =@SystemType,
+                        IPAddress = @IPAddress,
+                        AppType = @AppType,
+                        HublogVersion =@HublogVersion,
+                        Status = @Status
                     WHERE Id = @Id;";
 
             await _dapper.ExecuteAsync(sql, systemInfoModel);
         }
 
-        public async Task<List<SystemInfoDto>> GetSystemInfo(int organizationId,int? userid, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
+        public async Task<object> GetSystemInfo(int organizationId, int? userid, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
         {
-            var query = @"
-        SELECT
-            CONCAT(U.First_Name, ' ', U.Last_Name) AS Full_Name,
-           	T.Name as Team_Name,
-            SY.DeviceId,
-            SY.DeviceName,
-            SY.Platform,
-            SY.OSName,
-            SY.OSBuild,
-            SY.SystemType,
-            SY.IPAddress,
-            SY.AppType,
-            SY.HublogVersion,
-            SY.Status,
-            T.Id AS TeamId
-        FROM 
-            Users U
-        INNER JOIN 
-            SystemInfo SY ON U.Id = SY.UserId
-        INNER JOIN 
-            Team T ON T.Id = U.TeamId
-        INNER JOIN 
-            Organization O ON U.OrganizationId = O.Id
-        WHERE 
-            O.Id = @organizationId  
-            AND (@teamId IS NULL OR T.Id = @teamId)  
-            AND (@userid IS NULL OR U.Id = @userid)
-            AND ( 
-                (@userSearchQuery IS NULL OR @userSearchQuery = '' OR CONCAT(U.First_Name, ' ', U.Last_Name) LIKE '%' + @userSearchQuery + '%')
-            )
-            AND (@platformSearchQuery IS NULL OR @platformSearchQuery = '' OR SY.Platform LIKE '%' + @platformSearchQuery + '%')
-            AND (@systemTypeSearchQuery IS NULL OR @systemTypeSearchQuery = '' OR SY.SystemType LIKE '%' + @systemTypeSearchQuery + '%');
-    ";
+            var query = "EXEC GetSystemInfo @organizationId, @userid, @teamId, @userSearchQuery, @platformSearchQuery, @systemTypeSearchQuery";
 
             var parameters = new
             {
                 organizationId,
+                userid = userid,
                 teamId,
-                userid,
                 userSearchQuery = userSearchQuery ?? string.Empty,
                 platformSearchQuery = platformSearchQuery ?? string.Empty,
                 systemTypeSearchQuery = systemTypeSearchQuery ?? string.Empty
             };
 
-            return await _dapper.GetAllAsync<SystemInfoDto>(query, parameters);
+            var systemInfoList = await _dapper.GetAllAsync<SystemInfoDto>(query, parameters);
+
+            int onlineCount = systemInfoList.Count(info => int.TryParse(info.Status, out var status) && status == 1);
+            int offlineCount = systemInfoList.Count(info => int.TryParse(info.Status, out var status) && status == 0);
+            int winUICount = systemInfoList.Count(info => info.Platform.Contains("WinUI"));
+            int macCount = systemInfoList.Count(info => info.Platform.Contains("Mac"));
+            int linuxCount = systemInfoList.Count(info => info.Platform.Contains("Linux"));
+
+            var aggregateCounts = new
+            {
+                OnlineCount = onlineCount,
+                OfflineCount = offlineCount,
+                WinUICount = winUICount,
+                MacCount = macCount,
+                LinuxCount = linuxCount
+            };
+
+            return new
+            {
+                AggregateCounts = aggregateCounts,
+                SystemInfoList = systemInfoList
+            };
         }
+
 
         public async Task<UserStatistics> GetSystemInfoCount(int organizationId, int? teamId, int? userId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
         {
@@ -126,6 +129,12 @@ namespace Hublog.Repository.Repositories
 
             return await _dapper.QueryFirstOrDefaultAsync<UserStatistics>(query, parameters);
         }
+        public async Task<IEnumerable<Hublog.Repository.Entities.Model.Version>> GetHublogVersion()
+        {
+            string query = "SELECT id, versionNumber FROM HublogVersion";
+            return await _dapper.GetAllAsync<Entities.Model.Version>(query);
+        }
+
 
     }
 }
