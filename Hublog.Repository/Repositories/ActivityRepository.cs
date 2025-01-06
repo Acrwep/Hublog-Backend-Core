@@ -14,6 +14,7 @@ using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Dapper;
+using System.Globalization;
 
 namespace Hublog.Repository.Repositories
 {
@@ -235,8 +236,8 @@ namespace Hublog.Repository.Repositories
                     ActiveDuration=g.Sum(d=>d.ActiveDuration)
                 })
                 .Where(d => d.TotalDuration > 0)
-                .OrderBy(d => d.Date)
-                .ToList();
+               .OrderBy(d => DateTime.ParseExact(d.Date, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)) // Adjusted to match the full format
+               .ToList();
 
             // Format durations as "HH:mm:ss"
             foreach (var duration in filteredDurations)
