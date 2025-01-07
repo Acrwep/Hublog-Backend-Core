@@ -82,10 +82,25 @@ namespace Hublog.Repository.Repositories
                 parameters.Add("@OrganizationId", model.OrganizationId);
                 parameters.Add("@AttendanceDate", model.AttendanceDate.ToString("yyyy-MM-dd HH:mm:ss"));
                 parameters.Add("@Start_Time", model.Start_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
-                parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
                 parameters.Add("@Total_Time", null);
                 parameters.Add("@Late_Time", null);
                 parameters.Add("@Status", model.Status);
+                if (model.Status == 1)
+                {
+                    if (model.End_Time != null)
+                    {
+                        parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                    }
+                    else
+                    {
+                        model.End_Time = DateTime.Now;
+                        parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                    }
+                }
+                if (model.Status == 0)
+                {
+                    parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                }
                 parameters.Add("@Punchout_type", model.Punchout_type);
                 Console.WriteLine(startTimeFormatted);
                 var result = await _dapper.ExecuteAsync("SP_InsertAttendance", parameters, CommandType.StoredProcedure);
