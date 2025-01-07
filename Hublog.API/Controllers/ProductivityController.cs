@@ -10,7 +10,6 @@ namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
     public class ProductivityController : ControllerBase
     {
         private readonly IProductivityService _productivityService;
@@ -18,7 +17,7 @@ namespace Hublog.API.Controllers
         {
             _productivityService = productivityService;
         }
-
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpGet("Category")]
         public async Task<IActionResult> GetCategory([FromQuery] string categoryName = "")
         {
@@ -29,7 +28,7 @@ namespace Hublog.API.Controllers
 
             return Ok(categories);
         }
-
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpPut("UpdateProductivityId")]
         public async Task<IActionResult> UpdateProductivityId(int categoryId, int? productivityId)
         {
@@ -40,6 +39,7 @@ namespace Hublog.API.Controllers
             else
                 return NotFound(new { message = "Category not found." });
         }
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpGet("GetImbuildAppsAndUrls")]
         public async Task<IActionResult> GetImbuildAppsAndUrls(int OrganizationId,string userSearchQuery = "",string type="",string category="")
         {
@@ -56,6 +56,7 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpGet("GetByIdImbuildAppsAndUrls")]
         public async Task<IActionResult> GetByIdImbuildAppsAndUrls(int id)
         {
@@ -73,6 +74,7 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpPost("AddImbuildAppsAndUrls")]
         public async Task<IActionResult> AddImbuildAppsAndUrls(MappingModel mappingModel)
         {
@@ -87,6 +89,7 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpPut("InsertImbuildAppsAndUrls/{id}")]
         public async Task<IActionResult> InsertImbuildAppsAndUrls(int id, [FromBody] MappingModel model)
         {
@@ -115,7 +118,7 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpGet("Teamwise_Productivity")]
         public async Task<IActionResult> TeamwiseProductivity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
@@ -130,7 +133,7 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
            }
         }
-
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpGet("Most&Least_Teamwise_Productivity")]
         public async Task<IActionResult> MostTeamwiseProductivity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
@@ -160,7 +163,7 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpGet("GetProductivity_Trend")]
         public async Task<IActionResult> GetProductivity_Trend(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
