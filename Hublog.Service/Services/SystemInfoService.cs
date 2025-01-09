@@ -21,6 +21,7 @@ namespace Hublog.Service.Services
             if (existingInfo != null)
             {
                 existingInfo.Status = systemInfoModel.Status;
+                existingInfo.HublogVersion = systemInfoModel.HublogVersion;
 
                 await _systemInfoRepository.UpdateSystemInfo(existingInfo);
                 return true; 

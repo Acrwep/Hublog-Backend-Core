@@ -50,7 +50,7 @@ namespace Hublog.Repository.Repositories
                         Status = @Status
                     WHERE Id = @Id;";
 
-            await _dapper.ExecuteAsync(sql, systemInfoModel);
+           await _dapper.ExecuteAsync(sql, systemInfoModel);          
         }
 
         public async Task<object> GetSystemInfo(int organizationId, int? userid, int? teamId, string userSearchQuery, string platformSearchQuery, string systemTypeSearchQuery)
