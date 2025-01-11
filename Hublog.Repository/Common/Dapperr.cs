@@ -52,6 +52,11 @@ namespace Hublog.Repository.Common
         {
             return await _connection.ExecuteAsync(query, parameters, commandType: commandType);
         }
+        public async Task<IEnumerable<T>> QueryAsync<T>(string sql, object parameters = null, CommandType? commandType = null)
+        {
+            // Use the connection to perform the query asynchronously
+            return await _connection.QueryAsync<T>(sql, parameters, commandType: commandType);
+        }
 
         public async Task<List<T>> GetAllAsync<T>(string query, object parameters = null)
         {
@@ -80,6 +85,7 @@ namespace Hublog.Repository.Common
         {
             return await _connection.QuerySingleOrDefaultAsync<T>(query, parameters, commandType: commandType);
         }
+
         #endregion
 
         public void Dispose()

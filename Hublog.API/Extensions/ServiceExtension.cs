@@ -63,6 +63,9 @@ namespace Hublog.API.Extensions
             services.AddScoped<IActivityService, ActivityService>();
             services.AddScoped<IActivityRepository, ActivityRepository>();
 
+            services.AddScoped<IManual_TimeService,Manual_TimeService>();
+            services.AddScoped<IManual_TimeRepository, Manual_TimeRepository>();
+
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
