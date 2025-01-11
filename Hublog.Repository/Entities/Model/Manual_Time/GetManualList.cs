@@ -9,6 +9,7 @@ namespace Hublog.Repository.Entities.Model.Manual_Time
     public class GetManualList
     {
         public int UserId { get; set; }
+        public string Full_Name { get; set; }
         public int OrganizationId { get; set; }
         public DateTime Date { get; set; }
         public DateTime StartTime { get; set; }
