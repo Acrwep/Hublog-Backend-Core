@@ -16,7 +16,7 @@ namespace Hublog.API.Controllers
         {
             _manual_TimeService = manual_TimeService;
         }
-        [HttpPost("insert_Manual_Time")]
+        [HttpPost("InsertManualTime")]
         public async Task<IActionResult> InsertManualTime()
         {
             try
@@ -24,35 +24,38 @@ namespace Hublog.API.Controllers
                 var form = Request.Form;
 
                 var datePart = form["date"];
-                var startTimePart = form["startTime"]; 
-                var endTimePart = form["endTime"]; 
+                var startTimePart = form["startTime"];
+                var endTimePart = form["endTime"];
 
                 var parsedDate = DateTime.ParseExact(datePart, "yyyy-MM-dd HH:mm:ss.fff", null);
+
+                var attachmentFile = Request.Form.Files.FirstOrDefault();
+                byte[]? fileData = null;
+                string? fileName = null;
+
+                if (attachmentFile != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await attachmentFile.CopyToAsync(memoryStream);
+                        fileData = memoryStream.ToArray();
+                        fileName = attachmentFile.FileName;
+                    }
+                }
 
                 var manualTime = new Manual_Time
                 {
                     OrganizationId = int.Parse(form["OrganizationId"]),
                     UserId = int.Parse(form["UserId"]),
-                    Date = parsedDate, 
+                    Date = parsedDate,
 
-                    StartTime = DateTime.ParseExact($"{parsedDate:yyyy-MM-dd} {startTimePart}", "yyyy-MM-dd HH:mm:ss", null), 
-                    EndTime = DateTime.ParseExact($"{parsedDate:yyyy-MM-dd} {endTimePart}", "yyyy-MM-dd HH:mm:ss", null), 
+                    StartTime = DateTime.ParseExact($"{parsedDate:yyyy-MM-dd} {startTimePart}", "yyyy-MM-dd HH:mm:ss", null),
+                    EndTime = DateTime.ParseExact($"{parsedDate:yyyy-MM-dd} {endTimePart}", "yyyy-MM-dd HH:mm:ss", null),
 
                     Summary = form["summary"],
-                    Attachment = null 
+                    AttachmentData = fileData,
+                    FileName = fileName
                 };
-
-                var file = Request.Form.Files.FirstOrDefault();
-                if (file != null)
-                {
-                    var filePath = Path.Combine("wwwroot/uploads", file.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-
-                    manualTime.Attachment = filePath; 
-                }
 
                 var result = await _manual_TimeService.InsertManualTime(manualTime);
 
@@ -60,9 +63,10 @@ namespace Hublog.API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return BadRequest(new { message = ex.Message });
             }
         }
+
         [HttpGet("get_Manual_Time")]
         public async Task<IActionResult> GetManualTime(int organizationId,int? teamid, int? userId)
         {

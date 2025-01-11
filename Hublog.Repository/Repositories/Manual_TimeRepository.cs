@@ -23,7 +23,18 @@ namespace Hublog.Repository.Repositories
 
         public async Task<Manual_Time> InsertManualTime(Manual_Time manual_Time)
         {
-            var query = "InsertManualTime1";
+            // Check if the Attachment is not null, and convert it to byte array
+            if (manual_Time.Attachment != null)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await manual_Time.Attachment.CopyToAsync(memoryStream);
+                    manual_Time.AttachmentData = memoryStream.ToArray(); // Convert to byte array
+                    manual_Time.FileName = manual_Time.Attachment.FileName; // Store the file name
+                }
+            }
+
+            var query = "InsertManualTime";
 
             var parameters = new
             {
@@ -33,26 +44,36 @@ namespace Hublog.Repository.Repositories
                 StartTime = manual_Time.StartTime,
                 EndTime = manual_Time.EndTime,
                 Summary = manual_Time.Summary,
-                Attachment = manual_Time.Attachment
+                FileName = manual_Time.FileName,
+                AttachmentData = manual_Time.AttachmentData // This will now be passed as byte[]
             };
 
             await _dapper.ExecuteAsync(query, parameters, commandType: CommandType.StoredProcedure);
-            var selectQuery = @"
-        SELECT TOP 1 *
-        FROM Manual_Time
-        WHERE OrganizationId = @OrganizationId
-          AND UserId = @UserId
-          AND Date = @Date
-          AND StartTime = @StartTime
-          AND EndTime = @EndTime
-          AND Summary = @Summary
-          AND Attachment = @Attachment
-        ORDER BY Id DESC";
 
+            var selectQuery = @"
+    SELECT TOP (1) [id]
+      ,[OrganizationId]
+      ,[UserId]
+      ,[Date]
+      ,[StartTime]
+      ,[EndTime]
+      ,[Summary]
+      ,[FileName]
+    FROM Manual_Time
+    WHERE OrganizationId = @OrganizationId
+      AND UserId = @UserId
+      AND Date = @Date
+      AND StartTime = @StartTime
+      AND EndTime = @EndTime
+      AND Summary = @Summary
+      AND FileName = @FileName
+    ORDER BY Id DESC";
             var insertedRecord = await _dapper.QueryFirstOrDefaultAsync<Manual_Time>(selectQuery, parameters);
+
             return insertedRecord;
         }
-        public async Task<IEnumerable<Manual_Time>> GetManualTime(int organizationId, int? teamid, int? userId)
+
+        public async Task<IEnumerable<GetManualList>> GetManualTime(int organizationId, int? teamid, int? userId)
         {
             var query = "GetManualTimeEntries"; 
 
@@ -63,7 +84,7 @@ namespace Hublog.Repository.Repositories
                 UserId = userId
             };
 
-            return await _dapper.QueryAsync<Manual_Time>(query, parameters, commandType: CommandType.StoredProcedure);
+            return await _dapper.QueryAsync<GetManualList>(query, parameters, commandType: CommandType.StoredProcedure);
         }
 
     }
