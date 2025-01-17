@@ -66,6 +66,10 @@ namespace Hublog.API.Extensions
             services.AddScoped<IManual_TimeService,Manual_TimeService>();
             services.AddScoped<IManual_TimeRepository, Manual_TimeRepository>();
 
+            services.AddScoped<IWellnessService, WellnessService>();
+            services.AddScoped<IWellnessRepository, WellnessRepository>();
+
+
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)
