@@ -239,7 +239,7 @@
               "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\WellnessRepository.cs",
               "ToolTip": "C:\\Users\\ACTE\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\WellnessRepository.cs*",
               "RelativeToolTip": "Hublog.Repository\\Repositories\\WellnessRepository.cs*",
-              "ViewState": "AgIAAEQBAAAAAAAAAAAewEwBAAAxAAAAAAAAAA==",
+              "ViewState": "AgIAADQBAAAAAAAAAAAewEoBAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-13T12:39:28.808Z",
               "EditorCaption": ""
@@ -266,8 +266,7 @@
               "RelativeToolTip": "Hublog.API\\Controllers\\WellnessController.cs",
               "ViewState": "AgIAAHQAAAAAAAAAAAAcwGkAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T12:38:24.397Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-13T12:38:24.397Z"
             },
             {
               "$type": "Document",
@@ -279,8 +278,7 @@
               "RelativeToolTip": "Hublog.Repository\\Repositories\\ReportRepository.cs",
               "ViewState": "AgIAAEgAAAAAAAAAAAAhwD4AAAAzAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-02T04:03:43.621Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-02T04:03:43.621Z"
             },
             {
               "$type": "Document",
@@ -292,8 +290,7 @@
               "RelativeToolTip": "Hublog.Repository\\Repositories\\ProductivityRepository.cs",
               "ViewState": "AgIAAE4EAAAAAAAAAAAiwGMEAABrAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-03T06:31:28.985Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-03T06:31:28.985Z"
             },
             {
               "$type": "Document",
@@ -305,8 +302,7 @@
               "RelativeToolTip": "Hublog.Service\\Services\\WellnessService.cs",
               "ViewState": "AgIAABgAAAAAAAAAAAAewCkAAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T12:40:15.744Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-13T12:40:15.744Z"
             },
             {
               "$type": "Document",
@@ -338,12 +334,12 @@
               "Title": "WellnessRepository.cs",
               "DocumentMoniker": "C:\\Users\\ACTE\\AppData\\Local\\SourceServer\\b561772a825fa1a1afd28c28e73ede43a34300b1f4624d24c96048d3888f55ff\\Hublog.Repository\\Repositories\\WellnessRepository.cs",
               "RelativeDocumentMoniker": "..\\..\\..\\AppData\\Local\\SourceServer\\b561772a825fa1a1afd28c28e73ede43a34300b1f4624d24c96048d3888f55ff\\Hublog.Repository\\Repositories\\WellnessRepository.cs",
-              "ToolTip": "C:\\Users\\ACTE\\AppData\\Local\\SourceServer\\b561772a825fa1a1afd28c28e73ede43a34300b1f4624d24c96048d3888f55ff\\Hublog.Repository\\Repositories\\WellnessRepository.cs [Read Only]",
-              "RelativeToolTip": "..\\..\\..\\AppData\\Local\\SourceServer\\b561772a825fa1a1afd28c28e73ede43a34300b1f4624d24c96048d3888f55ff\\Hublog.Repository\\Repositories\\WellnessRepository.cs [Read Only]",
+              "ToolTip": "C:\\Users\\ACTE\\AppData\\Local\\SourceServer\\b561772a825fa1a1afd28c28e73ede43a34300b1f4624d24c96048d3888f55ff\\Hublog.Repository\\Repositories\\WellnessRepository.cs",
+              "RelativeToolTip": "..\\..\\..\\AppData\\Local\\SourceServer\\b561772a825fa1a1afd28c28e73ede43a34300b1f4624d24c96048d3888f55ff\\Hublog.Repository\\Repositories\\WellnessRepository.cs",
               "ViewState": "AgIAAGkBAAAAAAAAAAAewHgBAAAIAAAAAQAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-18T04:25:16.53Z",
-              "EditorCaption": " [Read Only]"
+              "EditorCaption": ""
             },
             {
               "$type": "Document",

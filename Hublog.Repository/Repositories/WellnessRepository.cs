@@ -195,8 +195,9 @@ namespace Hublog.Repository.Repositories
             }
 
             double HealthyPercentage = TotalactiveTimeSec == 0 ? 0 : ((double)totalHealthySec / TotalactiveTimeSec) * 100;
+            int previousDateTotalactiveTimeSec = TotalactiveTimeSec;
 
-            return new { PreviousdateHealthyPercentage = HealthyPercentage };
+            return new { PreviousdateHealthyPercentage = HealthyPercentage, PreviousDateTotalactiveTimeSec = previousDateTotalactiveTimeSec };
         }
 
 
@@ -292,12 +293,6 @@ namespace Hublog.Repository.Repositories
                         totalUnderutilizedSec += activeTimeSec;
                         overUnderutilizedUsers.Add((userId, fullName, activeTimeSec));
 
-                        if (activeTimeSec > topOverburdenedTimeSec)
-                        {
-                            topOverburdenedTimeSec = activeTimeSec;
-                            topOverburdenedUserId = userId;
-                            topOverburdenedFullName = fullName;
-                        }
                     }
                 }
 
@@ -334,6 +329,10 @@ namespace Hublog.Repository.Repositories
 
 
             string total_active_time = FormatDuration(TotalactiveTimeSec);
+            var previousDateTotalActiveTimeSec = (int)((dynamic)result).PreviousDateTotalactiveTimeSec;
+
+            var percentageDifference = (double)TotalactiveTimeSec / previousDateTotalActiveTimeSec * 100;
+
             string totalHealthy_time = FormatDuration(totalHealthySec);
             string totalOverburdened_time = FormatDuration(totalOverburdenedSec);
             string totalUnderutilized_time = FormatDuration(totalUnderutilizedSec);
@@ -342,8 +341,16 @@ namespace Hublog.Repository.Repositories
 
             return new
             {
-                HealthyemployeesPercentage = HealthyPercentageDifference,
-                Workingtime = total_active_time,
+                Healthyemployees = new
+                {
+                    HealthyemployeesPercentage = CurrentHealthyPercentage,
+                    previousHealthyemployeesPercentage = HealthyPercentageDifference,
+                },
+                Workingtime =new
+                {
+                    TotalWorkingtime=total_active_time,
+                    TotalWorkingtimePercentage= percentageDifference,
+                },
                 TopOverburdenedemployee = new
                 {
                     UserId = topOverburdenedUserId,
