@@ -149,6 +149,56 @@ namespace Hublog.Repository.Repositories
             return updatedWellNess;
         }
 
+        public async Task<object> GetWellnessSummaryPreviousDate(int organizationId, int? teamId, [FromQuery] DateTime date)
+        {
+            var teamQuery = @"
+                    SELECT T.Id, T.Name
+                    FROM Team T
+                    INNER JOIN Organization O ON T.OrganizationId = O.Id
+                    WHERE O.Id = @OrganizationId
+                    AND (@TeamId IS NULL OR T.Id = @TeamId)";
+
+            var teams = await _dapper.GetAllAsync<Team>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
+
+            int TotalactiveTimeSec = 0;
+            int totalHealthySec = 0;
+
+            foreach (var team in teams)
+            {
+                var parameters = new
+                {
+                    OrganizationId = organizationId,
+                    TeamId = team.Id,
+                    Date = date
+                };
+
+                var sp = "EXEC GetWellnessSummary @OrganizationId, @TeamId, @Date";
+                var activityDurations = await _dapper.QueryAsync<TeamWiseUsers>(sp, parameters);
+
+                var wellnessQuery = "SELECT * FROM Wellness WHERE OrganizationId = @OrganizationId";
+                var wellnessData = await _dapper.QueryFirstOrDefaultAsync<WellNess>(wellnessQuery, new { OrganizationId = organizationId });
+
+                int healthyThreshold = wellnessData?.Healthy ?? 0;
+                int underutilizedThreshold = wellnessData?.Underutilized ?? 0;
+
+                foreach (var user in activityDurations)
+                {
+                    int activeTimeSec = user?.ActiveTime ?? 0;
+                    TotalactiveTimeSec += activeTimeSec;
+
+                    int activeTime = activeTimeSec / 3600;
+                    if (activeTime >= underutilizedThreshold && activeTime < healthyThreshold)
+                    {
+                        totalHealthySec += activeTimeSec;
+                    }
+                }
+            }
+
+            double HealthyPercentage = TotalactiveTimeSec == 0 ? 0 : ((double)totalHealthySec / TotalactiveTimeSec) * 100;
+
+            return new { PreviousdateHealthyPercentage = HealthyPercentage };
+        }
+
 
         public async Task<object> GetWellnessSummary(int organizationId, int? teamId, [FromQuery] DateTime date)
         {
@@ -273,7 +323,15 @@ namespace Hublog.Repository.Repositories
             wellnessOverburdened = topOverburdenedUsers.Select(u => (dynamic)new { u.TeamName, u.TeamId, u.Overburdened }).ToList();
             wellnessUnderutilized = topoverUnderutilizedUsers.Select(u => (dynamic)new { u.TeamName, u.TeamId, u.Underutilized }).ToList();
 
-            Double HealthyPercentage = ((double)totalHealthySec / TotalactiveTimeSec) * 100;
+            date = date.AddDays(-1);
+            var result = await GetWellnessSummaryPreviousDate(organizationId, teamId, date);
+
+            double PreviousdateHealthyPercentage = (double)((dynamic)result).PreviousdateHealthyPercentage;
+
+            double CurrentHealthyPercentage = TotalactiveTimeSec == 0 ? 0 : ((double)totalHealthySec / TotalactiveTimeSec) * 100;
+
+            double HealthyPercentageDifference = CurrentHealthyPercentage- PreviousdateHealthyPercentage;
+
 
             string total_active_time = FormatDuration(TotalactiveTimeSec);
             string totalHealthy_time = FormatDuration(totalHealthySec);
@@ -284,7 +342,7 @@ namespace Hublog.Repository.Repositories
 
             return new
             {
-                HealthyemployeesPercentage = HealthyPercentage,
+                HealthyemployeesPercentage = HealthyPercentageDifference,
                 Workingtime = total_active_time,
                 TopOverburdenedemployee = new
                 {
