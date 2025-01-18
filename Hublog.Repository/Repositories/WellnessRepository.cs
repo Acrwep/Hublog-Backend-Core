@@ -195,7 +195,7 @@ namespace Hublog.Repository.Repositories
             }
 
             double HealthyPercentage = TotalactiveTimeSec == 0 ? 0 : ((double)totalHealthySec / TotalactiveTimeSec) * 100;
-            int previousDateTotalactiveTimeSec = TotalactiveTimeSec;
+            int previousDateTotalactiveTimeSec = TotalactiveTimeSec == 0 ? 0 : TotalactiveTimeSec;
 
             return new { PreviousdateHealthyPercentage = HealthyPercentage, PreviousDateTotalactiveTimeSec = previousDateTotalactiveTimeSec };
         }
@@ -331,7 +331,7 @@ namespace Hublog.Repository.Repositories
             string total_active_time = FormatDuration(TotalactiveTimeSec);
             var previousDateTotalActiveTimeSec = (int)((dynamic)result).PreviousDateTotalactiveTimeSec;
 
-            var percentageDifference = (double)TotalactiveTimeSec / previousDateTotalActiveTimeSec * 100;
+            var percentageDifference = TotalactiveTimeSec == 0 ? 0 : ((double)TotalactiveTimeSec / previousDateTotalActiveTimeSec )* 100;
 
             string totalHealthy_time = FormatDuration(totalHealthySec);
             string totalOverburdened_time = FormatDuration(totalOverburdenedSec);
