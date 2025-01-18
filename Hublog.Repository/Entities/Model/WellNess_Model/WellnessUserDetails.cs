@@ -9,8 +9,11 @@ namespace Hublog.Repository.Entities.Model.WellNess_Model
     public class WellnessUserDetails
     {
         public int Id { get; set; }
+        public int TeamId { get; set; }
+        public string TeamName { get; set; }
         public int UserId { get; set; }
         public string FullName { get; set; }
+        public int? TotalTime { get; set; }
         public int TotalPresent { get; set; }
         public int Healthy { get; set; }
         public int Overburdened { get; set; }
@@ -18,6 +21,6 @@ namespace Hublog.Repository.Entities.Model.WellNess_Model
         public double HealthyPercentage { get; set; }
         public double OverburdenedPercentage { get; set; }
         public double UnderutilizedPercentage { get; set; }
-        public string TeamName { get; set; } 
+
     }
 }

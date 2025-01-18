@@ -106,7 +106,7 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("GetWellnessDetails1")]
+        [HttpGet("GetWellnessTimeTrend")]
         public async Task<IActionResult> GetWellnessDetails(int organizationId, int? teamId,int? userId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
             try

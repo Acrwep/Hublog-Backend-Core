@@ -162,20 +162,18 @@ namespace Hublog.Repository.Repositories
             var teams = await _dapper.GetAllAsync<Team>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
 
             var wellnessSummaries = new List<WellNess>();
-            var wellnessHealthy = new List<dynamic>(); // Use List<dynamic> here
-            var wellnessOverburdened = new List<dynamic>(); // Use List<dynamic> here
+            var wellnessHealthy = new List<dynamic>(); 
+            var wellnessOverburdened = new List<dynamic>();
             var wellnessUnderutilized = new List<object>();
 
             int totalHealthyCount = 0, totalOverburdenedCount = 0, totalUnderutilizedCount = 0, TotalactiveTimeSec = 0;
             int totalHealthySec = 0, totalOverburdenedSec = 0, totalUnderutilizedSec = 0;
 
-            // Variables to track top users
             int topHealthyUserId = 0, topHealthyTimeSec = 0;
             int topOverburdenedUserId = 0, topOverburdenedTimeSec = 0;
             string topHealthyFullName = "";
             string topOverburdenedFullName = "";
 
-            // Lists to store users' active time for sorting
             var healthyUsers = new List<(int UserId, string FullName, int ActiveTimeSec)>();
             var overburdenedUsers = new List<(int UserId, string FullName, int ActiveTimeSec)>();
             var overUnderutilizedUsers = new List<(int UserId, string FullName, int ActiveTimeSec)>();
@@ -267,11 +265,10 @@ namespace Hublog.Repository.Repositories
                 });
             }
 
-            // Sort and take the top 3 users
             var topHealthyUsers = wellnessSummaries.OrderByDescending(u => u.Healthy).Take(3).ToList();
             var topOverburdenedUsers = wellnessSummaries.OrderByDescending(u => u.Overburdened).Take(3).ToList();
             var topoverUnderutilizedUsers = wellnessSummaries.OrderByDescending(u => u.Underutilized).Take(3).ToList();
-            // Healthy and Overburdened lists
+
             wellnessHealthy = topHealthyUsers.Select(u => (dynamic)new { u.TeamName, u.TeamId, u.Healthy }).ToList();
             wellnessOverburdened = topOverburdenedUsers.Select(u => (dynamic)new { u.TeamName, u.TeamId, u.Overburdened }).ToList();
             wellnessUnderutilized = topoverUnderutilizedUsers.Select(u => (dynamic)new { u.TeamName, u.TeamId, u.Underutilized }).ToList();
@@ -316,7 +313,6 @@ namespace Hublog.Repository.Repositories
 
         public async Task<object> GetWellnessDetails(int organizationId, int? teamId, int? userId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
         {
-            // Query to get teams
             var teamQuery = @"
         SELECT T.Id, T.Name 
         FROM Team T
@@ -342,7 +338,7 @@ namespace Hublog.Repository.Repositories
                     EndDate = endDate
                 };
 
-                var usages = await _dapper.GetAllAsync<WellNessBreakdown>("GetWellnessSummary1", parameters);
+                var usages = await _dapper.GetAllAsync<WellNessBreakdown>("GetWellnessTimeTrend", parameters);
 
                 dateWiseDurations.AddRange(usages);
             }
@@ -363,8 +359,8 @@ namespace Hublog.Repository.Repositories
                 .Select(g => new
                 {
                     Date = g.Key.ToString("yyyy-MM-dd"),
-                    HealthyCount = g.Count(u => (u.ActiveTime ?? 0) / 3600 >= healthyThreshold && (u.ActiveTime ?? 0) / 3600 < overburdenedThreshold),
-                    OverburdenedCount = g.Count(u => (u.ActiveTime ?? 0) / 3600 >= overburdenedThreshold),
+                    HealthyCount = g.Count(u => (u.ActiveTime ?? 0) / 3600 < healthyThreshold && (u.ActiveTime ?? 0) / 3600 >= underutilizedThreshold),
+                    OverburdenedCount = g.Count(u => (u.ActiveTime ?? 0) / 3600 >= healthyThreshold),
                     UnderutilizedCount = g.Count(u => (u.ActiveTime ?? 0) / 3600 < underutilizedThreshold)
                 })
                 .OrderBy(d => d.Date) 
@@ -388,29 +384,29 @@ namespace Hublog.Repository.Repositories
                 ToDate = endDate
             };
 
-            var result = await _dapper.GetAllAsyncs<WellnessUserDetails>(
-                urlUsageQuery,
-                parameters,
-                commandType: CommandType.StoredProcedure
-            );
+            var result = await _dapper.GetAllAsync<WellnessUserDetails>(urlUsageQuery, parameters);
 
-            var data = result.Select(r => new
+            var employees = result.Select(u => new
             {
-                UserID = r.UserId,
-                full_Name = r.FullName,
-                AttendanceCount = r.TotalPresent,
-                total_wokingtime = FormatDuration(r.TotalPresent), // Adjusted to match your properties
-                Healthy = FormatDuration(r.Healthy), // Adjust as necessary
-                Overburdened = FormatDuration(r.Overburdened), // Adjust as necessary
-                Underutilized = FormatDuration(r.Underutilized), // Adjust as necessary
-                ActivePercentage = (r.TotalPresent > 0)
-                        ? Math.Round((double)r.Healthy / r.TotalPresent * 100, 2)
-                        : 0
+                u.TeamId,
+                u.TeamName,
+                u.UserId,
+                u.FullName,
+                ActiveTime = u.TotalTime.HasValue ? TimeSpan.FromSeconds(u.TotalTime.Value).ToString(@"hh\:mm\:ss") : "00:00:00",
+                AttendanceCount = u.TotalPresent, 
+                Underutilized = u.Underutilized,
+                Healthy = u.Healthy,
+                Overburdened = u.Overburdened,
+                UnderutilizedPercentage = u.UnderutilizedPercentage,
+                HealthyPercentage = u.HealthyPercentage,
+                OverburdenedPercentage = u.OverburdenedPercentage
             }).ToList();
 
-            return data;
+            return new
+            {
+                Employees = employees
+            };
         }
-
 
     }
 }
