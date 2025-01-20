@@ -330,9 +330,22 @@ namespace Hublog.Repository.Repositories
 
             string total_active_time = FormatDuration(TotalactiveTimeSec);
             var previousDateTotalActiveTimeSec = (int)((dynamic)result).PreviousDateTotalactiveTimeSec;
-
-            var percentageDifference = TotalactiveTimeSec == 0 ? 0 : ((double)TotalactiveTimeSec / previousDateTotalActiveTimeSec )* 100;
-
+            double percentageDifference = 0;
+            if (previousDateTotalActiveTimeSec == 0)
+            {
+                if (TotalactiveTimeSec == 0)
+                {
+                    percentageDifference = TotalactiveTimeSec == 0 ? 0 : ((double)TotalactiveTimeSec / previousDateTotalActiveTimeSec) * 100;
+                }
+                else
+                {
+                    percentageDifference = 100;
+                }
+            }
+            else
+            {
+                percentageDifference = TotalactiveTimeSec == 0 ? 0 : ((double)TotalactiveTimeSec / previousDateTotalActiveTimeSec) * 100;
+            }
             string totalHealthy_time = FormatDuration(totalHealthySec);
             string totalOverburdened_time = FormatDuration(totalOverburdenedSec);
             string totalUnderutilized_time = FormatDuration(totalUnderutilizedSec);
