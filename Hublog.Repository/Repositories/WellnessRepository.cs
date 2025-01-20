@@ -335,7 +335,7 @@ namespace Hublog.Repository.Repositories
             {
                 if (TotalactiveTimeSec == 0)
                 {
-                    percentageDifference = TotalactiveTimeSec == 0 ? 0 : ((double)TotalactiveTimeSec / previousDateTotalActiveTimeSec) * 100;
+                    percentageDifference = previousDateTotalActiveTimeSec == 0 ? 0 : ((double)(TotalactiveTimeSec - previousDateTotalActiveTimeSec) / previousDateTotalActiveTimeSec) * 100;
                 }
                 else
                 {
@@ -344,25 +344,33 @@ namespace Hublog.Repository.Repositories
             }
             else
             {
-                percentageDifference = TotalactiveTimeSec == 0 ? 0 : ((double)TotalactiveTimeSec / previousDateTotalActiveTimeSec) * 100;
+                percentageDifference = previousDateTotalActiveTimeSec == 0 ? 0 : ((double)(TotalactiveTimeSec - previousDateTotalActiveTimeSec) / previousDateTotalActiveTimeSec) * 100;
             }
             string totalHealthy_time = FormatDuration(totalHealthySec);
             string totalOverburdened_time = FormatDuration(totalOverburdenedSec);
             string totalUnderutilized_time = FormatDuration(totalUnderutilizedSec);
             string topOverburdenedTime = FormatDuration(topOverburdenedTimeSec);
             string topHealthyTime = FormatDuration(topHealthyTimeSec);
+            string HealthyComparison = HealthyPercentageDifference > 0
+                ? "Greater Than"
+                : (HealthyPercentageDifference < 0 ? "Less Than" : "No Variation");
 
+            string WorkingTimeComparison = percentageDifference > 0
+                ? "Greater Than"
+                : (percentageDifference < 0 ? "Less Than" : "No Variation");
             return new
             {
                 Healthyemployees = new
                 {
                     HealthyemployeesPercentage = CurrentHealthyPercentage,
                     previousHealthyemployeesPercentage = HealthyPercentageDifference,
+                    Comparison = HealthyComparison
                 },
-                Workingtime =new
+                Workingtime = new
                 {
-                    TotalWorkingtime=total_active_time,
-                    TotalWorkingtimePercentage= percentageDifference,
+                    TotalWorkingtime = total_active_time,
+                    TotalWorkingtimePercentage = percentageDifference,
+                    Comparison = WorkingTimeComparison
                 },
                 TopOverburdenedemployee = new
                 {
