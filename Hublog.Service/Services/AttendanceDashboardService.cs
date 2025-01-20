@@ -1,6 +1,7 @@
 ﻿using Hublog.Repository.Entities.Model.DashboardModel;
 using Hublog.Repository.Interface;
 using Hublog.Service.Interface;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.Service.Services
 {
@@ -25,6 +26,11 @@ namespace Hublog.Service.Services
         public async Task<AttendanceDashboardSummaryModel> AttendanceDashboardSummary(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
         {
             return await _attendanceDashboardRepository.AttendanceDashboardSummary(organizationId, teamId, startDate, endDate);
+        }
+
+        public async Task<object> BreakTrends([FromQuery] int organizationId, [FromQuery] int? teamId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            return await _attendanceDashboardRepository.BreakTrends(organizationId, teamId, startDate, endDate);
         }
 
         public async Task<List<TeamProductivityModel>> GetTopTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)

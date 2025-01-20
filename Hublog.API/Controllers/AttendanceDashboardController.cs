@@ -44,6 +44,15 @@ namespace Hublog.API.Controllers
             var result = await _attendanceDashboardService.AttendanceDashboardSummary(organizationId, teamId, startDate, endDate);
             return Ok(result);
         }
+        
+        [HttpGet("BreakTrends")]
+        public async Task<IActionResult> BreakTrends([FromQuery] int organizationId, [FromQuery] int? teamId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            var result = await _attendanceDashboardService.BreakTrends(organizationId, teamId, startDate, endDate);
+            return Ok(result);
+        }
+
+
 
         [HttpGet("top-productivity-Teams")]
         public async Task<IActionResult> GetTopTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)

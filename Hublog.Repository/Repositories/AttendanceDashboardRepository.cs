@@ -2,6 +2,7 @@
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.DashboardModel;
 using Hublog.Repository.Interface;
+using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
 namespace Hublog.Repository.Repositories
@@ -58,6 +59,32 @@ namespace Hublog.Repository.Repositories
             string query = "AttendanceDashboardSummary"; 
 
             return await _dapper.GetSingleAsync<AttendanceDashboardSummaryModel>(query, parameters, commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task<object> BreakTrends(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        {
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                StartDate = startDate,
+                EndDate = endDate
+            };
+
+            string query = "GetBreakDurationByDate";
+
+            var breakDurations = await _dapper.GetAllAsync<dynamic>(query, parameters);
+
+            var result = breakDurations.Select(b => new
+            {
+                BreakDate = b.BreakDate.ToString("yyyy-MM-dd"), 
+                BreakDuration = b.BreakDuration 
+            }).ToList();
+
+            return new
+            {
+                data = result
+            };
         }
 
         public async Task<List<TeamProductivityModel>> GetTopTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
