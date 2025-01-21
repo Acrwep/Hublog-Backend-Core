@@ -15,7 +15,7 @@ namespace Hublog.Repository.Repositories
             _dapper = dapper;
         }
 
-        public async Task<List<AllAttendanceSummary>> GetAllAttendanceSummary(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate) 
+        public async Task<object> GetAllAttendanceSummary(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
         {
             var sp = "GetAllAttendanceSummary";
             var parameters = new
@@ -27,7 +27,54 @@ namespace Hublog.Repository.Repositories
                 EndDate = endDate
             };
 
-            return await _dapper.GetAllAsyncs<AllAttendanceSummary>(sp, parameters, commandType: CommandType.StoredProcedure);
+            var attendanceSummaries = await _dapper.GetAllAsyncs<AllAttendanceSummary>(sp, parameters, commandType: CommandType.StoredProcedure);
+
+            int totalHours = 0;
+            int totalMinutes = 0;
+            int totalSeconds = 0;
+            double totalPresentCount = 0;
+            double totalAbsentCount = 0;
+
+            foreach (var summary in attendanceSummaries)
+            {
+
+                if (!string.IsNullOrEmpty(summary.TotalWorkingTime))
+                {
+                    var timeParts = summary.TotalWorkingTime.Split(':');
+                    if (timeParts.Length == 3)
+                    {
+                        int hours = int.Parse(timeParts[0]);  
+                        int minutes = int.Parse(timeParts[1]); 
+                        int seconds = int.Parse(timeParts[2]); 
+
+                        totalHours += hours;   
+                        totalMinutes += minutes; 
+                        totalSeconds += seconds; 
+                    }
+                }
+
+                totalPresentCount += summary.PresentCount;
+                totalAbsentCount += summary.AbsentCount;
+            }
+
+            totalMinutes += totalSeconds / 60;
+            totalSeconds = totalSeconds % 60;
+            totalHours += totalMinutes / 60;
+            totalMinutes = totalMinutes % 60;
+
+            string overallTotalTimeFormatted = $"{totalHours}:{totalMinutes:D2}:{totalSeconds:D2}";
+
+            double overallAttendancePercentage = 0;
+            if (totalPresentCount + totalAbsentCount > 0)
+            {
+                overallAttendancePercentage = (totalPresentCount / (totalPresentCount + totalAbsentCount)) * 100;
+            }
+            return new
+            {
+                attendanceSummaries,
+                overallTotalTime = overallTotalTimeFormatted,
+                overallAttendancePercentage
+            };
         }
 
         public async Task<List<UserAttendanceReport>> GetUserTotalAttendanceAndBreakSummary(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate) 
@@ -75,17 +122,45 @@ namespace Hublog.Repository.Repositories
 
             var breakDurations = await _dapper.GetAllAsync<dynamic>(query, parameters);
 
+            int totalHours = 0;
+            int totalMinutes = 0;
+            int totalSeconds = 0;
+
+            foreach (var b in breakDurations)
+            {
+                var timeParts = b.BreakDuration.ToString().Split(':');
+                if (timeParts.Length == 3)
+                {
+                    int hours = int.Parse(timeParts[0]); 
+                    int minutes = int.Parse(timeParts[1]); 
+                    int seconds = int.Parse(timeParts[2]); 
+
+                    totalHours += hours;   
+                    totalMinutes += minutes; 
+                    totalSeconds += seconds; 
+                }
+            }
+
+            totalMinutes += totalSeconds / 60;
+            totalSeconds = totalSeconds % 60;
+            totalHours += totalMinutes / 60;
+            totalMinutes = totalMinutes % 60;
+
+            string totalBreakDuration = $"{totalHours}:{totalMinutes:D2}:{totalSeconds:D2}";
+
             var result = breakDurations.Select(b => new
             {
-                BreakDate = b.BreakDate.ToString("yyyy-MM-dd"), 
-                BreakDuration = b.BreakDuration 
+                BreakDate = b.BreakDate.ToString("yyyy-MM-dd"),
+                BreakDuration = b.BreakDuration
             }).ToList();
 
             return new
             {
-                data = result
+                data = result,
+                totalBreakDuration
             };
         }
+
 
         public async Task<List<TeamProductivityModel>> GetTopTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
         {

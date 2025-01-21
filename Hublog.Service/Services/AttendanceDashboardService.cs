@@ -13,7 +13,7 @@ namespace Hublog.Service.Services
             _attendanceDashboardRepository = attendanceDashboardRepository;
         }
 
-        public async Task<List<AllAttendanceSummary>> GetAllAttendanceSummary(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate) 
+        public async Task<object> GetAllAttendanceSummary(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate) 
         {
             return await _attendanceDashboardRepository.GetAllAttendanceSummary(organizationId, teamId, userId, startDate, endDate);   
         }
