@@ -57,5 +57,20 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpGet("GetEmployeeTimeLine")]
+        public async Task<IActionResult> GetEmployeeTimeLine(int organizationId,  [FromQuery] int? userId, [FromQuery] DateTime Date)
+        {
+            try
+            {
+                var result = await _activityService.GetEmployeeTimeLine(organizationId, userId, Date);
+
+                return Ok(new { message = "Employee list data fetched successfully.", data = result });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

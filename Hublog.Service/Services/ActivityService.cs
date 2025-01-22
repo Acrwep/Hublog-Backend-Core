@@ -33,5 +33,9 @@ namespace Hublog.Service.Services
         {
             return await _IActivityService.GetActivityEmployeeList(organizationId, teamId, userId, fromDate, toDate);
         }
+        public async Task<dynamic> GetEmployeeTimeLine(int organizationId, [FromQuery] int? userId, [FromQuery] DateTime Date)
+        {
+            return await _IActivityService.GetEmployeeTimeLine(organizationId, userId,Date);
+        }
     }
 }

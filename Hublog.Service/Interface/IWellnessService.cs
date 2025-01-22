@@ -18,6 +18,5 @@ namespace Hublog.Service.Interface
         Task<object> GetWellnessSummary(int organizationId, int? teamId, [FromQuery] DateTime Date);
         Task<object> GetWellnessDetails(int organizationId, int? teamId, int? userId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate);
         Task<object> GetWellnessUserDetails(int organizationId, int? teamId, int? userId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate);
-
     }
 }

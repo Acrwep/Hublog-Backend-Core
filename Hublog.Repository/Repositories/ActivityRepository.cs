@@ -15,6 +15,8 @@ using Hublog.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Dapper;
 using System.Globalization;
+using Hublog.Repository.Entities.Model.DashboardModel;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Hublog.Repository.Repositories
 {
@@ -297,5 +299,25 @@ namespace Hublog.Repository.Repositories
 
             return data;
         }
+
+        public async Task<dynamic> GetEmployeeTimeLine(int organizationId, [FromQuery] int? userId, [FromQuery] DateTime Date)
+        {
+            var query = "GetTimeLine_sp";
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                UserId = userId,
+                Date = Date
+            };
+
+                var timelineData = await _dapper.GetAllAsync<dynamic>(query, parameters);
+
+                return new
+                {
+                    data = timelineData
+                };
+
+        }
+
     }
 }
