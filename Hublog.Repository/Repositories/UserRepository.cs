@@ -69,10 +69,7 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region InsertAttendance
-        public async Task<int> InsertAttendanceAsync(UserAttendanceModel model)
-        
-       
-        
+        public async Task<int> InsertAttendanceAsync(UserAttendanceModel model) 
         {
             try
             {
@@ -101,9 +98,9 @@ namespace Hublog.Repository.Repositories
                 {
                     parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
                 }
-                parameters.Add("@Punchout_type", model.Punchout_type);
+                parameters.Add("@Punchout_type", model.Punchout_type); 
                 Console.WriteLine(startTimeFormatted);
-                var result = await _dapper.ExecuteAsync("SP_InsertAttendance", parameters, CommandType.StoredProcedure);
+                var result = await _dapper.ExecuteAsync("[SP_InsertAttendance]", parameters, CommandType.StoredProcedure);// SP_PunchIn_InsertAttendance
                 var deleteQuery = @"
                   DELETE UA
                   FROM UserActivity UA
@@ -125,6 +122,100 @@ namespace Hublog.Repository.Repositories
             }
         }
         #endregion
+        public async Task PunchIn_InsertAttendance(List<UserAttendanceModel> models)
+        {
+            try
+            {
+                foreach (var model in models)
+                {
+                    var parameters = new DynamicParameters();
+                    string startTimeFormatted = model.Start_Time?.ToString("yyyy-MM-dd HH:mm:ss");
+                    parameters.Add("@UserId", model.UserId);
+                    parameters.Add("@OrganizationId", model.OrganizationId);
+                    parameters.Add("@AttendanceDate", model.AttendanceDate.ToString("yyyy-MM-dd HH:mm:ss"));
+                    parameters.Add("@Start_Time", model.Start_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                    parameters.Add("@Total_Time", null);
+                    parameters.Add("@Late_Time", null);
+                    parameters.Add("@Status", model.Status);
+
+                    if (model.Status == 1)
+                    {
+                        if (model.End_Time != null)
+                        {
+                            parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                        }
+                        else
+                        {
+                            model.End_Time = DateTime.Now;
+                            parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                        }
+                    }
+
+                    if (model.Status == 0)
+                    {
+                        parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                    }
+
+                    parameters.Add("@Punchout_type", model.Punchout_type);
+
+                    await _dapper.ExecuteAsync("SP_PunchIn_InsertAttendance", parameters, CommandType.StoredProcedure);
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error inserting attendance: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task PunchoutInsertAttendance(List<UserAttendanceModel> models)
+            {
+                try
+                {
+                    foreach (var model in models)
+                    {
+                        var parameters = new DynamicParameters();
+                        string startTimeFormatted = model.Start_Time?.ToString("yyyy-MM-dd HH:mm:ss");
+                        parameters.Add("@UserId", model.UserId);
+                        parameters.Add("@OrganizationId", model.OrganizationId);
+                        parameters.Add("@AttendanceDate", model.AttendanceDate.ToString("yyyy-MM-dd HH:mm:ss"));
+                        parameters.Add("@Start_Time", model.Start_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                        parameters.Add("@Total_Time", null);
+                        parameters.Add("@Late_Time", null);
+                        parameters.Add("@Status", model.Status);
+
+                        if (model.Status == 1)
+                        {
+                            if (model.End_Time != null)
+                            {
+                                parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                            }
+                            else
+                            {
+                                model.End_Time = DateTime.Now;
+                                parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                            }
+                        }
+
+                        if (model.Status == 0)
+                        {
+                            parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                        }
+
+                        parameters.Add("@Punchout_type", model.Punchout_type);
+
+                        await _dapper.ExecuteAsync("SP_PunchoutInsertAttendance", parameters, CommandType.StoredProcedure);
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error inserting attendance: {ex.Message}");
+                    throw;
+                }
+            }
+
 
         #region SaveUserScreenShot
         public async Task SaveUserScreenShot(UserScreenShot userScreenShot)

@@ -57,7 +57,6 @@ namespace Hublog.API.Controllers
 
         #region InsertAttendance
         [HttpPost("InsertAttendance")]
-        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> InsertAttendance(List<UserAttendanceModel> model)
         {
             if (!ModelState.IsValid)
@@ -76,6 +75,37 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
+
+        [HttpPost("PunchIn_InsertAttendance")]
+        public async Task<IActionResult> PunchIn_InsertAttendance([FromBody]  List<UserAttendanceModel> model)
+        {
+
+
+            try
+            {
+                await _userService.PunchIn_InsertAttendance(model);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
+        }
+
+        [HttpPost("PunchoutInsertAttendance")]
+        public async Task<IActionResult> PunchoutInsertAttendance([FromBody] List<UserAttendanceModel> model)
+        {
+
+            try
+            {
+                await _userService.PunchoutInsertAttendance(model);
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
+        }
 
         #region UploadFile
         [HttpPost("UploadFile")]
