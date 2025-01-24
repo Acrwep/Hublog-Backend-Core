@@ -486,7 +486,7 @@ namespace Hublog.Repository.Repositories
                 UnderutilizedPercentage = u.UnderutilizedPercentage,
                 HealthyPercentage = u.HealthyPercentage,
                 OverburdenedPercentage = u.OverburdenedPercentage
-            }).ToList();
+            }).OrderByDescending(r => r.AttendanceCount).ToList();
 
             return new
             {

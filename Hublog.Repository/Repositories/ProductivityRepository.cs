@@ -1250,8 +1250,9 @@ ORDER BY
 
                     
                 }
+                var orderedResult = result.OrderByDescending(us => (double)us.PercentageProductiveDuration).ToList();
 
-                return result;
+                return orderedResult;
             }
             else
             {
@@ -1389,8 +1390,9 @@ ORDER BY
 
                     userId = null;
                 }
+                var orderedResult = result.OrderByDescending(us => (double)us.PercentageProductiveDuration).ToList();
 
-                return result;
+                return orderedResult;
 
             }
 

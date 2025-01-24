@@ -295,7 +295,9 @@ namespace Hublog.Repository.Repositories
                 ActivePercentage = (r.TodalTime.HasValue && r.TodalTime.Value > 0)
                         ? Math.Round((double)r.ActiveTime.Value / r.TodalTime.Value * 100, 2)
                         : 0
-            }).ToList();
+            }).OrderByDescending(r => r.ActivePercentage)
+              .ThenByDescending(r => r.AttendanceCount) 
+              .ToList();
 
             return data;
         }
