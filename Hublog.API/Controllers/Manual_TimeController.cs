@@ -68,11 +68,11 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("get_Manual_Time")]
-        public async Task<IActionResult> GetManualTime(int organizationId,int? teamid, int? userId)
+        public async Task<IActionResult> GetManualTime(int organizationId,int? teamid, int? userId, DateTime? startDate, DateTime? endDate)
         {
             try
             {
-                var manualTimeEntries = await _manual_TimeService.GetManualTime(organizationId, teamid, userId);
+                var manualTimeEntries = await _manual_TimeService.GetManualTime(organizationId, teamid, userId, startDate,endDate);
 
                 if (manualTimeEntries == null || !manualTimeEntries.Any())
                 {

@@ -11,6 +11,6 @@ namespace Hublog.Service.Interface
     public interface IManual_TimeService
     {
         Task<Manual_Time> InsertManualTime(Manual_Time manual_Time);
-        Task<IEnumerable<GetManualList>> GetManualTime(int organizationId, int? teamid, int? userId);
+        Task<IEnumerable<GetManualList>> GetManualTime(int organizationId, int? teamid, int? userId, DateTime? startDate, DateTime? endDate);
     }
 }

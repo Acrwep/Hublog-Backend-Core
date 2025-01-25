@@ -24,9 +24,9 @@ namespace Hublog.Service.Services
         {
             return await _IActivityService.InsertManualTime(manual_Time);
         }
-        public async Task<IEnumerable<GetManualList>> GetManualTime(int organizationId, int? teamid, int? userId)
+        public async Task<IEnumerable<GetManualList>> GetManualTime(int organizationId, int? teamid, int? userId, DateTime? startDate, DateTime? endDate)
         { 
-            return await _IActivityService.GetManualTime( organizationId,teamid, userId);
+            return await _IActivityService.GetManualTime( organizationId,teamid, userId, startDate,endDate);
         }
     }
 }
