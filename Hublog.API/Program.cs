@@ -1,4 +1,9 @@
 using Hublog.API.Extensions;
+using Hublog.API.Hub;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +23,10 @@ builder.Services.AddSwaggerGen();
 // Scope
 builder.Services.ConfigureScope(configuration);
 builder.Services.ConfigureServices(configuration);
-
+builder.Services.AddSignalR(options =>
+{
+    options.MaximumReceiveMessageSize = 1024 * 1024 * 10; // Example: 10 MB
+});
 var app = builder.Build();
 
 //app.UseCors(options =>
@@ -33,7 +41,8 @@ app.UseCors(options =>
 {
     options.WithOrigins("https://hublog.org", "http://localhost:3000") // Allow both production and local URLs
            .AllowAnyHeader()
-           .AllowAnyMethod();
+           .AllowAnyMethod()
+               .AllowCredentials();  // Allow credentials (cookies, authentication headers)
 });
 
 
@@ -52,7 +61,10 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("AllowReactApp");  // Use the CORS policy
+app.MapHub<LiveStreamHub>("/livestreamHub");
 
 app.MapControllers();
+
 
 app.Run();

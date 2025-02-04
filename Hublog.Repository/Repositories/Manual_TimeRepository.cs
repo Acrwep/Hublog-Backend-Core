@@ -75,15 +75,15 @@ namespace Hublog.Repository.Repositories
 
         public async Task<IEnumerable<GetManualList>> GetManualTime(int organizationId, int? teamid, int? userId, DateTime? startDate, DateTime? endDate)
         {
-            var query = "GetManualTimeEntries"; 
+            var query = "GetManualTimeEntries";
 
             var parameters = new
-            {             
+            {
                 OrganizationId = organizationId,
-                TeamId=teamid,
+                TeamId = teamid,
                 UserId = userId,
                 StartDate = startDate,
-                EndDate = endDate
+                EndDate = endDate,
             };
 
             return await _dapper.QueryAsync<GetManualList>(query, parameters, commandType: CommandType.StoredProcedure);

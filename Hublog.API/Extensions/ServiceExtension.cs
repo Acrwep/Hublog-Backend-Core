@@ -69,7 +69,8 @@ namespace Hublog.API.Extensions
             services.AddScoped<IWellnessService, WellnessService>();
             services.AddScoped<IWellnessRepository, WellnessRepository>();
 
-
+            services.AddScoped<IProjectRepository, ProjectRepository>();
+            services.AddScoped<IProjectService, ProjectService>();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

@@ -3,20 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\manual_timerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\manual_timerepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\controllers\\manual_timecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\manual_timecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\hub\\livestreamhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\hub\\livestreamhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\controllers\\reportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\reportcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.repository\\entities\\model\\livestreammodal\\livestreammodal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\entities\\model\\livestreammodal\\livestreammodal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\controllers\\livestreamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\livestreamcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -35,54 +39,63 @@
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "ReportController.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\ReportController.cs",
-              "RelativeDocumentMoniker": "Hublog.API\\Controllers\\ReportController.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\ReportController.cs",
-              "RelativeToolTip": "Hublog.API\\Controllers\\ReportController.cs",
-              "ViewState": "AQIAAA4AAAAAAAAAAAAQwIQAAAAiAAAA",
+              "Title": "LivestreamModal.cs",
+              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\LivestreamModal\\LivestreamModal.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Entities\\Model\\LivestreamModal\\LivestreamModal.cs",
+              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\LivestreamModal\\LivestreamModal.cs",
+              "RelativeToolTip": "Hublog.Repository\\Entities\\Model\\LivestreamModal\\LivestreamModal.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABsAAAAxAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-25T06:09:16.4Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Manual_TimeController.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\Manual_TimeController.cs",
-              "RelativeDocumentMoniker": "Hublog.API\\Controllers\\Manual_TimeController.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\Manual_TimeController.cs",
-              "RelativeToolTip": "Hublog.API\\Controllers\\Manual_TimeController.cs",
-              "ViewState": "AQIAADwAAAAAAAAAAAAwwEIAAAANAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-25T06:08:24.199Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-31T09:35:42.054Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "UserRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\UserRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\UserRepository.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\UserRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Repositories\\UserRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAtAAAA",
+              "Title": "LiveStreamController.cs",
+              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\LiveStreamController.cs",
+              "RelativeDocumentMoniker": "Hublog.API\\Controllers\\LiveStreamController.cs",
+              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\LiveStreamController.cs",
+              "RelativeToolTip": "Hublog.API\\Controllers\\LiveStreamController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAJAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-24T05:52:42.366Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-01-30T12:27:33.734Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LiveStreamHub.cs",
+              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Hub\\LiveStreamHub.cs",
+              "RelativeDocumentMoniker": "Hublog.API\\Hub\\LiveStreamHub.cs",
+              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Hub\\LiveStreamHub.cs",
+              "RelativeToolTip": "Hublog.API\\Hub\\LiveStreamHub.cs",
+              "ViewState": "AQIAAAgAAAAAAAAAAAAqwA0AAAA6AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-30T12:05:47.238Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Manual_TimeRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\Manual_TimeRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\Manual_TimeRepository.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\Manual_TimeRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Repositories\\Manual_TimeRepository.cs",
-              "ViewState": "AQIAAEEAAAAAAAAAAAAtwFMAAAAgAAAA",
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Program.cs",
+              "RelativeDocumentMoniker": "Hublog.API\\Program.cs",
+              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Program.cs",
+              "RelativeToolTip": "Hublog.API\\Program.cs",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAABEAAAAeAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-13T08:22:49.574Z",
+              "WhenOpened": "2025-01-30T12:00:44.946Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\appsettings.json",
+              "RelativeDocumentMoniker": "Hublog.API\\appsettings.json",
+              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\appsettings.json",
+              "RelativeToolTip": "Hublog.API\\appsettings.json",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAACMAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-01-25T06:49:23.832Z"
             }
           ]
         }
