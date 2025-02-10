@@ -40,6 +40,7 @@ namespace Hublog.Repository.Repositories
             Users AS u ON au.UserId = u.Id
         WHERE 
             u.OrganizationId = @OrganizationId  
+            AND u.Active = 1
             AND (@UserId IS NULL OR au.UserId = @UserId)  
             AND (@TeamId IS NULL OR u.TeamId = @TeamId)  
             AND au.UsageDate BETWEEN @StartDate AND @EndDate
@@ -86,6 +87,7 @@ JOIN
     Users AS u ON uu.UserId = u.Id
 WHERE 
     u.OrganizationId = @OrganizationId  
+    AND u.Active = 1
     AND (@UserId IS NULL OR uu.UserId = @UserId)  
     AND (@TeamId IS NULL OR u.TeamId = @TeamId)  
     AND uu.UsageDate BETWEEN @StartDate AND @EndDate
@@ -274,7 +276,7 @@ ORDER BY
                 {
                     usage.Name = usage.Name.ToLower();
 
-                    if (usage.Name != "chrome" && usage.Name != "msedge" && usage.Name != "firefox" && usage.Name != "opera")
+                    if (usage.Name != "chrome" && usage.Name != "msedge")
                     {
                         // Update usage time
                         if (totalUsages.TryGetValue(usage.Name, out var totalSeconds))

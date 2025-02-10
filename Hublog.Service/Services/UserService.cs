@@ -226,6 +226,14 @@ namespace Hublog.Service.Services
         }
         #endregion
 
+        #region GetActiveUsers
+        public async Task<List<UsersDTO>> GetActiveUsers(string loggedInUserEmail, int organizationid, string searchQuery)
+        {
+            var users = await _userRepository.GetActiveUsers(loggedInUserEmail, organizationid, searchQuery);
+            return users;
+        }
+        #endregion
+
         #region  InsertUser
         public async Task<Users> InsertUser(Users user)
         {

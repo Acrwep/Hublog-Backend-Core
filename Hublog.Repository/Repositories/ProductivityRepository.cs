@@ -177,6 +177,7 @@ on O.id=I.OrganizationId
                   AND A.UsageDate BETWEEN @FromDate AND @ToDate
                   AND (@TeamId IS NULL OR T.Id = @TeamId)
                   AND (@UserId IS NULL OR A.UserId = @UserId)
+                  AND U.Active = 1
            GROUP BY 
                A.UserId, 
                A.ApplicationName, 
@@ -208,6 +209,7 @@ on O.id=I.OrganizationId
         AND U.UsageDate BETWEEN @FromDate AND @ToDate
         AND (@TeamId IS NULL OR T.Id = @TeamId)
         AND (@UserId IS NULL OR U.UserId = @UserId)
+        AND Us.Active = 1
     GROUP BY 
         U.UserId,
         U.Url,
@@ -284,7 +286,7 @@ on O.id=I.OrganizationId
                 {
                     usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                    if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                    if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                     {
                         if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
                         {
@@ -432,7 +434,7 @@ on O.id=I.OrganizationId
                 {
                     usage.Name = usage.Name.ToLower();
 
-                    if (usage.Name != "chrome" && usage.Name != "msedge" && usage.Name != "firefox" && usage.Name != "opera")
+                    if (usage.Name != "chrome" && usage.Name != "msedge")
                     {
                         var parameters1 = new { ApplicationName = usage.Name.ToLower() };
                         var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity",
@@ -550,7 +552,7 @@ on O.id=I.OrganizationId
                 {
                     usage.Name = usage.Name.ToLower();
 
-                    if (usage.Name != "chrome" && usage.Name != "msedge" && usage.Name != "firefox" && usage.Name != "opera")
+                    if (usage.Name != "chrome" && usage.Name != "msedge")
                     {
                         var parameters1 = new { ApplicationName = usage.Name.ToLower() };
                         var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity",
@@ -668,6 +670,7 @@ WHERE O.Id = @organizationId
                     AND a.Total_Time IS NOT NULL 
                    AND A.AttendanceDate BETWEEN @FromDate AND @ToDate
                    AND (@TeamId IS NULL OR U.Id = @TeamId)
+                   AND Us.Active = 1
              GROUP BY  
                    A.AttendanceDate;";
             string appUsageQuery1 = @"
@@ -687,6 +690,7 @@ WHERE O.Id = @organizationId
                        AND (@UserId IS NULL OR Us.Id = @UserId)
                        AND CAST(BR.BreakDate AS DATE) BETWEEN @FromDate AND @ToDate
                        AND (@TeamId IS NULL OR U.Id = @TeamId)
+                       AND Us.Active = 1
                  GROUP BY  
                       BR.BreakDate;";
 
@@ -779,6 +783,7 @@ WHERE O.Id = @organizationId
                   AND A.UsageDate BETWEEN @FromDate AND @ToDate
                   AND (@TeamId IS NULL OR T.Id = @TeamId)
                   AND (@UserId IS NULL OR A.UserId = @UserId)
+                  AND U.Active = 1
            GROUP BY 
                A.UserId, 
                A.ApplicationName, 
@@ -810,6 +815,7 @@ WHERE O.Id = @organizationId
         AND U.UsageDate BETWEEN @FromDate AND @ToDate
         AND (@TeamId IS NULL OR T.Id = @TeamId)
         AND (@UserId IS NULL OR U.UserId = @UserId)
+        AND Us.Active = 1
     GROUP BY 
         U.UserId,
         U.Url,
@@ -873,7 +879,7 @@ WHERE O.Id = @organizationId
                 {
                     usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                    if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                    if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                     {
                         // Query for category and productivity details
                         var imbuildAppQuery = @"
@@ -1047,6 +1053,7 @@ WHERE
     And O.Id = @OrganizationId
     AND (@TeamId IS NULL OR T.Id = @TeamId)
     AND (@UserId IS NULL OR br.UserId = @UserId)
+    AND U.Active = 1
 GROUP BY 
     br.UserId
 ORDER BY 
@@ -1137,6 +1144,7 @@ ORDER BY
                 SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
                 FROM Users 
                 WHERE TeamId = @TeamId
+                AND Active = 1 -- Filter only active users
                 AND (@UserId IS NULL OR Id = @UserId)";
 
                     var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters);
@@ -1159,6 +1167,7 @@ ORDER BY
                         int totalNeutralDuration = 0;
 
                         var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
+
                         var totalUsages = usages
                         .GroupBy(u => u.ApplicationName)
                         .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
@@ -1168,7 +1177,7 @@ ORDER BY
                         {
                             usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
                                 if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
                                 {
@@ -1277,6 +1286,7 @@ ORDER BY
                 SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
                 FROM Users 
                 WHERE TeamId = @TeamId
+                AND Active = 1 -- Filter only active users
                 AND (@UserId IS NULL OR Id = @UserId)";
 
                     var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters);
@@ -1309,7 +1319,7 @@ ORDER BY
                         {
                             usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
                                 if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
                                 {

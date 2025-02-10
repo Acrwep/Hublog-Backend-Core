@@ -1,9 +1,7 @@
 using Hublog.API.Extensions;
 using Hublog.API.Hub;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Http.Connections;
+using Microsoft.AspNetCore.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,28 +21,35 @@ builder.Services.AddSwaggerGen();
 // Scope
 builder.Services.ConfigureScope(configuration);
 builder.Services.ConfigureServices(configuration);
+
 builder.Services.AddSignalR(options =>
 {
     options.MaximumReceiveMessageSize = 1024 * 1024 * 10; // Example: 10 MB
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin", builder =>
+    {
+        builder.WithOrigins("https://hublog.org", "http://localhost:3000")
+               .AllowAnyHeader()
+               .AllowAnyMethod()
+               .AllowCredentials();
+    });
 });
 var app = builder.Build();
 
 //app.UseCors(options =>
 //{
-//    //options.WithOrigins("https://hublog.org") //frontend production url
-//    options.WithOrigins("http://localhost:3000") //frontend local url
+//    options.WithOrigins("https://hublog.org", "http://localhost:3000") // Allow both production and local URLs
 //           .AllowAnyHeader()
-//           .AllowAnyMethod();
+//           .AllowAnyMethod()
+//           .AllowCredentials();
 //});
 
-app.UseCors(options =>
-{
-    options.WithOrigins("https://hublog.org", "http://localhost:3000") // Allow both production and local URLs
-           .AllowAnyHeader()
-           .AllowAnyMethod()
-               .AllowCredentials();  // Allow credentials (cookies, authentication headers)
-});
+app.UseCors("AllowSpecificOrigin");
 
+app.MapHub<LiveStreamHub>("/livestreamHub");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -61,8 +66,6 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseCors("AllowReactApp");  // Use the CORS policy
-app.MapHub<LiveStreamHub>("/livestreamHub");
 
 app.MapControllers();
 

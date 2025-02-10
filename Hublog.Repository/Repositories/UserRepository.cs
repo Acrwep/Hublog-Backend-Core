@@ -367,6 +367,7 @@ namespace Hublog.Repository.Repositories
                 u.TeamId = t.Id
             WHERE 
                 u.TeamId = @TeamId
+                AND u.Active = 1
         "
             ;
 
@@ -461,6 +462,59 @@ namespace Hublog.Repository.Repositories
                             LEFT JOIN Team t ON u.TeamId = t.Id
                         WHERE u.OrganizationId = @OrganizationId
                         AND (u.First_Name LIKE @SearchQuery OR u.Email LIKE @SearchQuery)
+                            ORDER BY CASE WHEN u.Email = @LoggedInUserEmail THEN 0 ELSE 1 END";
+
+            var parameters = new
+            {
+                OrganizationId = organizationid,
+                SearchQuery = $"%{searchQuery}%",
+                LoggedInUserEmail = loggedInUserEmail
+            };
+
+            try
+            {
+                var users = await _dapper.GetAllAsync<UsersDTO>(query, parameters);
+                return users ?? new List<UsersDTO>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<UsersDTO>();
+            }
+        }
+
+        #endregion
+
+        #region GetActiveUsers
+        public async Task<List<UsersDTO>> GetActiveUsers(string loggedInUserEmail, int organizationid, string searchQuery)
+        {
+            var query = @"
+                        SELECT 
+                            u.Id,
+                            u.First_Name,
+                            u.Last_Name,
+                            CONCAT(U.First_Name, ' ', U.Last_Name) AS full_Name,
+                            u.Email,
+                            u.DOB,
+                            u.DOJ,
+                            u.Phone,
+                            u.Password,
+                            u.UsersName,
+                            u.Gender,
+                            u.OrganizationId,
+                            u.RoleId,
+                            u.DesignationId,
+                            d.Name AS DesignationName,
+                            u.TeamId,
+                            t.Name AS TeamName,
+                            u.Active,
+                            u.EmployeeID
+                        FROM Users u
+                            LEFT JOIN Designation d ON u.DesignationId = d.Id
+                            LEFT JOIN Team t ON u.TeamId = t.Id
+                        WHERE u.OrganizationId = @OrganizationId
+                        AND (u.First_Name LIKE @SearchQuery OR u.Email LIKE @SearchQuery)
+                        AND u.Active = 1  -- Only active users
                             ORDER BY CASE WHEN u.Email = @LoggedInUserEmail THEN 0 ELSE 1 END";
 
             var parameters = new

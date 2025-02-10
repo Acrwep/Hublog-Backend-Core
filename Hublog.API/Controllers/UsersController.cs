@@ -323,6 +323,32 @@ namespace Hublog.API.Controllers
             }
         }
 
+        [HttpGet("GetActiveUsers")]
+        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        public async Task<IActionResult> GetActiveUsers(int organizationid, string searchQuery = "")
+        {
+            try
+            {
+                var claimsPrincipal = User as ClaimsPrincipal;
+                var loggedInUserEmail = claimsPrincipal?.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+                var result = await _userService.GetActiveUsers(loggedInUserEmail, organizationid, searchQuery);
+
+                if (result != null && result.Any())
+                {
+                    return Ok(result);
+                }
+                else
+                {
+                    return NotFound("No Data Found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpPost("InsertUser")]
         public async Task<IActionResult> InsertUser([FromBody] Users user)
         {

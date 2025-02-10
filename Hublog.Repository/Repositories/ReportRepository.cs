@@ -328,6 +328,7 @@ namespace Hublog.Repository.Repositories
                 SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
                 FROM Users 
                 WHERE TeamId = @TeamId
+                AND Active = 1 -- Filter only active users
                 AND (@UserId IS NULL OR Id = @UserId)";
 
                     var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters1);
@@ -358,7 +359,7 @@ namespace Hublog.Repository.Repositories
                             var totalSeconds = usage.TotalSeconds;
                             usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
 
                                     usage.TotalSeconds = totalSeconds;
@@ -503,6 +504,7 @@ namespace Hublog.Repository.Repositories
                 SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
                 FROM Users 
                 WHERE TeamId = @TeamId
+                AND Active = 1 -- Filter only active users
                 AND (@UserId IS NULL OR Id = @UserId)";
 
                     var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters1);
@@ -529,7 +531,7 @@ namespace Hublog.Repository.Repositories
                             var totalSeconds = usage.TotalSeconds;
                             usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
 
                                 usage.TotalSeconds = totalSeconds;
@@ -776,7 +778,7 @@ namespace Hublog.Repository.Repositories
                             var totalSeconds = usage.TotalSeconds;
                             usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
 
                                 usage.TotalSeconds = totalSeconds;
@@ -964,7 +966,7 @@ namespace Hublog.Repository.Repositories
                             var totalSeconds = usage.TotalSeconds;
                             usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge" && usage.ApplicationName != "firefox" && usage.ApplicationName != "opera")
+                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
 
                                 usage.TotalSeconds = totalSeconds;
