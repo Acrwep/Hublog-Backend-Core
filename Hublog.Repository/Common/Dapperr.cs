@@ -14,6 +14,7 @@ namespace Hublog.Repository.Common
         {
             var connectionString = configuration.GetConnectionString("DataBaseConnectionString");
             _connection = new SqlConnection(connectionString);
+            _connection.Open();
         }
 
         #region Dapp
@@ -83,7 +84,8 @@ namespace Hublog.Repository.Common
 
         public async Task<T> GetSingleAsync<T>(string query, object parameters = null, CommandType commandType = CommandType.Text)
         {
-            return await _connection.QuerySingleOrDefaultAsync<T>(query, parameters, commandType: commandType);
+                return await _connection.QueryFirstOrDefaultAsync<T>(query, parameters, commandType: commandType);
+
         }
 
         #endregion
