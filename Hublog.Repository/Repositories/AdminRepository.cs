@@ -1,6 +1,7 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Break;
+using Hublog.Repository.Entities.Model.Shift;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Microsoft.Data.SqlClient;
@@ -87,6 +88,50 @@ namespace Hublog.Repository.Repositories
             catch (Exception ex)
             {
                 throw new Exception("Error fetching breakmaster record", ex);
+            }
+        }
+        #endregion
+
+
+        //shiftmaster
+        public async Task<ShiftMaster> InsertShiftMaster(ShiftMaster shiftMaster)
+        {
+            try
+            {
+                const string query = @"INSERT INTO Shift (OrganizationId, name, start_time, end_time, status)
+                VALUES (@OrganizationId, @name, @start_time, @end_time, @status);
+                SELECT CAST(SCOPE_IDENTITY() as int)";
+
+                var createdShiftmaster = await _dapper.ExecuteAsync(query, shiftMaster);
+                shiftMaster.Id = createdShiftmaster;
+                return shiftMaster;
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error creating shiftmaster", ex);
+            }
+        }
+
+        #region GetShiftMasters
+        public async Task<List<ShiftMaster>> GetShiftMasters(int organizationId, string? searchQuery)
+        {
+            try
+            {
+                var query = @"SELECT * FROM Shift WHERE OrganizationId = @OrganizationId
+            AND (@SearchQuery IS NULL OR Name LIKE @SearchQuery)";
+
+                var parameters = new
+                {
+                    OrganizationId = organizationId,
+                    SearchQuery = searchQuery != null ? $"%{searchQuery}%" : null
+                };
+
+                return await _dapper.GetAllAsync<ShiftMaster>(query, parameters);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching shiftmaster record", ex);
             }
         }
         #endregion

@@ -1,5 +1,6 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.Break;
+using Hublog.Repository.Entities.Model.Shift;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -88,6 +89,54 @@ namespace Hublog.API.Controllers
             {
                 var breakMasters = await _adminService.GetBreakMasters(organizationId,seachQuery);
                 return Ok(breakMasters);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while getting user.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+        #endregion
+
+        //shiftmaster handling
+        #region InsertShiftMaster
+        [HttpPost("InsertShiftMaster")]
+        public async Task<IActionResult> InsertShiftMaster(ShiftMaster shiftMaster)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var createdShiftMaster = await _adminService.InsertShiftMaster(shiftMaster);
+                    if (createdShiftMaster != null)
+                    {
+                        return CreatedAtAction(nameof(InsertShiftMaster), new { id = createdShiftMaster.Id }, createdShiftMaster);
+                    }
+                    else
+                    {
+                        return StatusCode(500, "Could not create Shiftmaster");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Model state is not valid");
+            }
+        }
+        #endregion
+
+        #region GetShiftMaster
+        [HttpGet("GetShiftMaster")]
+        public async Task<IActionResult> GetShiftMasters(int organizationId, string? seachQuery = "")
+        {
+            try
+            {
+                var shiftMasters = await _adminService.GetShiftMasters(organizationId, seachQuery);
+                return Ok(shiftMasters);
             }
             catch (Exception ex)
             {

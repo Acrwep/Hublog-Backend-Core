@@ -1,4 +1,5 @@
 ﻿using Hublog.Repository.Entities.Model.Break;
+using Hublog.Repository.Entities.Model.Shift;
 using Hublog.Repository.Entities.Model.UserModels;
 
 namespace Hublog.Repository.Interface
@@ -10,5 +11,11 @@ namespace Hublog.Repository.Interface
         Task<BreakMaster> InsertBreakMaster(BreakMaster breakMaster);
 
         Task<BreakMaster> UpdateBreakMaster(BreakMaster breakMaster);
+
+
+        //shiftmaster
+        Task<ShiftMaster> InsertShiftMaster(ShiftMaster shiftMaster);
+
+        Task<List<ShiftMaster>> GetShiftMasters(int organizationId, string? searchQuery);
     }
 }

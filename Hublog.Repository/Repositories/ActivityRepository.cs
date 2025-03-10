@@ -17,6 +17,7 @@ using Dapper;
 using System.Globalization;
 using Hublog.Repository.Entities.Model.DashboardModel;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using Microsoft.Data.SqlClient;
 
 namespace Hublog.Repository.Repositories
 {
@@ -181,8 +182,8 @@ namespace Hublog.Repository.Repositories
         }
         public async Task<dynamic> Date_wise_Activity(int organizationId, int? teamId,int? userid, DateTime fromDate, DateTime toDate)
         {
-            // Query to fetch teams
-            var teamQuery = @"
+                // Query to fetch teams
+                var teamQuery = @"
     SELECT T.Id, T.Name 
     FROM Team T
     INNER JOIN Organization O ON T.OrganizationId = O.Id

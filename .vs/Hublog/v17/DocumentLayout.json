@@ -3,20 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\hublog.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\hublog.api.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\hub\\livestreamhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\hub\\livestreamhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
   ],
   "DocumentGroupContainers": [
@@ -34,39 +30,25 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "LiveStreamHub.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Hub\\LiveStreamHub.cs",
-              "RelativeDocumentMoniker": "Hublog.API\\Hub\\LiveStreamHub.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Hub\\LiveStreamHub.cs",
-              "RelativeToolTip": "Hublog.API\\Hub\\LiveStreamHub.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAABEAAAA",
+              "DocumentIndex": 1,
+              "Title": "AdminController.cs",
+              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AdminController.cs",
+              "RelativeDocumentMoniker": "Hublog.API\\Controllers\\AdminController.cs",
+              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AdminController.cs",
+              "RelativeToolTip": "Hublog.API\\Controllers\\AdminController.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAgAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-10T08:28:50.214Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-26T05:24:30.016Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "Hublog.API",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Hublog.API.csproj",
-              "RelativeDocumentMoniker": "Hublog.API\\Hublog.API.csproj",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Hublog.API.csproj",
-              "RelativeToolTip": "Hublog.API\\Hublog.API.csproj",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAABQAAABJAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-02-10T07:30:00.059Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Program.cs",
               "RelativeDocumentMoniker": "Hublog.API\\Program.cs",
               "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Program.cs",
               "RelativeToolTip": "Hublog.API\\Program.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAAtAAAA",
+              "ViewState": "AQIAADMAAAAAAAAAAAAAAEIAAAAYAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-01-30T12:00:44.946Z",
               "EditorCaption": ""
@@ -79,10 +61,9 @@
               "RelativeDocumentMoniker": "Hublog.API\\appsettings.json",
               "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\appsettings.json",
               "RelativeToolTip": "Hublog.API\\appsettings.json",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAYAAAAEAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAUAAAAFAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-01-25T06:49:23.832Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-14T04:55:13.969Z"
             }
           ]
         }
