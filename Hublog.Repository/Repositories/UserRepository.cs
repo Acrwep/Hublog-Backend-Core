@@ -6,6 +6,7 @@ using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
+using Hublog.Repository.Entities.Model.Shift;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -20,7 +21,7 @@ namespace Hublog.Repository.Repositories
         private readonly Dapperr _dapper;
         public UserRepository(Dapperr dapper)
         {
-            _dapper = dapper;   
+            _dapper = dapper;
         }
 
         #region InsertBreak
@@ -69,7 +70,7 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region InsertAttendance
-        public async Task<int> InsertAttendanceAsync(UserAttendanceModel model) 
+        public async Task<int> InsertAttendanceAsync(UserAttendanceModel model)
         {
             try
             {
@@ -82,6 +83,7 @@ namespace Hublog.Repository.Repositories
                 parameters.Add("@Total_Time", null);
                 parameters.Add("@Late_Time", null);
                 parameters.Add("@Status", model.Status);
+
                 if (model.Status == 1)
                 {
                     if (model.End_Time != null)
@@ -98,7 +100,7 @@ namespace Hublog.Repository.Repositories
                 {
                     parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
                 }
-                parameters.Add("@Punchout_type", model.Punchout_type); 
+                parameters.Add("@Punchout_type", model.Punchout_type);
                 Console.WriteLine(startTimeFormatted);
                 var result = await _dapper.ExecuteAsync("[SP_InsertAttendance]", parameters, CommandType.StoredProcedure);// SP_PunchIn_InsertAttendance
                 var deleteQuery = @"
@@ -122,7 +124,112 @@ namespace Hublog.Repository.Repositories
             }
         }
         #endregion
-        public async Task PunchIn_InsertAttendance(List<UserAttendanceModel> models)
+        public async Task<List<UserAttendanceModel>> PunchIn_InsertAttendance(List<UserAttendanceModel> models)
+        {
+            try
+            {
+                foreach (var model in models)
+                {
+                    var parameters = new DynamicParameters();
+                    string startTimeFormatted = model.Start_Time?.ToString("yyyy-MM-dd HH:mm:ss");
+                    parameters.Add("@UserId", model.UserId);
+                    parameters.Add("@OrganizationId", model.OrganizationId);
+                    parameters.Add("@AttendanceDate", model.AttendanceDate.ToString("yyyy-MM-dd HH:mm:ss"));
+                    parameters.Add("@Start_Time", model.Start_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+                    parameters.Add("@Total_Time", null);
+                    parameters.Add("@Late_Time", null);
+                    parameters.Add("@Status", model.Status);
+
+                    var userDetail = await _dapper.GetAllAsync<Users>(
+                        "SELECT * FROM Users WHERE OrganizationId = @OrganizationId AND id = @id",
+                        new { OrganizationId = model.OrganizationId, id = model.UserId }
+                    );
+
+                    var teamId = userDetail.FirstOrDefault()?.TeamId;
+
+                    var TeamDetail = await _dapper.GetAllAsync<Team>(
+                        "SELECT * FROM Team WHERE OrganizationId = @OrganizationId AND id = @id",
+                        new { OrganizationId = model.OrganizationId, id = teamId }
+                    );
+
+                    var shiftId = TeamDetail.FirstOrDefault()?.ShiftId;
+
+                    if (shiftId == null)
+                    {
+                        HandlePunchIn(model, parameters); // Extracted logic for better readability
+                        return models;
+                    }
+
+                    var ShiftDetail = await _dapper.GetAllAsync<ShiftMaster>(
+                        "SELECT * FROM Shift WHERE OrganizationId = @OrganizationId AND id = @id",
+                        new { OrganizationId = model.OrganizationId, id = shiftId }
+                    );
+
+                    var shiftStartTimeString = ShiftDetail.FirstOrDefault()?.StartTimeString;
+                    var shiftEndTimeString = ShiftDetail.FirstOrDefault()?.EndTimeString;
+
+                    if (TimeSpan.TryParse(model.Start_Time?.ToString("HH:mm"), out TimeSpan userStartTime) &&
+                        TimeSpan.TryParse(shiftStartTimeString, out TimeSpan shiftStartTime) &&
+                        TimeSpan.TryParse(shiftEndTimeString, out TimeSpan shiftEndTime))
+                    {
+                        var earlyAllowedTime = shiftStartTime - TimeSpan.FromMinutes(15);
+
+                        if (userStartTime >= earlyAllowedTime && userStartTime <= shiftEndTime)
+                        {
+                            Console.WriteLine("Punch-in allowed within the permitted time frame.");
+                            HandlePunchIn(model, parameters);
+                            return models;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid Time Format Detected");
+                        return null;
+                    }
+                }
+
+                // If no conditions were satisfied, return an empty list to indicate no data was processed.
+                return new List<UserAttendanceModel>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error inserting attendance: {ex.Message}");
+                throw;
+            }
+        }
+        // Helper method for better code readability
+        private async void HandlePunchIn(UserAttendanceModel model, DynamicParameters parameters)
+        {
+            if (model.Status == 1)
+            {
+                parameters.Add("@End_Time",
+                    (model.End_Time ?? DateTime.Now).ToString("yyyy-MM-dd HH:mm:ss"));
+            }
+            else if (model.Status == 0)
+            {
+                parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
+
+            parameters.Add("@Punchout_type", model.Punchout_type);
+
+            await _dapper.ExecuteAsync("SP_PunchIn_InsertAttendance", parameters, CommandType.StoredProcedure);
+
+            var deleteQuery = @"
+        DELETE UA
+        FROM UserActivity UA
+        INNER JOIN Attendance A ON A.UserId = UA.UserId
+        WHERE UA.TriggeredTime < DATEADD(DAY, -10, @AttendanceDate)
+        AND A.UserId = @UserId;";
+
+            await _dapper.ExecuteAsync(deleteQuery,
+                new { UserId = model.UserId, AttendanceDate = model.AttendanceDate },
+                CommandType.Text);
+        }
+        public async Task PunchoutInsertAttendance(List<UserAttendanceModel> models)
         {
             try
             {
@@ -158,15 +265,8 @@ namespace Hublog.Repository.Repositories
 
                     parameters.Add("@Punchout_type", model.Punchout_type);
 
-                    await _dapper.ExecuteAsync("SP_PunchIn_InsertAttendance", parameters, CommandType.StoredProcedure);
-                    var deleteQuery = @"
-                  DELETE UA
-                  FROM UserActivity UA
-                  INNER JOIN Attendance A ON A.UserId = UA.UserId
-                  WHERE UA.TriggeredTime < DATEADD(DAY, -10, @AttendanceDate)
-                  AND A.UserId = @UserId; ";
+                    await _dapper.ExecuteAsync("SP_PunchoutInsertAttendance", parameters, CommandType.StoredProcedure);
 
-                    var deleteResult = await _dapper.ExecuteAsync(deleteQuery, new { UserId = model.UserId, AttendanceDate = model.AttendanceDate }, CommandType.Text);
                 }
             }
             catch (Exception ex)
@@ -176,73 +276,26 @@ namespace Hublog.Repository.Repositories
             }
         }
 
-        public async Task PunchoutInsertAttendance(List<UserAttendanceModel> models)
-            {
-                try
-                {
-                    foreach (var model in models)
-                    {
-                        var parameters = new DynamicParameters();
-                        string startTimeFormatted = model.Start_Time?.ToString("yyyy-MM-dd HH:mm:ss");
-                        parameters.Add("@UserId", model.UserId);
-                        parameters.Add("@OrganizationId", model.OrganizationId);
-                        parameters.Add("@AttendanceDate", model.AttendanceDate.ToString("yyyy-MM-dd HH:mm:ss"));
-                        parameters.Add("@Start_Time", model.Start_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
-                        parameters.Add("@Total_Time", null);
-                        parameters.Add("@Late_Time", null);
-                        parameters.Add("@Status", model.Status);
-
-                        if (model.Status == 1)
-                        {
-                            if (model.End_Time != null)
-                            {
-                                parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
-                            }
-                            else
-                            {
-                                model.End_Time = DateTime.Now;
-                                parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
-                            }
-                        }
-
-                        if (model.Status == 0)
-                        {
-                            parameters.Add("@End_Time", model.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"));
-                        }
-
-                        parameters.Add("@Punchout_type", model.Punchout_type);
-
-                        await _dapper.ExecuteAsync("SP_PunchoutInsertAttendance", parameters, CommandType.StoredProcedure);
-
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Error inserting attendance: {ex.Message}");
-                    throw;
-                }
-            }
-
 
         #region SaveUserScreenShot
         public async Task SaveUserScreenShot(UserScreenShot userScreenShot)
         {
-            
-                var parameters = new DynamicParameters();
-                parameters.Add("@UserId", userScreenShot.UserId);
-                parameters.Add("@OrganizationId", userScreenShot.OrganizationId);
-                parameters.Add("@ScreenShotDate", userScreenShot.ScreenShotDate);
-                parameters.Add("@FileName", userScreenShot.FileName);
-                parameters.Add("@ImageData", userScreenShot.ImageData);
 
-                await _dapper.ExecuteAsync("SP_InsertScreenShot", parameters, CommandType.StoredProcedure);
-            
+            var parameters = new DynamicParameters();
+            parameters.Add("@UserId", userScreenShot.UserId);
+            parameters.Add("@OrganizationId", userScreenShot.OrganizationId);
+            parameters.Add("@ScreenShotDate", userScreenShot.ScreenShotDate);
+            parameters.Add("@FileName", userScreenShot.FileName);
+            parameters.Add("@ImageData", userScreenShot.ImageData);
+
+            await _dapper.ExecuteAsync("SP_InsertScreenShot", parameters, CommandType.StoredProcedure);
+
         }
 
         #endregion
 
         #region GetUserAttendanceDetails
-        public async Task<List<UserAttendanceDetailModel>> GetUserAttendanceDetails(int organizationId, int userId, DateTime startDate, DateTime endDate)   
+        public async Task<List<UserAttendanceDetailModel>> GetUserAttendanceDetails(int organizationId, int userId, DateTime startDate, DateTime endDate)
         {
             var query = "GetAttendanceDetails";
 
@@ -268,7 +321,7 @@ namespace Hublog.Repository.Repositories
         }
         public async Task<List<UserAttendanceDetailModel>> UpdateUserAttendanceDetails([FromBody] AttendanceUpdate request)
         {
-            var query = "AttendanceDetails_Update"; 
+            var query = "AttendanceDetails_Update";
             var parameters = new
             {
                 UserId = request.UserId,
@@ -276,7 +329,7 @@ namespace Hublog.Repository.Repositories
                 Date = request.Date
             };
 
-            var keys=await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
+            var keys = await _dapper.GetAllAsync<UserAttendanceDetailModel>(query, parameters);
             return keys;
         }
         #region GetUserBreakRecordDetails
@@ -338,7 +391,7 @@ namespace Hublog.Repository.Repositories
         #endregion
 
         #region GetUsersByTeamId
-        public async Task<List<Users>> GetUsersByTeamId(int teamId) 
+        public async Task<List<Users>> GetUsersByTeamId(int teamId)
         {
             var query = @"
             SELECT 
@@ -383,7 +436,7 @@ namespace Hublog.Repository.Repositories
                 string query = @"SELECT * FROM Users WHERE OrganizationId = @OrganizationId AND Active = 1";
                 return await _dapper.GetAllAsync<Users>(query, new { OrganizationId = organizationId });
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw new Exception("Error fetching the data", ex);
             }
@@ -546,7 +599,7 @@ namespace Hublog.Repository.Repositories
 
             if (AlreadyExistEmail > 0)
             {
-                return -1; 
+                return -1;
             }
 
             string insertQuery = @"
@@ -645,11 +698,13 @@ namespace Hublog.Repository.Repositories
         {
             var query = "GetUserTotalBreakHours";
 
-            var parameter = new { OrganizationId = organizationId, 
-                                  UserId = userId, 
-                                  StartDate = startDate, 
-                                  EndDate = endDate 
-                                };
+            var parameter = new
+            {
+                OrganizationId = organizationId,
+                UserId = userId,
+                StartDate = startDate,
+                EndDate = endDate
+            };
 
             return await _dapper.GetAllAsyncs<UserTotalBreakModel>(query, parameter, commandType: CommandType.StoredProcedure);
         }
@@ -662,7 +717,7 @@ namespace Hublog.Repository.Repositories
                          SELECT CAST(SCOPE_IDENTITY() as int);";
 
                 var createdBreakmaster = await _dapper.ExecuteAsync(query, activity);
-                activity.Id = createdBreakmaster; 
+                activity.Id = createdBreakmaster;
                 return activity;
             }
             catch (Exception ex)
@@ -689,7 +744,7 @@ namespace Hublog.Repository.Repositories
                     EndDate = endDate
                 };
 
-                var result=await _dapper.GetAllAsync<UserActivity>(query, parameters);
+                var result = await _dapper.GetAllAsync<UserActivity>(query, parameters);
                 return result;
             }
             catch (Exception ex)

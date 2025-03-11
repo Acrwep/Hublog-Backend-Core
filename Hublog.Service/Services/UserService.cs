@@ -25,9 +25,9 @@ namespace Hublog.Service.Services
                 await _userRepository.InsertAttendanceAsync(model);
             }
         }
-        public async Task PunchIn_InsertAttendance(List<UserAttendanceModel> models)
+        public async Task<List<UserAttendanceModel>> PunchIn_InsertAttendance(List<UserAttendanceModel> models)
         { 
-               await _userRepository.PunchIn_InsertAttendance(models);
+              return await _userRepository.PunchIn_InsertAttendance(models);
         }
         public async Task PunchoutInsertAttendance(List<UserAttendanceModel> models)
         {

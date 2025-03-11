@@ -77,13 +77,15 @@ namespace Hublog.API.Controllers
         #endregion
 
         [HttpPost("PunchIn_InsertAttendance")]
-        public async Task<IActionResult> PunchIn_InsertAttendance([FromBody]  List<UserAttendanceModel> model)
+        public async Task<IActionResult> PunchIn_InsertAttendance([FromBody]List<UserAttendanceModel> model)
         {
-
-
             try
             {
-                await _userService.PunchIn_InsertAttendance(model);
+                var result= await  _userService.PunchIn_InsertAttendance(model);
+                if (result==null)
+                {
+                    return BadRequest("Your shift time is not staring yet");
+                }
                 return Ok(model);
             }
             catch (Exception ex)

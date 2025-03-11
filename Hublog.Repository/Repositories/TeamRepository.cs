@@ -37,7 +37,8 @@ namespace Hublog.Repository.Repositories
                             Name = @Name, 
                             Description = @Description, 
                             Active = @Active, 
-                            OrganizationId = @OrganizationId, 
+                            OrganizationId = @OrganizationId,
+                            shiftId=@shiftId,
                             Parentid = @Parentid WHERE Id = @Id";
 
                 team.Id = id;
@@ -79,8 +80,8 @@ namespace Hublog.Repository.Repositories
                     return (false, "Team name already exist", null);
                 }
 
-                string insertQuery = @"INSERT INTO Team (Name, Active, Description, OrganizationId, Parentid) 
-                                       VALUES (@Name, @Active, @Description, @OrganizationId, @Parentid)
+                string insertQuery = @"INSERT INTO Team (Name, Active, Description, OrganizationId, shiftId, Parentid) 
+                                       VALUES (@Name, @Active, @Description, @OrganizationId, @shiftId, @Parentid)
                                        SELECT CAST(SCOPE_IDENTITY() as int)";
 
                 var createdTeamId = await _dapper.ExecuteScalarAsync<int>(insertQuery, team);

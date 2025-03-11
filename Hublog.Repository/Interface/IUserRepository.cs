@@ -11,7 +11,7 @@ namespace Hublog.Repository.Interface
     public interface IUserRepository
     {
         Task<int> InsertAttendanceAsync(UserAttendanceModel userAttendanceModel);
-        Task PunchIn_InsertAttendance(List<UserAttendanceModel> model);
+        Task<List<UserAttendanceModel>> PunchIn_InsertAttendance(List<UserAttendanceModel> model);
         Task PunchoutInsertAttendance(List<UserAttendanceModel> models);
         Task<ResultModel> InsertBreak(List<UserBreakModel> userBreakModels);
 

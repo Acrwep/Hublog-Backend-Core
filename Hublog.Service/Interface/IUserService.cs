@@ -12,7 +12,7 @@ namespace Hublog.Service.Interface
     public interface IUserService
     {
         Task InsertAttendance(List<UserAttendanceModel> userAttendanceModels);
-        Task PunchIn_InsertAttendance(List<UserAttendanceModel> model);
+        Task<List<UserAttendanceModel>> PunchIn_InsertAttendance(List<UserAttendanceModel> model);
         Task PunchoutInsertAttendance(List<UserAttendanceModel> models);
         Task<ResultModel> InsertBreak(List<UserBreakModel> model);
 
