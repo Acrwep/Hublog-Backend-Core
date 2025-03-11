@@ -84,7 +84,7 @@ namespace Hublog.API.Controllers
                 var result= await  _userService.PunchIn_InsertAttendance(model);
                 if (result==null)
                 {
-                    return BadRequest("Your shift time is not staring yet");
+                    return BadRequest("Your shift time is not starting yet");
                 }
                 return Ok(model);
             }
