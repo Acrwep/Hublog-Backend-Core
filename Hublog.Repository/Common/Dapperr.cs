@@ -29,6 +29,7 @@ namespace Hublog.Repository.Common
             return result.FirstOrDefault();
         }
 
+
         public object ExecuteScalar(string query)
         {
             return _connection.ExecuteScalar(query);

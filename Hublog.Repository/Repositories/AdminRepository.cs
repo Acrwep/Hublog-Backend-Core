@@ -1,20 +1,26 @@
-﻿using Hublog.Repository.Common;
+﻿using System.Data;
+using Dapper;
+using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.Shift;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace Hublog.Repository.Repositories
 {
     public class AdminRepository : IAdminRepository
     {
         private readonly Dapperr _dapper;
+        
         public AdminRepository(Dapperr dapper)
         {
             _dapper = dapper;
+            
         }
+        
 
         #region UpdateBreakMaster
         public async Task<BreakMaster> UpdateBreakMaster(BreakMaster breakMaster)
@@ -94,16 +100,39 @@ namespace Hublog.Repository.Repositories
 
 
         //shiftmaster
+
+        public async Task<bool> IsNameExistsAsync(string name, int organizationId)
+        {
+            const string query = "SELECT COUNT(1) FROM Shift WHERE name = @Name AND OrganizationId = @OrganizationId";
+            int count = await _dapper.ExecuteScalarAsync<int>(query, new { Name = name, OrganizationId = organizationId });
+            return count > 0;
+        }
         public async Task<ShiftMaster> InsertShiftMaster(ShiftMaster shiftMaster)
         {
             try
             {
+                
+                // Check if the name already exists
+                bool nameExists = await IsNameExistsAsync(shiftMaster.Name, shiftMaster.OrganizationId);
+                if (nameExists)
+                {
+                    return null; // Returning null to indicate a duplicate
+                }
+
                 const string query = @"INSERT INTO Shift (OrganizationId, name, start_time, end_time, status)
                 VALUES (@OrganizationId, @name, @start_time, @end_time, @status);
                 SELECT CAST(SCOPE_IDENTITY() as int)";
 
-                var createdShiftmaster = await _dapper.ExecuteAsync(query, shiftMaster);
-                shiftMaster.Id = createdShiftmaster;
+
+                ///default code
+
+
+                //var createdShiftmaster = await _dapper.ExecuteAsync(query, shiftMaster);
+                //shiftMaster.Id = createdShiftmaster;
+                //return shiftMaster;
+
+                int newId = await _dapper.GetSingleAsync<int>(query, shiftMaster);
+                shiftMaster.Id = newId;
                 return shiftMaster;
 
             }
@@ -134,6 +163,56 @@ namespace Hublog.Repository.Repositories
                 throw new Exception("Error fetching shiftmaster record", ex);
             }
         }
+
         #endregion
+
+        #region UpdateShiftMasters
+        public async Task<ShiftMaster> UpdateShiftMaster(ShiftMaster shiftMaster)
+        {
+            try
+            {
+                // Check if the name already exists
+                bool nameExists = await IsNameExistsAsync(shiftMaster.Name, shiftMaster.OrganizationId);
+                if (nameExists)
+                {
+                    return null; // Returning null to indicate a duplicate
+                }
+
+                string query = @" UPDATE Shift 
+                                  SET OrganizationId=@OrganizationId, Name = @Name, Start_Time = @Start_Time, End_Time = @End_Time, Status = @Status
+                                  WHERE Id = @Id";
+
+                var result = await _dapper.ExecuteAsync(query, shiftMaster);
+
+                if (result > 0)
+                {
+                    string selectQuery = @"
+                                           SELECT Id, OrganizationId, Name, Start_Time, End_Time, Status
+                                           FROM Shift
+                                           WHERE Id = @Id";
+
+                    return await _dapper.GetAsync<ShiftMaster>(selectQuery, new { Id = shiftMaster.Id });
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error updating ShiftMaster", ex);
+            }
+        }
+
+
+        #endregion
+        public async Task<int> DeleteShiftMaster(int organizationId, int shiftId)
+        {
+            var query = @"DELETE FROM Shift WHERE OrganizationId = @OrganizationId AND Id = @Id";
+            var parameter = new { OrganizationId = organizationId, Id = shiftId };
+            return await _dapper.ExecuteAsync(query, parameter);
+        }
+
+       
     }
 }

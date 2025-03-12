@@ -11,6 +11,8 @@ namespace Hublog.Service.Interface
 
         Task<BreakMaster> InsertBreakMaster(BreakMaster breakMaster);
 
+        //Task<bool> CreateAsync(ShiftMaster shiftMaster);
+
         Task<BreakMaster> UpdateBreakMaster(BreakMaster breakMaster);
 
 
@@ -18,5 +20,11 @@ namespace Hublog.Service.Interface
         Task<ShiftMaster> InsertShiftMaster(ShiftMaster shiftMaster);
 
         Task<List<ShiftMaster>> GetShiftMasters(int organizationId, string? searchQuery);
+
+        Task<ShiftMaster> UpdateShiftMaster(ShiftMaster shiftMaster);
+
+        Task<bool> DeleteShiftMaster(int organizationId, int shiftId);
+
+      
     }
 }

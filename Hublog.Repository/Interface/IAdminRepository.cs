@@ -14,8 +14,16 @@ namespace Hublog.Repository.Interface
 
 
         //shiftmaster
+        Task<bool> IsNameExistsAsync(string name, int organizationId);
+       
+
         Task<ShiftMaster> InsertShiftMaster(ShiftMaster shiftMaster);
 
         Task<List<ShiftMaster>> GetShiftMasters(int organizationId, string? searchQuery);
+
+        Task<ShiftMaster> UpdateShiftMaster(ShiftMaster shiftMaster);
+
+        Task<int> DeleteShiftMaster(int organizationId, int shiftId);
+
     }
 }

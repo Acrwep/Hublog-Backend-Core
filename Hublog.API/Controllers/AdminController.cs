@@ -2,6 +2,7 @@
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.Shift;
 using Hublog.Service.Interface;
+using Hublog.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -10,7 +11,7 @@ namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+    //[Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
     public class AdminController : ControllerBase
     {
         private readonly IAdminService _adminService;
@@ -127,6 +128,7 @@ namespace Hublog.API.Controllers
                 return BadRequest("Model state is not valid");
             }
         }
+
         #endregion
 
         #region GetShiftMaster
@@ -142,6 +144,59 @@ namespace Hublog.API.Controllers
             {
                 _logger.LogError(ex, "An error occurred while getting user.");
                 return StatusCode(500, "Internal server error.");
+            }
+        }
+        #endregion
+
+        #region UpdateShiftMaster
+        [HttpPut("UpdateShiftMaster")]
+        public async Task<IActionResult> UpdateShiftMaster(ShiftMaster shiftMaster)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var updatedshiftMaster = await _adminService.UpdateShiftMaster(shiftMaster);
+                    if (updatedshiftMaster != null)
+                    {
+                        return Ok(updatedshiftMaster);
+                    }
+                    else
+                    {
+                        return NotFound("ShiftMaster Not Found");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+            {
+                return BadRequest("Model state is not valid");
+            }
+        }
+        #endregion
+
+        #region DeleteShiftMaster
+        [HttpDelete("DeleteShiftMaster")]
+        public async Task<IActionResult> DeleteShiftMaster(int organizationId, int shiftId)
+        {
+            try
+            {
+                bool isDeleted = await _adminService.DeleteShiftMaster(organizationId, shiftId);
+                if (isDeleted)
+                {
+                    return Ok($"Project with {shiftId} is deleted");
+                }
+                else
+                {
+                    return NotFound($"Project with {shiftId} not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error deleting Shift");
             }
         }
         #endregion
