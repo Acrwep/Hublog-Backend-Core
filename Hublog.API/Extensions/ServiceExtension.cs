@@ -71,6 +71,9 @@ namespace Hublog.API.Extensions
 
             services.AddScoped<IProjectRepository, ProjectRepository>();
             services.AddScoped<IProjectService, ProjectService>();
+
+            services.AddScoped<IGoalRepository, GoalRepository>();
+            services.AddScoped<IGoalService, GoalService>();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

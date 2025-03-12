@@ -11,8 +11,6 @@ namespace Hublog.Service.Interface
 
         Task<BreakMaster> InsertBreakMaster(BreakMaster breakMaster);
 
-        //Task<bool> CreateAsync(ShiftMaster shiftMaster);
-
         Task<BreakMaster> UpdateBreakMaster(BreakMaster breakMaster);
 
 
