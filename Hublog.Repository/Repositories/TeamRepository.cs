@@ -13,6 +13,15 @@ namespace Hublog.Repository.Repositories
             _dapper = dapper;
         }
 
+
+        #region UpdateTeam
+        public Task<(int RowsAffected, string Message)> UpdateTeams(Team team)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+
         #region UpdateTeam
         public async Task<(string, Team)> UpdateTeam(int id, Team team)
         {
@@ -127,6 +136,8 @@ namespace Hublog.Repository.Repositories
                 throw new Exception("Error Deleteing Team", ex);
             }
         }
+
+      
         #endregion
     }
 }

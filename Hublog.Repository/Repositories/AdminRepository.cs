@@ -107,6 +107,13 @@ namespace Hublog.Repository.Repositories
             int count = await _dapper.ExecuteScalarAsync<int>(query, new { Name = name, OrganizationId = organizationId });
             return count > 0;
         }
+       
+        public async Task<bool> UpdateNameExistsAsync(string name, int organizationId, int id)
+        {
+            const string query = @"SELECT COUNT(1) FROM Shift WHERE name = @Name AND OrganizationId = @OrganizationId AND Id <> @Id";
+            int count = await _dapper.ExecuteScalarAsync<int>(query, new { Name = name, OrganizationId = organizationId, Id = id });
+            return count > 0;
+        }
         public async Task<ShiftMaster> InsertShiftMaster(ShiftMaster shiftMaster)
         {
             try
@@ -172,7 +179,7 @@ namespace Hublog.Repository.Repositories
             try
             {
                 // Check if the name already exists
-                bool nameExists = await IsNameExistsAsync(shiftMaster.Name, shiftMaster.OrganizationId);
+                bool nameExists = await UpdateNameExistsAsync(shiftMaster.Name, shiftMaster.OrganizationId, shiftMaster.Id);
                 if (nameExists)
                 {
                     return null; // Returning null to indicate a duplicate

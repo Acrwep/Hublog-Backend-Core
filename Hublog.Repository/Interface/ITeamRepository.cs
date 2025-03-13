@@ -11,6 +11,8 @@ namespace Hublog.Repository.Interface
         Task<(bool IsSuccessful, string Message, Team CreatedTeam)> CreateTeam(Team team);
 
         Task<(string, Team)> UpdateTeam(int id, Team team);
+        //mycode
+        Task<(int RowsAffected, string Message)> UpdateTeams(Team team);
 
         Task<string> DeleteTeam(int id);
     }

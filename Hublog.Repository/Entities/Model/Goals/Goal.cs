@@ -10,8 +10,8 @@ namespace Hublog.Repository.Entities.Model.Goals
     {
         public int Id { get; set; }
         public int OrganizationId { get; set; } 
-        public string WorkingTime { get; set; }
-        public string ProductiveTime { get; set; }
+        public int WorkingTime { get; set; }
+        public int ProductiveTime { get; set; }
         
     }
 }
