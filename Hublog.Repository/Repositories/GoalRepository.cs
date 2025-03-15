@@ -1,13 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
+using System.Dynamic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Dapper;
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.Goals;
+using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Entities.Model.Shift;
+using Hublog.Repository.Entities.Model.UserModels;
+using Hublog.Repository.Entities.Model.WellNess_Model;
 using Hublog.Repository.Interface;
+using Microsoft.AspNetCore.Mvc;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Hublog.Repository.Repositories
 {
@@ -41,8 +52,6 @@ namespace Hublog.Repository.Repositories
                 throw new Exception("Error fetching Goals record", ex);
             }
         }
-
-
         #endregion
 
 
@@ -80,7 +89,7 @@ namespace Hublog.Repository.Repositories
                                            FROM Goals
                                            WHERE Id = @Id"
                     ;
-                    var getUpdatedValue= await _dapper.GetAsync<Goal>(selectQuery, new { Id = goal.Id });
+                    var getUpdatedValue = await _dapper.GetAsync<Goal>(selectQuery, new { Id = goal.Id });
                     return getUpdatedValue;
                 }
                 else
@@ -94,5 +103,271 @@ namespace Hublog.Repository.Repositories
             }
         }
         #endregion
+
+        public async Task<dynamic> GetGoalsDetails(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        {
+
+            var teamQuery = @"
+                         SELECT T.Id,T.Name
+                          FROM Team T
+                          INNER JOIN Organization O ON T.OrganizationId = O.Id
+                          WHERE O.Id = @OrganizationId
+                          AND (@TeamId IS NULL OR T.Id = @TeamId) ";
+
+            var teams = await _dapper.GetAllAsync<(int TeamId, string TeamName)>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
+
+            var result = new List<dynamic>();
+
+            foreach (var team in teams)
+            {
+
+                var TeamName = team.TeamName;
+                teamId = team.TeamId;
+                //var usagess = await GetAppUsagesSS(organizationId, teamId, userId, fromDate, toDate);
+                var urlUsageQuery = "GetGoalsDetails";
+                var parameters = new
+                {
+                    OrganizationId = organizationId,
+                    TeamId = teamId,
+                    FromDate = fromDate,
+                    ToDate = toDate
+                };
+
+                IEnumerable<dynamic> results = await _dapper.GetAllAsync<dynamic>(urlUsageQuery, parameters);
+                var getUsers = @"
+                SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
+                FROM Users 
+                WHERE TeamId = @TeamId
+                AND Active = 1 -- Filter only active users";
+
+                var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters);
+
+                var tt = results.Concat(getUsers1)
+                    .GroupBy(item => item.UserId)
+                    .Select(group =>
+                    {
+                        var usageEntry = results.FirstOrDefault(u => u.UserId == group.Key);
+                        return usageEntry ?? group.First();
+                    })
+                    .ToList();
+
+                foreach (var us in tt)
+                {
+                    var FullANme = us.FullName;
+
+                    int totalProductiveDuration = 0, totalUnproductiveDuration = 0, totalNeutralDuration = 0;
+
+                    var usages = await GetAppUsages(organizationId, teamId, fromDate, toDate);
+
+                    var totalUsages = usages
+                    .GroupBy(u => u.ApplicationName)
+                    .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
+                    .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
+
+                    foreach (var usage in usages)
+                    {
+                        usage.ApplicationName = usage.ApplicationName.ToLower();
+
+                        if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
+                        {
+                            if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
+                            {
+                                usage.TotalSeconds = totalSeconds;
+                                usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
+                            }
+
+                            var parameters1 = new { ApplicationName = usage.ApplicationName.ToLower() };
+                            var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity",
+                                parameters1,
+                                commandType: CommandType.StoredProcedure
+                            );
+                            if (app != null)
+                            {
+                                //switch (app)
+                                //{
+                                //    case "Productive":
+                                //        totalProductiveDuration += usage.TotalSeconds;
+                                //        break;
+                                //    case "Unproductive":
+                                //        totalUnproductiveDuration += usage.TotalSeconds;
+                                //        break;
+                                //    case "Neutral":
+                                //        totalNeutralDuration += usage.TotalSeconds;
+                                //        break;
+                                //}
+                                if (app == "Productive")
+                                {
+                                    totalProductiveDuration += usage.TotalSeconds;
+                                }
+                            }
+                        }
+                    }
+                    double? total_wokingtimeInSeconds = us.ActiveTimeInSeconds;  // Nullable double
+
+                    total_wokingtimeInSeconds = us.ActiveTimeInSeconds ?? 0.0;
+                    var totalDurationInSeconds = totalProductiveDuration;
+
+                    var dateDifferenceInDays = (toDate - fromDate).TotalDays;
+
+                    if (dateDifferenceInDays <= 0)
+                    {
+                        dateDifferenceInDays = 1;
+                    }
+
+                    // Helper function to format durations
+                    string FormatDuration(double totalSeconds)
+                    {
+                        var hours = (long)(totalSeconds / 3600); // Total hours
+                        var minutes = (long)((totalSeconds % 3600) / 60); // Remaining minutes
+                        var seconds = (long)(totalSeconds % 60); // Remaining seconds
+                        return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+                    }
+
+                    var dynamicItem = new ExpandoObject() as dynamic;
+
+                    dynamicItem.Team_Name = TeamName;
+                    dynamicItem.full_Name = FullANme;
+
+                    // Format durations using the helper function, ensure no null values
+                    dynamicItem.total_wokingtime = FormatDuration(total_wokingtimeInSeconds ?? 0.0);
+
+                    dynamicItem.TotalProductiveDuration = FormatDuration(totalProductiveDuration);
+                    dynamicItem.TotalDuration = FormatDuration(totalDurationInSeconds);
+
+                    result.Add(dynamicItem);
+                }
+
+            }
+            var getGoalsQuery = "SELECT * FROM Goals WHERE OrganizationId = @OrganizationId";
+            var GoalsData = await _dapper.QueryFirstOrDefaultAsync<Goal>(getGoalsQuery, new { OrganizationId = organizationId });
+            Console.WriteLine(GoalsData);
+
+            int workingTimeThreshold = GoalsData?.WorkingTime ?? 0;
+            int productiveTimeThreshold = GoalsData?.ProductiveTime ?? 0;
+
+
+            // Convert HH:mm:ss to total hours
+            Func<string, double> ConvertToHours = (time) =>
+            {
+                TimeSpan ts;
+                if (TimeSpan.TryParseExact(time, @"hh\:mm\:ss", CultureInfo.InvariantCulture, out ts))
+                {
+                    return ts.TotalHours;
+                }
+                return 0;
+            };
+
+            // Filter users who exceed both thresholds
+            var filteredUsers = result
+                .Where(user =>
+                    ConvertToHours(user.total_wokingtime) > workingTimeThreshold &&
+                    ConvertToHours(user.TotalProductiveDuration) > productiveTimeThreshold)
+                .OrderByDescending(user => ConvertToHours(user.TotalProductiveDuration))  // Sort by most productive time
+                .ThenByDescending(user => ConvertToHours(user.total_wokingtime)) // Then by most working time
+                .Take(3) // Get top 3
+                .ToList();
+
+            Console.WriteLine(filteredUsers);
+
+            return filteredUsers;
+        }
+
+
+
+        public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
+        {
+            string appUsageQuery = @"
+                   SELECT 
+                       A.UserId, 
+                       A.ApplicationName, 
+                       A.Details, 
+         SUM(
+                -- Convert TotalUsage into total seconds manually
+                CAST(SUBSTRING(A.TotalUsage, 1, CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+                CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) - CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+                CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) + 1, LEN(A.TotalUsage)) AS INT)  -- Seconds
+            ) AS TotalSeconds, 
+                       A.UsageDate
+                   FROM  
+                       ApplicationUsage A
+                   INNER JOIN 
+                       Users U ON A.UserId = U.Id
+                   INNER JOIN 
+                           Team T ON T.Id = U.TeamId
+                   INNER JOIN 
+                       Organization O ON U.OrganizationId = O.Id
+                   WHERE  
+                          O.Id = @OrganizationId 
+                          AND A.UsageDate BETWEEN @FromDate AND @ToDate
+                          AND (@TeamId IS NULL OR T.Id = @TeamId)
+                          AND U.Active = 1
+                   GROUP BY 
+                       A.UserId, 
+                       A.ApplicationName, 
+                       A.Details, 
+                       A.UsageDate;
+                ";
+
+            var urlUsageQuery = @"
+            SELECT 
+                U.UserId,
+                U.Url AS ApplicationName,
+                NULL AS Details,
+         SUM(
+                CAST(SUBSTRING( U.TotalUsage, 1, CHARINDEX(':', U.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+                CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1, CHARINDEX(':',  U.TotalUsage, CHARINDEX(':', U.TotalUsage) + 1) - CHARINDEX(':',  U.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+                CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':', U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1) + 1, LEN( U.TotalUsage)) AS INT)  -- Seconds
+            ) AS TotalSeconds, 
+                U.UsageDate
+            FROM 
+                UrlUsage U
+            INNER JOIN 
+                Users Us ON U.UserId = Us.Id
+            INNER JOIN 
+                Team T ON T.Id = Us.TeamId
+            INNER JOIN 
+                Organization O ON Us.OrganizationId = O.Id
+            WHERE 
+                O.Id = @OrganizationId 
+                AND U.UsageDate BETWEEN @FromDate AND @ToDate
+                AND (@TeamId IS NULL OR T.Id = @TeamId)
+                AND Us.Active = 1
+            GROUP BY 
+                U.UserId,
+                U.Url,
+                U.UsageDate;
+        ";
+            ;
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                FromDate = fromDate,
+                ToDate = toDate
+            };
+
+            var appUsages = await _dapper.GetAllAsync<AppUsage>(appUsageQuery, parameters);
+            var urlUsages = await _dapper.GetAllAsync<AppUsage>(urlUsageQuery, parameters);
+
+            var allUsages = appUsages.Concat(urlUsages);
+
+            // Group by ApplicationName (URL or Application) to handle duplicates
+            var groupedUsages = allUsages
+                .GroupBy(u => u.ApplicationName.ToLower()) // Grouping by URL in lowercase for case-insensitivity
+                .Select(g => new AppUsage
+                {
+                    UserId = g.First().UserId, // You can choose how to handle UserId if there are multiple
+                    ApplicationName = g.Key, // Use the grouped ApplicationName
+                    Details = g.First().Details, // Keep the first Details (adjust as needed)
+                    TotalSeconds = g.Sum(u => u.TotalSeconds), // Sum the TotalSeconds for the same URL
+                    UsageDate = g.Min(u => u.UsageDate) // Optional: Use earliest date as the representative date
+                })
+                .ToList();
+
+            return groupedUsages;
+
+
+        }
+
     }
 }

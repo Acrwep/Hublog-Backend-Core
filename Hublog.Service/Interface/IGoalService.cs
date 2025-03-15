@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.Goals;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.Service.Interface
 {
@@ -15,6 +16,8 @@ namespace Hublog.Service.Interface
         Task<Goal> InsertGoals(Goal goal);
 
         Task<Goal> UpdateGoals(Goal goal);
+
+        Task<dynamic> GetGoalsDetails(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate);
 
     }
 }

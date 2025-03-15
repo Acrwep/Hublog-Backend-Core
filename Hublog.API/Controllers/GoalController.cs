@@ -100,5 +100,21 @@ namespace Hublog.API.Controllers
                 return StatusCode(500, "Internal server error.");
             }
         }
+
+        [HttpGet]
+        [Route("GetGoalsDetails")]
+        public async Task<IActionResult> GetGoalsDetails(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+
+                var result = await _goalService.GetGoalsDetails(organizationId, teamId, fromDate, toDate);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
