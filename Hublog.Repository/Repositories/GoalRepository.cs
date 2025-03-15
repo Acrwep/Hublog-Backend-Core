@@ -151,13 +151,15 @@ namespace Hublog.Repository.Repositories
                     })
                     .ToList();
 
+                int? userId;
                 foreach (var us in tt)
                 {
                     var FullANme = us.FullName;
+                    userId = us.UserId;
 
-                    int totalProductiveDuration = 0, totalUnproductiveDuration = 0, totalNeutralDuration = 0;
+                    int totalProductiveDuration = 0;
 
-                    var usages = await GetAppUsages(organizationId, teamId, fromDate, toDate);
+                    var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
 
                     var totalUsages = usages
                     .GroupBy(u => u.ApplicationName)
@@ -183,18 +185,6 @@ namespace Hublog.Repository.Repositories
                             );
                             if (app != null)
                             {
-                                //switch (app)
-                                //{
-                                //    case "Productive":
-                                //        totalProductiveDuration += usage.TotalSeconds;
-                                //        break;
-                                //    case "Unproductive":
-                                //        totalUnproductiveDuration += usage.TotalSeconds;
-                                //        break;
-                                //    case "Neutral":
-                                //        totalNeutralDuration += usage.TotalSeconds;
-                                //        break;
-                                //}
                                 if (app == "Productive")
                                 {
                                     totalProductiveDuration += usage.TotalSeconds;
@@ -205,7 +195,6 @@ namespace Hublog.Repository.Repositories
                     double? total_wokingtimeInSeconds = us.ActiveTimeInSeconds;  // Nullable double
 
                     total_wokingtimeInSeconds = us.ActiveTimeInSeconds ?? 0.0;
-                    var totalDurationInSeconds = totalProductiveDuration;
 
                     var dateDifferenceInDays = (toDate - fromDate).TotalDays;
 
@@ -225,6 +214,7 @@ namespace Hublog.Repository.Repositories
 
                     var dynamicItem = new ExpandoObject() as dynamic;
 
+                    dynamicItem.UserId = userId;
                     dynamicItem.Team_Name = TeamName;
                     dynamicItem.full_Name = FullANme;
 
@@ -232,11 +222,10 @@ namespace Hublog.Repository.Repositories
                     dynamicItem.total_wokingtime = FormatDuration(total_wokingtimeInSeconds ?? 0.0);
 
                     dynamicItem.TotalProductiveDuration = FormatDuration(totalProductiveDuration);
-                    dynamicItem.TotalDuration = FormatDuration(totalDurationInSeconds);
 
                     result.Add(dynamicItem);
                 }
-
+                userId = null;
             }
             var getGoalsQuery = "SELECT * FROM Goals WHERE OrganizationId = @OrganizationId";
             var GoalsData = await _dapper.QueryFirstOrDefaultAsync<Goal>(getGoalsQuery, new { OrganizationId = organizationId });
@@ -257,91 +246,119 @@ namespace Hublog.Repository.Repositories
                 return 0;
             };
 
-            // Filter users who exceed both thresholds
             var filteredUsers = result
-                .Where(user =>
-                    ConvertToHours(user.total_wokingtime) > workingTimeThreshold &&
-                    ConvertToHours(user.TotalProductiveDuration) > productiveTimeThreshold)
-                .OrderByDescending(user => ConvertToHours(user.TotalProductiveDuration))  // Sort by most productive time
-                .ThenByDescending(user => ConvertToHours(user.total_wokingtime)) // Then by most working time
-                .Take(3) // Get top 3
+      .Where(user =>
+          ConvertToHours(user.total_wokingtime) > workingTimeThreshold &&
+          ConvertToHours(user.TotalProductiveDuration) > productiveTimeThreshold)
+      .ToList();
+
+            // Get top 3 users (highest productive time, then working time)
+            var topUsers = filteredUsers
+                .OrderByDescending(user => ConvertToHours(user.TotalProductiveDuration))
+                .ThenByDescending(user => ConvertToHours(user.total_wokingtime))
+                .Take(3)
                 .ToList();
 
-            Console.WriteLine(filteredUsers);
+            // Get users who did not meet the threshold condition
+            var nonAchievedUsers = result
+                .Where(user =>
+                    ConvertToHours(user.total_wokingtime) <= workingTimeThreshold ||
+                    ConvertToHours(user.TotalProductiveDuration) <= productiveTimeThreshold)
+                .ToList();
 
-            return filteredUsers;
+            // Get least 3 users (who did not achieve the condition, sorted by lowest productivity first)
+            var leastUsers = nonAchievedUsers
+                .OrderBy(user => ConvertToHours(user.TotalProductiveDuration))  // Lowest productive first
+                .ThenBy(user => ConvertToHours(user.total_wokingtime))  // Then lowest working time
+                .Take(3)
+                .ToList();
+
+            // Combine top and least users into a dictionary or an anonymous object
+            var resultData = new
+            {
+                top = topUsers,
+                least = leastUsers
+            };
+
+            Console.WriteLine(resultData);
+
+            return resultData;
+
         }
 
 
 
-        public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
+        public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
             string appUsageQuery = @"
-                   SELECT 
-                       A.UserId, 
-                       A.ApplicationName, 
-                       A.Details, 
-         SUM(
-                -- Convert TotalUsage into total seconds manually
-                CAST(SUBSTRING(A.TotalUsage, 1, CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
-                CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) - CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
-                CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) + 1, LEN(A.TotalUsage)) AS INT)  -- Seconds
-            ) AS TotalSeconds, 
-                       A.UsageDate
-                   FROM  
-                       ApplicationUsage A
-                   INNER JOIN 
-                       Users U ON A.UserId = U.Id
-                   INNER JOIN 
-                           Team T ON T.Id = U.TeamId
-                   INNER JOIN 
-                       Organization O ON U.OrganizationId = O.Id
-                   WHERE  
-                          O.Id = @OrganizationId 
-                          AND A.UsageDate BETWEEN @FromDate AND @ToDate
-                          AND (@TeamId IS NULL OR T.Id = @TeamId)
-                          AND U.Active = 1
-                   GROUP BY 
-                       A.UserId, 
-                       A.ApplicationName, 
-                       A.Details, 
-                       A.UsageDate;
-                ";
+           SELECT 
+               A.UserId, 
+               A.ApplicationName, 
+               A.Details, 
+ SUM(
+        -- Convert TotalUsage into total seconds manually
+        CAST(SUBSTRING(A.TotalUsage, 1, CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+        CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) - CHARINDEX(':', A.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+        CAST(SUBSTRING(A.TotalUsage, CHARINDEX(':', A.TotalUsage, CHARINDEX(':', A.TotalUsage) + 1) + 1, LEN(A.TotalUsage)) AS INT)  -- Seconds
+    ) AS TotalSeconds, 
+               A.UsageDate
+           FROM  
+               ApplicationUsage A
+           INNER JOIN 
+               Users U ON A.UserId = U.Id
+           INNER JOIN 
+                   Team T ON T.Id = U.TeamId
+           INNER JOIN 
+               Organization O ON U.OrganizationId = O.Id
+           WHERE  
+                  O.Id = @OrganizationId 
+                  AND A.UsageDate BETWEEN @FromDate AND @ToDate
+                  AND (@TeamId IS NULL OR T.Id = @TeamId)
+                  AND (@UserId IS NULL OR A.UserId = @UserId)
+                  AND U.Active = 1
+           GROUP BY 
+               A.UserId, 
+               A.ApplicationName, 
+               A.Details, 
+               A.UsageDate;
+        ";
 
             var urlUsageQuery = @"
-            SELECT 
-                U.UserId,
-                U.Url AS ApplicationName,
-                NULL AS Details,
-         SUM(
-                CAST(SUBSTRING( U.TotalUsage, 1, CHARINDEX(':', U.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
-                CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1, CHARINDEX(':',  U.TotalUsage, CHARINDEX(':', U.TotalUsage) + 1) - CHARINDEX(':',  U.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
-                CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':', U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1) + 1, LEN( U.TotalUsage)) AS INT)  -- Seconds
-            ) AS TotalSeconds, 
-                U.UsageDate
-            FROM 
-                UrlUsage U
-            INNER JOIN 
-                Users Us ON U.UserId = Us.Id
-            INNER JOIN 
-                Team T ON T.Id = Us.TeamId
-            INNER JOIN 
-                Organization O ON Us.OrganizationId = O.Id
-            WHERE 
-                O.Id = @OrganizationId 
-                AND U.UsageDate BETWEEN @FromDate AND @ToDate
-                AND (@TeamId IS NULL OR T.Id = @TeamId)
-                AND Us.Active = 1
-            GROUP BY 
-                U.UserId,
-                U.Url,
-                U.UsageDate;
-        ";
+    SELECT 
+        U.UserId,
+        U.Url AS ApplicationName,
+        NULL AS Details,
+ SUM(
+        CAST(SUBSTRING( U.TotalUsage, 1, CHARINDEX(':', U.TotalUsage) - 1) AS INT) * 3600 +  -- Hours to seconds
+        CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1, CHARINDEX(':',  U.TotalUsage, CHARINDEX(':', U.TotalUsage) + 1) - CHARINDEX(':',  U.TotalUsage) - 1) AS INT) * 60 +  -- Minutes to seconds
+        CAST(SUBSTRING( U.TotalUsage, CHARINDEX(':', U.TotalUsage, CHARINDEX(':',  U.TotalUsage) + 1) + 1, LEN( U.TotalUsage)) AS INT)  -- Seconds
+    ) AS TotalSeconds, 
+        U.UsageDate
+    FROM 
+        UrlUsage U
+    INNER JOIN 
+        Users Us ON U.UserId = Us.Id
+    INNER JOIN 
+        Team T ON T.Id = Us.TeamId
+    INNER JOIN 
+        Organization O ON Us.OrganizationId = O.Id
+    WHERE 
+        O.Id = @OrganizationId 
+        AND U.UsageDate BETWEEN @FromDate AND @ToDate
+        AND (@TeamId IS NULL OR T.Id = @TeamId)
+        AND (@UserId IS NULL OR U.UserId = @UserId)
+        AND Us.Active = 1
+    GROUP BY 
+        U.UserId,
+        U.Url,
+        U.UsageDate;
+";
             ;
             var parameters = new
             {
                 OrganizationId = organizationId,
                 TeamId = teamId,
+                UserId = userId,
                 FromDate = fromDate,
                 ToDate = toDate
             };
@@ -365,8 +382,6 @@ namespace Hublog.Repository.Repositories
                 .ToList();
 
             return groupedUsages;
-
-
         }
 
     }

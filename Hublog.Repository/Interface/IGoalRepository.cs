@@ -20,6 +20,6 @@ namespace Hublog.Repository.Interface
 
         Task<dynamic> GetGoalsDetails(int organizationId, int? teamId,[FromQuery] DateTime fromDate, [FromQuery] DateTime toDate);
 
-        Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, DateTime fromDate, DateTime toDate);
+        Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId,int? userId, DateTime fromDate, DateTime toDate);
     }
 }
