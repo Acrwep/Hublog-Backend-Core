@@ -150,7 +150,7 @@ namespace Hublog.Repository.Repositories
                         return usageEntry ?? group.First();
                     })
                     .ToList();
-
+                
                 int? userId;
                 foreach (var us in tt)
                 {

@@ -74,6 +74,9 @@ namespace Hublog.API.Extensions
 
             services.AddScoped<IGoalRepository, GoalRepository>();
             services.AddScoped<IGoalService, GoalService>();
+
+            services.AddTransient<IEmailRepository, EmailRepository>();
+            services.AddTransient<IEmailService, EmailService>();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

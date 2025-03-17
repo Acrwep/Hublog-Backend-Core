@@ -24,5 +24,9 @@
         public string TeamName { get; set; } //(varchar(100), not null)
         public string EmployeeID { get; set; } //(varchar(100), null)
 
+
+        public string Subject { get; set; } = "Welcome";
+        //public string Body { get; set; }
+
     }
 }

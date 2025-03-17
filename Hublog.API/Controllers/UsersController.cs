@@ -19,9 +19,12 @@ namespace Hublog.API.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
-        public UsersController(IUserService userService)
+        private readonly IEmailService _emailService;
+       
+        public UsersController(IUserService userService, IEmailService emailService)
         {
             _userService = userService;
+            _emailService = emailService;
         }
 
         #region InsertBreak
@@ -359,6 +362,7 @@ namespace Hublog.API.Controllers
                 try
                 {
                     var createdUser = await _userService.InsertUser(user);
+                    await _emailService.SendEmailAsync(user);
 
                     if (createdUser == null)
                     {
