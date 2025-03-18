@@ -23,6 +23,6 @@ namespace Hublog.Service.Interface
 
         Task<bool> DeleteShiftMaster(int organizationId, int shiftId);
 
-      
+        
     }
 }

@@ -77,6 +77,9 @@ namespace Hublog.API.Extensions
 
             services.AddTransient<IEmailRepository, EmailRepository>();
             services.AddTransient<IEmailService, EmailService>();
+
+            services.AddTransient<IForgotPasswordRepository, ForgotPasswordRepository>();
+            services.AddTransient<IForgotPasswordService, ForgotPasswordService>();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

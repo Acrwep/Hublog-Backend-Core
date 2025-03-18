@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.Common;
 using Dapper;
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.AlertModel;
@@ -220,6 +221,6 @@ namespace Hublog.Repository.Repositories
             return await _dapper.ExecuteAsync(query, parameter);
         }
 
-       
+      
     }
 }

@@ -27,5 +27,6 @@ namespace Hublog.Repository.Interface
 
         Task<int> DeleteShiftMaster(int organizationId, int shiftId);
 
+
     }
 }
