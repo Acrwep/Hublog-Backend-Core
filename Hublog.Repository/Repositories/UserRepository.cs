@@ -27,11 +27,11 @@ namespace Hublog.Repository.Repositories
     public class UserRepository : IUserRepository
     {
         private readonly Dapperr _dapper;
-       
+
         public UserRepository(Dapperr dapper)
         {
             _dapper = dapper;
-           
+
         }
 
         #region InsertBreak
@@ -164,7 +164,7 @@ namespace Hublog.Repository.Repositories
 
                     var shiftId = TeamDetail.FirstOrDefault()?.ShiftId;
 
-                    if (shiftId == null)
+                    if (shiftId == null || shiftId == 0)
                     {
                         HandlePunchIn(model, parameters); // Extracted logic for better readability
                         return models;
@@ -184,12 +184,28 @@ namespace Hublog.Repository.Repositories
                     {
                         var earlyAllowedTime = shiftStartTime - TimeSpan.FromMinutes(15);
 
+                        //if (userStartTime >= earlyAllowedTime && userStartTime <= shiftEndTime)
+                        //{
+                        //    Console.WriteLine("Punch-in allowed within the permitted time frame.");
+                        //    HandlePunchIn(model, parameters);
+                        //    return models;
+                        //}
+
                         if (userStartTime >= earlyAllowedTime && userStartTime <= shiftEndTime)
                         {
                             Console.WriteLine("Punch-in allowed within the permitted time frame.");
+
+                            var graceTimeMinutes = ShiftDetail.FirstOrDefault()?.GraceTime ?? 0;
+                            var shiftStartTimeWithGrace = shiftStartTime + TimeSpan.FromMinutes(graceTimeMinutes);
+
+                            int lateStatus = userStartTime > shiftStartTimeWithGrace ? 1 : 0;
+
+                            parameters.Add("@LateStatus", lateStatus); // Add LateStatus to the parameters
+
                             HandlePunchIn(model, parameters);
                             return models;
                         }
+
                         else
                         {
                             return null;
