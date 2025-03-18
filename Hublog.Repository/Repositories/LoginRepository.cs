@@ -1,6 +1,8 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
+using Org.BouncyCastle.Crypto.Generators;
+
 
 namespace Hublog.Repository.Repositories
 {
@@ -38,7 +40,15 @@ namespace Hublog.Repository.Repositories
                       INNER JOIN Team D ON A.TeamId = D.Id
                       WHERE A.Email = @Email AND A.Password = @Password AND A.Active = 1";
 
-            return await _dapper.GetAsync<Users>(query, new { Email = email, Password = password });
+            var user = await _dapper.GetAsync<Users>(query, new { Email = email, Password = password });
+
+
+            if (password != user.Password)
+            {
+                return null; // Incorrect password
+            }
+
+            return user;
         }
         #endregion
 
