@@ -23,5 +23,16 @@ namespace Hublog.Repository.Repositories
             int count = await _dapper.ExecuteScalarAsync<int>(query, new { Email = email });
             return count > 0;
         }
+
+        public async Task<bool> UpdatePasswordAsync(string email, string newPassword)
+        {
+            string query = "UPDATE Users SET Password = @Password WHERE Email = @Email";
+
+            var parameters = new { Email = email, Password = newPassword };
+
+            int rowsAffected = await _dapper.ExecuteAsync(query, parameters);
+
+            return rowsAffected > 0;
+        }
     }
 }

@@ -9,5 +9,6 @@ namespace Hublog.Repository.Interface
     public interface IForgotPasswordRepository
     {
         Task<bool> CheckEmailExistsAsync(string email);
+        Task<bool> UpdatePasswordAsync(string email, string newPassword);
     }
 }

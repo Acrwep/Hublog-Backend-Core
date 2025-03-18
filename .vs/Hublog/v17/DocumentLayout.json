@@ -3,16 +3,40 @@
   "WorkspaceRootPath": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\common\\dapperr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\common\\dapperr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\adminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\adminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\interface\\iadminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\interface\\iadminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\adminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\adminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.service\\interface\\iforgotpasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\interface\\iforgotpasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\interface\\iforgotpasswordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\interface\\iforgotpasswordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.api\\controllers\\forgotpasswordcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\forgotpasswordcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\forgotpasswordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\forgotpasswordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.service\\services\\forgotpasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\services\\forgotpasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\entities\\updatepassword\\updatepasswordrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\entities\\updatepassword\\updatepasswordrequest.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.service\\interface\\iadminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -23,32 +47,8 @@
       "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\services\\adminservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.api\\controllers\\forgotpasswordcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\forgotpasswordcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.api\\extensions\\serviceextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\extensions\\serviceextension.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.service\\services\\forgotpasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\services\\forgotpasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.service\\interface\\iforgotpasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\interface\\iforgotpasswordservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\forgotpasswordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\forgotpasswordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\interface\\iforgotpasswordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\interface\\iforgotpasswordrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\common\\dapperr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\common\\dapperr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
@@ -102,11 +102,102 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 4,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IForgotPasswordService.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IForgotPasswordService.cs",
+              "RelativeDocumentMoniker": "Hublog.Service\\Interface\\IForgotPasswordService.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IForgotPasswordService.cs",
+              "RelativeToolTip": "Hublog.Service\\Interface\\IForgotPasswordService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAsAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-18T04:43:56.984Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ForgotPasswordRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\ForgotPasswordRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\ForgotPasswordRepository.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\ForgotPasswordRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Repositories\\ForgotPasswordRepository.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAtwCIAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-18T04:42:37.839Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IAdminRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAdminRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Interface\\IAdminRepository.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAdminRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Interface\\IAdminRepository.cs",
+              "ViewState": "AgIAABAAAAAAAAAAAAA5wBsAAAASAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-18T04:04:26.641Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ForgotPasswordService.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\ForgotPasswordService.cs",
+              "RelativeDocumentMoniker": "Hublog.Service\\Services\\ForgotPasswordService.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\ForgotPasswordService.cs",
+              "RelativeToolTip": "Hublog.Service\\Services\\ForgotPasswordService.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAlwBgAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-18T04:44:23.527Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "AdminRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AdminRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\AdminRepository.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AdminRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Repositories\\AdminRepository.cs",
+              "ViewState": "AgIAAMoAAAAAAAAAAAAmwNwAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-18T04:23:24.18Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Dapperr.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Common\\Dapperr.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Common\\Dapperr.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Common\\Dapperr.cs",
+              "RelativeToolTip": "Hublog.Repository\\Common\\Dapperr.cs",
+              "ViewState": "AgIAAB4AAAAAAAAAAAAYwC8AAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-18T04:10:44.172Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IForgotPasswordRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IForgotPasswordRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Interface\\IForgotPasswordRepository.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IForgotPasswordRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Interface\\IForgotPasswordRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAsAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-18T04:42:07.414Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -116,14 +207,27 @@
               "RelativeDocumentMoniker": "Hublog.API\\Controllers\\ForgotPasswordController.cs",
               "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\ForgotPasswordController.cs",
               "RelativeToolTip": "Hublog.API\\Controllers\\ForgotPasswordController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAA2AAAAAAAAAA==",
+              "ViewState": "AgIAACEAAAAAAAAAAAAiwDgAAABtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-18T04:47:11.743Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 8,
+              "Title": "UpdatePasswordRequest.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\UpdatePassword\\UpdatePasswordRequest.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Entities\\UpdatePassword\\UpdatePasswordRequest.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\UpdatePassword\\UpdatePasswordRequest.cs",
+              "RelativeToolTip": "Hublog.Repository\\Entities\\UpdatePassword\\UpdatePasswordRequest.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-18T05:16:29.378Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
               "Title": "IAdminService.cs",
               "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IAdminService.cs",
               "RelativeDocumentMoniker": "Hublog.Service\\Interface\\IAdminService.cs",
@@ -136,7 +240,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 10,
               "Title": "AdminService.cs",
               "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\AdminService.cs",
               "RelativeDocumentMoniker": "Hublog.Service\\Services\\AdminService.cs",
@@ -149,85 +253,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AdminController.cs",
-              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AdminController.cs",
-              "RelativeDocumentMoniker": "Hublog.API\\Controllers\\AdminController.cs",
-              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "Hublog.API\\Controllers\\AdminController.cs",
-              "ViewState": "AgIAALgAAAAAAAAAAAAjwMoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-17T06:22:34.402Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "IAdminRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAdminRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Interface\\IAdminRepository.cs",
-              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IAdminRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Interface\\IAdminRepository.cs",
-              "ViewState": "AgIAAAoAAAAAAAAAAIA4wBwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-18T04:04:26.641Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AdminRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AdminRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\AdminRepository.cs",
-              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\AdminRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Repositories\\AdminRepository.cs",
-              "ViewState": "AgIAANEAAAAAAAAAAAD4v98AAAAGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-18T04:23:24.18Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "IForgotPasswordService.cs",
-              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IForgotPasswordService.cs",
-              "RelativeDocumentMoniker": "Hublog.Service\\Interface\\IForgotPasswordService.cs",
-              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IForgotPasswordService.cs",
-              "RelativeToolTip": "Hublog.Service\\Interface\\IForgotPasswordService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAArAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-18T04:43:56.984Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ForgotPasswordService.cs",
-              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\ForgotPasswordService.cs",
-              "RelativeDocumentMoniker": "Hublog.Service\\Services\\ForgotPasswordService.cs",
-              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\ForgotPasswordService.cs",
-              "RelativeToolTip": "Hublog.Service\\Services\\ForgotPasswordService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAsAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-18T04:44:23.527Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "ForgotPasswordRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\ForgotPasswordRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\ForgotPasswordRepository.cs",
-              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\ForgotPasswordRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Repositories\\ForgotPasswordRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAABDAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-18T04:42:37.839Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 11,
               "Title": "ServiceExtension.cs",
               "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Extensions\\ServiceExtension.cs",
               "RelativeDocumentMoniker": "Hublog.API\\Extensions\\ServiceExtension.cs",
@@ -236,32 +262,6 @@
               "ViewState": "AgIAAD4AAAAAAAAAAADwv1EAAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-17T06:10:55.066Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "IForgotPasswordRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IForgotPasswordRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Interface\\IForgotPasswordRepository.cs",
-              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IForgotPasswordRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Interface\\IForgotPasswordRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-18T04:42:07.414Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "Dapperr.cs",
-              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Common\\Dapperr.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Common\\Dapperr.cs",
-              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Common\\Dapperr.cs",
-              "RelativeToolTip": "Hublog.Repository\\Common\\Dapperr.cs",
-              "ViewState": "AgIAADwAAAAAAAAAAAAtwEoAAAAdAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-18T04:10:44.172Z",
               "EditorCaption": ""
             },
             {

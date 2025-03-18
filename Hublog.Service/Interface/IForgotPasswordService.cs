@@ -9,5 +9,6 @@ namespace Hublog.Service.Interface
     public interface IForgotPasswordService
     {
         Task<bool> CheckEmailExistsAsync(string email);
+        Task<bool> UpdatePasswordAsync(string email, string newPassword);
     }
 }

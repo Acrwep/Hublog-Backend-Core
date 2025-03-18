@@ -19,5 +19,10 @@ namespace Hublog.Service.Services
         {
             return await _passwordRepository.CheckEmailExistsAsync(email);
         }
+
+        public async Task<bool> UpdatePasswordAsync(string email, string newPassword)
+        {
+           return await _passwordRepository.UpdatePasswordAsync(email, newPassword);
+        }
     }
 }
