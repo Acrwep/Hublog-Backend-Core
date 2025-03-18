@@ -127,8 +127,8 @@ namespace Hublog.Repository.Repositories
                     return null; // Returning null to indicate a duplicate
                 }
 
-                const string query = @"INSERT INTO Shift (OrganizationId, name, start_time, end_time, status)
-                VALUES (@OrganizationId, @name, @start_time, @end_time, @status);
+                const string query = @"INSERT INTO Shift (OrganizationId, name, start_time, end_time, status, GraceTime)
+                VALUES (@OrganizationId, @name, @start_time, @end_time, @status, @GraceTime);
                 SELECT CAST(SCOPE_IDENTITY() as int)";
 
 
@@ -187,7 +187,7 @@ namespace Hublog.Repository.Repositories
                 }
 
                 string query = @" UPDATE Shift 
-                                  SET OrganizationId=@OrganizationId, Name = @Name, Start_Time = @Start_Time, End_Time = @End_Time, Status = @Status
+                                  SET OrganizationId=@OrganizationId, Name = @Name, Start_Time = @Start_Time, End_Time = @End_Time, Status = @Status, GraceTime=@GraceTime
                                   WHERE Id = @Id";
 
                 var result = await _dapper.ExecuteAsync(query, shiftMaster);
@@ -195,7 +195,7 @@ namespace Hublog.Repository.Repositories
                 if (result > 0)
                 {
                     string selectQuery = @"
-                                           SELECT Id, OrganizationId, Name, Start_Time, End_Time, Status
+                                           SELECT Id, OrganizationId, Name, Start_Time, End_Time, Status, GraceTime
                                            FROM Shift
                                            WHERE Id = @Id";
 

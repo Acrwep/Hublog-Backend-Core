@@ -29,5 +29,6 @@ namespace Hublog.Repository.Entities.Model.Shift
             set => End_time = TimeSpan.Parse(value);
         }
         public bool Status { get; set; }
+        public int GraceTime { get; set; }
     }
 }

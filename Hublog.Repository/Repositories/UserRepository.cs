@@ -214,6 +214,7 @@ namespace Hublog.Repository.Repositories
         // Helper method for better code readability
         private async void HandlePunchIn(UserAttendanceModel model, DynamicParameters parameters)
         {
+            //punchin=0 punchout =1
             if (model.Status == 1)
             {
                 parameters.Add("@End_Time",
