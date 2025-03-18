@@ -25,7 +25,7 @@
         public string EmployeeID { get; set; } //(varchar(100), null)
 
 
-        public string Subject { get; set; } = "Welcome";
+        public string Subject { get; set; } = "Welcome to Hublog!";
         //public string Body { get; set; }
 
     }

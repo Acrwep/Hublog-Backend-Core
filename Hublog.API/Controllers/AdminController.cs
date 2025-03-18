@@ -133,11 +133,11 @@ namespace Hublog.API.Controllers
 
         #region GetShiftMaster
         [HttpGet("GetShiftMaster")]
-        public async Task<IActionResult> GetShiftMasters(int organizationId, string? seachQuery = "")
+        public async Task<IActionResult> GetShiftMasters(int organizationId, string? searchQuery = "")
         {
             try
             {
-                var shiftMasters = await _adminService.GetShiftMasters(organizationId, seachQuery);
+                var shiftMasters = await _adminService.GetShiftMasters(organizationId, searchQuery);
                 return Ok(shiftMasters);
             }
             catch (Exception ex)

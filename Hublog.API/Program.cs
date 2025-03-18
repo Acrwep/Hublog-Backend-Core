@@ -53,6 +53,7 @@ var app = builder.Build();
 //           .AllowCredentials();
 //});
 
+app.UseStaticFiles();
 app.UseCors("AllowSpecificOrigin");
 
 app.MapHub<LiveStreamHub>("/livestreamHub");
