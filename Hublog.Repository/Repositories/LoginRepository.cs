@@ -42,7 +42,10 @@ namespace Hublog.Repository.Repositories
 
             var user = await _dapper.GetAsync<Users>(query, new { Email = email, Password = password });
 
-
+            if (user == null)
+            {
+                return null;
+            }
             if (password != user.Password)
             {
                 return null; // Incorrect password
