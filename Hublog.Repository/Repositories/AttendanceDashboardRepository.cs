@@ -43,13 +43,13 @@ namespace Hublog.Repository.Repositories
                     var timeParts = summary.TotalWorkingTime.Split(':');
                     if (timeParts.Length == 3)
                     {
-                        int hours = int.Parse(timeParts[0]);  
-                        int minutes = int.Parse(timeParts[1]); 
-                        int seconds = int.Parse(timeParts[2]); 
+                        int hours = int.Parse(timeParts[0]);
+                        int minutes = int.Parse(timeParts[1]);
+                        int seconds = int.Parse(timeParts[2]);
 
-                        totalHours += hours;   
-                        totalMinutes += minutes; 
-                        totalSeconds += seconds; 
+                        totalHours += hours;
+                        totalMinutes += minutes;
+                        totalSeconds += seconds;
                     }
                 }
 
@@ -77,7 +77,7 @@ namespace Hublog.Repository.Repositories
             };
         }
 
-        public async Task<List<UserAttendanceReport>> GetUserTotalAttendanceAndBreakSummary(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate) 
+        public async Task<List<UserAttendanceReport>> GetUserTotalAttendanceAndBreakSummary(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
         {
             var sp = "GetUserTotalAttendanceAndBreakSummary";
 
@@ -103,7 +103,7 @@ namespace Hublog.Repository.Repositories
                 EndDate = endDate
             };
 
-            string query = "AttendanceDashboardSummary"; 
+            string query = "AttendanceDashboardSummary";
 
             return await _dapper.GetSingleAsync<AttendanceDashboardSummaryModel>(query, parameters, commandType: CommandType.StoredProcedure);
         }
@@ -131,13 +131,13 @@ namespace Hublog.Repository.Repositories
                 var timeParts = b.BreakDuration.ToString().Split(':');
                 if (timeParts.Length == 3)
                 {
-                    int hours = int.Parse(timeParts[0]); 
-                    int minutes = int.Parse(timeParts[1]); 
-                    int seconds = int.Parse(timeParts[2]); 
+                    int hours = int.Parse(timeParts[0]);
+                    int minutes = int.Parse(timeParts[1]);
+                    int seconds = int.Parse(timeParts[2]);
 
-                    totalHours += hours;   
-                    totalMinutes += minutes; 
-                    totalSeconds += seconds; 
+                    totalHours += hours;
+                    totalMinutes += minutes;
+                    totalSeconds += seconds;
                 }
             }
 
@@ -204,7 +204,7 @@ namespace Hublog.Repository.Repositories
                 EndDate = endDate
             };
 
-            var result= await _dapper.GetAllAsyncs<LateArrivalsModel>(query, parameters, commandType: CommandType.StoredProcedure);
+            var result = await _dapper.GetAllAsyncs<LateArrivalsModel>(query, parameters, commandType: CommandType.StoredProcedure);
             int totalLateArrivalsSum = result.Sum(r => r.LateArrival);
             int totalOnTimeArrivalsSum = result.Sum(r => r.OnTimeArrival);
             int totalAttendance = totalLateArrivalsSum + totalOnTimeArrivalsSum;
@@ -216,8 +216,8 @@ namespace Hublog.Repository.Repositories
 
             return new
             {
-                data= result,
-                overallLatePercentage
+                data = result,
+                overallLatePercentage = overallLatePercentage
             };
         }
     }
