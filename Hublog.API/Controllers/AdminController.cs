@@ -157,7 +157,13 @@ namespace Hublog.API.Controllers
                 try
                 {
                     var updatedshiftMaster = await _adminService.UpdateShiftMaster(shiftMaster);
-                    if (updatedshiftMaster != null)
+
+                    if (updatedshiftMaster is string message)
+                    {
+                        return BadRequest(message);  // Return error message as a BadRequest
+                    }
+
+                   else if (updatedshiftMaster != null)
                     {
                         return Ok(updatedshiftMaster);
                     }

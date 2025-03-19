@@ -50,7 +50,7 @@ namespace Hublog.Service.Services
             return await _adminRepository.GetShiftMasters(organizationId, searchQuery);
         }
 
-        public async Task<ShiftMaster> UpdateShiftMaster(ShiftMaster shiftMaster)
+        public async Task<object> UpdateShiftMaster(ShiftMaster shiftMaster)
         {
             //defaul code
             //return await _adminRepository.UpdateShiftMaster(shiftMaster);
@@ -60,6 +60,12 @@ namespace Hublog.Service.Services
             {
                 throw new InvalidOperationException("The name already exists");
             }
+            if (updatedShiftMaster is string message)
+            {
+                return message;  // Directly return the error message if shift is mapped
+            }
+
+
             return updatedShiftMaster;
         }
 

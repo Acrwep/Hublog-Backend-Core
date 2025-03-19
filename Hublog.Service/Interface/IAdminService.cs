@@ -19,7 +19,7 @@ namespace Hublog.Service.Interface
 
         Task<List<ShiftMaster>> GetShiftMasters(int organizationId, string? searchQuery);
 
-        Task<ShiftMaster> UpdateShiftMaster(ShiftMaster shiftMaster);
+        Task<object> UpdateShiftMaster(ShiftMaster shiftMaster);
 
         Task<bool> DeleteShiftMaster(int organizationId, int shiftId);
 

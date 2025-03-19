@@ -2,6 +2,7 @@
 using System.Data.Common;
 using Dapper;
 using Hublog.Repository.Common;
+using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.Shift;
@@ -171,11 +172,18 @@ namespace Hublog.Repository.Repositories
                 throw new Exception("Error fetching shiftmaster record", ex);
             }
         }
+        ///
+        public async Task<bool> IsShiftMappedToTeam(int shiftId)
+        {
+            string query = "SELECT COUNT(*) FROM Team WHERE shiftId = @ShiftId";
+            var count = await _dapper.ExecuteScalarAsync<int>(query, new { ShiftId = shiftId });
+            return count > 0;
+        }
 
         #endregion
 
         #region UpdateShiftMasters
-        public async Task<ShiftMaster> UpdateShiftMaster(ShiftMaster shiftMaster)
+        public async Task<object> UpdateShiftMaster(ShiftMaster shiftMaster)
         {
             try
             {
@@ -184,6 +192,14 @@ namespace Hublog.Repository.Repositories
                 if (nameExists)
                 {
                     return null; // Returning null to indicate a duplicate
+                }
+                if (shiftMaster.Status == false)
+                {
+                    bool isMapped = await IsShiftMappedToTeam(shiftMaster.Id);
+                    if (isMapped)
+                    {
+                        return "Unable to inactive. Mapped to team";
+                    }
                 }
 
                 string query = @" UPDATE Shift 
