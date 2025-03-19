@@ -43,7 +43,7 @@ namespace Hublog.Service.Services
             return await _attendanceDashboardRepository.GetLeastTeamProductivity(organizationId,teamId, startDate, endDate);
         }
 
-        public async Task<List<LateArrivalsModel>> GetLateArrivals(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        public async Task<object> GetLateArrivals(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
         {
             return await _attendanceDashboardRepository.GetLateArrivals(organizationId, teamId, startDate, endDate);
         }

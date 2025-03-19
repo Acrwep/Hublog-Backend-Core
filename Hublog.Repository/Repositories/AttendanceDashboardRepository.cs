@@ -192,7 +192,7 @@ namespace Hublog.Repository.Repositories
             return await _dapper.GetAllAsyncs<TeamProductivityModel>(query, parameters, commandType: CommandType.StoredProcedure);
         }
 
-        public async Task<List<LateArrivalsModel>> GetLateArrivals(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
+        public async Task<object> GetLateArrivals(int organizationId, int? teamId, DateTime startDate, DateTime endDate)
         {
             string query = "LateArrivals";
 
@@ -204,7 +204,21 @@ namespace Hublog.Repository.Repositories
                 EndDate = endDate
             };
 
-            return await _dapper.GetAllAsyncs<LateArrivalsModel>(query, parameters, commandType: CommandType.StoredProcedure);
+            var result= await _dapper.GetAllAsyncs<LateArrivalsModel>(query, parameters, commandType: CommandType.StoredProcedure);
+            int totalLateArrivalsSum = result.Sum(r => r.LateArrival);
+            int totalOnTimeArrivalsSum = result.Sum(r => r.OnTimeArrival);
+            int totalAttendance = totalLateArrivalsSum + totalOnTimeArrivalsSum;
+
+            double overallLatePercentage = totalAttendance > 0
+                ? (double)totalLateArrivalsSum / totalAttendance * 100
+                : 0; // Prevent division by zero
+
+
+            return new
+            {
+                data= result,
+                overallLatePercentage
+            };
         }
     }
 }

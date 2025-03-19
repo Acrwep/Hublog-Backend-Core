@@ -16,6 +16,6 @@ namespace Hublog.Service.Interface
 
         Task<List<TeamProductivityModel>> GetLeastTeamProductivity(int organizationId, int? teamId, DateTime startDate, DateTime endDate);
 
-        Task<List<LateArrivalsModel>> GetLateArrivals(int organizationId, int? teamId, DateTime startDate, DateTime endDate);
+        Task<object> GetLateArrivals(int organizationId, int? teamId, DateTime startDate, DateTime endDate);
     }
 }
