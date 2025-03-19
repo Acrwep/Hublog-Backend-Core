@@ -3,6 +3,7 @@ using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Interface;
+using Hublog.Repository.Repositories;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,6 +36,14 @@ namespace Hublog.Service.Services
             return await _reportRepository.GetMonthlyInOutReport(userId, teamId, organizationId, year, month);
         }
 
+
+        public async Task<object> GetLateAttendance(int organizationId, int? userId, int? teamId, DateTime date)
+        {
+            return await _reportRepository.GetLateAttendance(organizationId, userId, teamId, date);
+        }
+
+
+
         public async Task<List<CombinedUsageDto>> GetCombinedUsageReport(int organizationId, int? teamId, int? userId,string type, DateTime startDate, DateTime endDate)
         {
             return await _reportRepository.GetCombinedUsageReport(organizationId, teamId, userId, type, startDate, endDate);
@@ -47,5 +56,7 @@ namespace Hublog.Service.Services
         {
             return await _reportRepository.DynamicDetailReport(request);
         }
+
+       
     }
 }

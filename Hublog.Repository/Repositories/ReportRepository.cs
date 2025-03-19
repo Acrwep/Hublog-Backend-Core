@@ -94,6 +94,27 @@ namespace Hublog.Repository.Repositories
         }
         #endregion
 
+
+        public async Task<object> GetLateAttendance(int organizationId, int? userId, int? teamId, DateTime date)
+        {
+            string query = "GetLateAttendance";
+
+            var parameters = new
+            {
+                OrganizationId = organizationId,
+                UserId = userId,
+                TeamId = teamId,
+                AttendanceDate = date
+            };
+
+           
+            var result= await _dapper.GetAllAsyncs<dynamic>(query, parameters, commandType: CommandType.StoredProcedure);
+            return result;
+        }
+
+
+
+
         public string FormatDuration(long totalSeconds)
         {
             var hours = totalSeconds / 3600; // Total hours
@@ -1120,5 +1141,7 @@ namespace Hublog.Repository.Repositories
 
             return groupedUsages;
         }
+
+       
     }
 }

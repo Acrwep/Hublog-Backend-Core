@@ -16,6 +16,9 @@ namespace Hublog.Service.Interface
 
         Task<List<InOutLogs>> GetMonthlyInOutReport(int? userId, int? teamId, int organizationId, int year, int month);
 
+
+        Task<object> GetLateAttendance(int organizationId, int? userId, int? teamId, DateTime date);
+
         Task<List<CombinedUsageDto>> GetCombinedUsageReport(int organizationId, int? teamId, int? userId, string type, DateTime startDate, DateTime endDate);
         Task<List<dynamic>> DynamicReport([FromQuery] DynamicReportRequest request);
         Task<List<dynamic>> DynamicDetailReport([FromQuery] DynamicReportRequest request);

@@ -3,6 +3,7 @@ using System.Xml.Linq;
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model;
 using Hublog.Service.Interface;
+using Hublog.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -123,6 +124,22 @@ namespace Hublog.API.Controllers
             return Ok(response);
         }
         #endregion
+
+
+
+        [HttpGet("LateAttendance")]
+        public async Task<IActionResult> GetLateAttendance(int organizationId, int? userId, int? teamId, DateTime date)
+        {
+            var result = await _reportService.GetLateAttendance(organizationId, userId, teamId, date);
+
+            if (result == null)
+            {
+                return NotFound("No late attendance records found.");
+            }
+
+            return Ok(result);
+        }
+
 
         [HttpGet("combined")]
         public async Task<IActionResult> GetCombinedUsage(int organizationId, int? teamId, int? userId, string type, DateTime startDate, DateTime endDate)
