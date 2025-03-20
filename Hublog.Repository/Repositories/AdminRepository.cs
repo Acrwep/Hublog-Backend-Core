@@ -195,10 +195,10 @@ namespace Hublog.Repository.Repositories
                 }
                 if (shiftMaster.Status == false)
                 {
-                    bool isMapped = await IsShiftMappedToTeam(shiftMaster.Id);
+                    bool isMapped = await IsShiftMappedToTeam(shiftMaster.Id); 
                     if (isMapped)
                     {
-                        return "Unable to inactive. Mapped to team";
+                        return "Unable to inactive.Mapped to team";
                     }
                 }
 

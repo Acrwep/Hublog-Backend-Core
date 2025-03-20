@@ -25,7 +25,14 @@ namespace Hublog.Repository.Repositories
                         "INNER JOIN Team D WITH(NOLOCK) ON A.TeamId = D.Id " +
                         "WHERE B.AccessLevel = 1 AND A.Email = @Email AND A.Password = @Password AND A.Active = 1";
 
-            return (await _dapper.GetAllAsync<Users>(query, new { Email = email, Password = password })).FirstOrDefault();
+            var result= (await _dapper.GetAllAsync<Users>(query, new { Email = email, Password = password })).FirstOrDefault();
+
+            if (result.Password!=password)
+            {
+                return null;
+            }
+
+            return result;
         }
         #endregion  
 
@@ -66,7 +73,12 @@ namespace Hublog.Repository.Repositories
                "WHERE B.AccessLevel = 2 AND A.Email = @Email AND A.Password = @Password AND A.Active = 1";
 
             var parameters = new { Email = email, Password = password };
-            return await _dapper.GetAsync<Users>(query, parameters);
+            var result= await _dapper.GetAsync<Users>(query, parameters);
+            if(result.Password!= password)
+            {
+                return null;
+            }
+            return result;
         }
         #endregion
     }
