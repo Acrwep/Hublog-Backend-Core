@@ -1,6 +1,7 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
+using Microsoft.AspNetCore.Rewrite;
 using Org.BouncyCastle.Crypto.Generators;
 
 
@@ -27,7 +28,7 @@ namespace Hublog.Repository.Repositories
 
             var result= (await _dapper.GetAllAsync<Users>(query, new { Email = email, Password = password })).FirstOrDefault();
 
-            if (result.Password!=password)
+            if (result == null || result.Password!=password)
             {
                 return null;
             }
@@ -53,7 +54,7 @@ namespace Hublog.Repository.Repositories
             {
                 return null;
             }
-            if (password != user.Password)
+            if (user == null || password != user.Password)
             {
                 return null; // Incorrect password
             }
@@ -73,8 +74,10 @@ namespace Hublog.Repository.Repositories
                "WHERE B.AccessLevel = 2 AND A.Email = @Email AND A.Password = @Password AND A.Active = 1";
 
             var parameters = new { Email = email, Password = password };
-            var result= await _dapper.GetAsync<Users>(query, parameters);
-            if(result.Password!= password)
+            //return await _dapper.GetAsync<Users>(query, parameters);
+            var result = await _dapper.GetAsync<Users>(query, parameters);
+
+            if (result == null||result.Password != password)
             {
                 return null;
             }
