@@ -9,6 +9,8 @@ namespace Hublog.Repository.Entities.Model
     public class Version
     {
         public int Id { get; set; }
-        public string VersionNumber { get; set; }    
+        public string VersionNumber { get; set; }
+        public string DownloadUrl { get; set; }
+
     }
 }

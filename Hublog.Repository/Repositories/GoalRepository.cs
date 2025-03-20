@@ -104,27 +104,213 @@ namespace Hublog.Repository.Repositories
         }
         #endregion
 
+        //  public async Task<dynamic> GetGoalsDetails(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
+        //  {
+
+        //      var teamQuery = @"
+        //                   SELECT T.Id,T.Name
+        //                    FROM Team T
+        //                    INNER JOIN Organization O ON T.OrganizationId = O.Id
+        //                    WHERE O.Id = @OrganizationId
+        //                    AND (@TeamId IS NULL OR T.Id = @TeamId) ";
+
+        //      var teams = await _dapper.GetAllAsync<(int TeamId, string TeamName)>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
+
+        //      var result = new List<dynamic>();
+
+        //      foreach (var team in teams)
+        //      {
+
+        //          var TeamName = team.TeamName;
+        //          teamId = team.TeamId;
+        //          //var usagess = await GetAppUsagesSS(organizationId, teamId, userId, fromDate, toDate);
+        //          var urlUsageQuery = "GetGoalsDetails";
+        //          var parameters = new
+        //          {
+        //              OrganizationId = organizationId,
+        //              TeamId = teamId,
+        //              FromDate = fromDate,
+        //              ToDate = toDate
+        //          };
+
+        //          IEnumerable<dynamic> results = await _dapper.GetAllAsync<dynamic>(urlUsageQuery, parameters);
+        //          var getUsers = @"
+        //          SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
+        //          FROM Users 
+        //          WHERE TeamId = @TeamId
+        //          AND Active = 1 -- Filter only active users";
+
+        //          var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters);
+
+        //          var tt = results.Concat(getUsers1)
+        //              .GroupBy(item => item.UserId)
+        //              .Select(group =>
+        //              {
+        //                  var usageEntry = results.FirstOrDefault(u => u.UserId == group.Key);
+        //                  return usageEntry ?? group.First();
+        //              })
+        //              .ToList();
+
+        //          int? userId;
+        //          foreach (var us in tt)
+        //          {
+        //              var FullANme = us.FullName;
+        //              userId = us.UserId;
+
+        //              int totalProductiveDuration = 0;
+
+        //              var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
+
+        //              var totalUsages = usages
+        //              .GroupBy(u => u.ApplicationName)
+        //              .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
+        //              .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
+
+        //              foreach (var usage in usages)
+        //              {
+        //                  usage.ApplicationName = usage.ApplicationName.ToLower();
+
+        //                  if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
+        //                  {
+        //                      if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
+        //                      {
+        //                          usage.TotalSeconds = totalSeconds;
+        //                          usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
+        //                      }
+
+        //                      var parameters1 = new { ApplicationName = usage.ApplicationName.ToLower() };
+        //                      var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity",
+        //                          parameters1,
+        //                          commandType: CommandType.StoredProcedure
+        //                      );
+        //                      if (app != null)
+        //                      {
+        //                          if (app == "Productive")
+        //                          {
+        //                              totalProductiveDuration += usage.TotalSeconds;
+        //                          }
+        //                      }
+        //                  }
+        //              }
+        //              double? total_wokingtimeInSeconds = us.ActiveTimeInSeconds;  // Nullable double
+
+        //              total_wokingtimeInSeconds = us.ActiveTimeInSeconds ?? 0.0;
+
+        //              var dateDifferenceInDays = (toDate - fromDate).TotalDays;
+
+        //              if (dateDifferenceInDays <= 0)
+        //              {
+        //                  dateDifferenceInDays = 1;
+        //              }
+
+        //              // Helper function to format durations
+        //              string FormatDuration(double totalSeconds)
+        //              {
+        //                  var hours = (long)(totalSeconds / 3600); // Total hours
+        //                  var minutes = (long)((totalSeconds % 3600) / 60); // Remaining minutes
+        //                  var seconds = (long)(totalSeconds % 60); // Remaining seconds
+        //                  return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+        //              }
+
+        //              var dynamicItem = new ExpandoObject() as dynamic;
+
+        //              dynamicItem.UserId = userId;
+        //              dynamicItem.Team_Name = TeamName;
+        //              dynamicItem.full_Name = FullANme;
+
+        //              // Format durations using the helper function, ensure no null values
+        //              dynamicItem.total_wokingtime = FormatDuration(total_wokingtimeInSeconds ?? 0.0);
+
+        //              dynamicItem.TotalProductiveDuration = FormatDuration(totalProductiveDuration);
+
+        //              result.Add(dynamicItem);
+        //          }
+        //          userId = null;
+        //      }
+        //      var getGoalsQuery = "SELECT * FROM Goals WHERE OrganizationId = @OrganizationId";
+        //      var GoalsData = await _dapper.QueryFirstOrDefaultAsync<Goal>(getGoalsQuery, new { OrganizationId = organizationId });
+        //      Console.WriteLine(GoalsData);
+
+        //      int workingTimeThreshold = GoalsData?.WorkingTime ?? 0;
+        //      int productiveTimeThreshold = GoalsData?.ProductiveTime ?? 0;
+
+
+        //      // Convert HH:mm:ss to total hours
+        //      Func<string, double> ConvertToHours = (time) =>
+        //      {
+        //          TimeSpan ts;
+        //          if (TimeSpan.TryParseExact(time, @"hh\:mm\:ss", CultureInfo.InvariantCulture, out ts))
+        //          {
+        //              return ts.TotalHours;
+        //          }
+        //          return 0;
+        //      };
+
+        //      var filteredUsers = result
+        //.Where(user =>
+        //    ConvertToHours(user.total_wokingtime) > workingTimeThreshold &&
+        //    ConvertToHours(user.TotalProductiveDuration) > productiveTimeThreshold)
+        //.ToList();
+
+        //      // Get top 3 users (highest productive time, then working time)
+        //      var topUsers = filteredUsers
+        //          .OrderByDescending(user => ConvertToHours(user.TotalProductiveDuration))
+        //          .ThenByDescending(user => ConvertToHours(user.total_wokingtime))
+        //          .Take(3)
+        //          .ToList();
+
+        //      // Get users who did not meet the threshold condition
+        //      var nonAchievedUsers = result
+        //          .Where(user =>
+        //              ConvertToHours(user.total_wokingtime) <= workingTimeThreshold ||
+        //              ConvertToHours(user.TotalProductiveDuration) <= productiveTimeThreshold)
+        //          .ToList();
+
+        //      // Get least 3 users (who did not achieve the condition, sorted by lowest productivity first)
+        //      var leastUsers = nonAchievedUsers
+        //          .OrderBy(user => ConvertToHours(user.TotalProductiveDuration))  // Lowest productive first
+        //          .ThenBy(user => ConvertToHours(user.total_wokingtime))  // Then lowest working time
+        //          .Take(3)
+        //          .ToList();
+
+        //      // Combine top and least users into a dictionary or an anonymous object
+        //      var resultData = new
+        //      {
+        //          top = topUsers,
+        //          least = leastUsers
+        //      };
+
+        //      Console.WriteLine(resultData);
+
+        //      return resultData;
+
+        //  }
+
+
         public async Task<dynamic> GetGoalsDetails(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
+            var getGoalsQuery = "SELECT * FROM Goals WHERE OrganizationId = @OrganizationId";
+            var GoalsData = await _dapper.QueryFirstOrDefaultAsync<Goal>(getGoalsQuery, new { OrganizationId = organizationId });
+
+            double workingTimeThreshold = GoalsData?.WorkingTime ?? 0;  // Hours
+            double productiveTimeThreshold = GoalsData?.ProductiveTime ?? 0;  // Hours
 
             var teamQuery = @"
-                         SELECT T.Id,T.Name
-                          FROM Team T
-                          INNER JOIN Organization O ON T.OrganizationId = O.Id
-                          WHERE O.Id = @OrganizationId
-                          AND (@TeamId IS NULL OR T.Id = @TeamId) ";
+    SELECT T.Id, T.Name
+    FROM Team T
+    INNER JOIN Organization O ON T.OrganizationId = O.Id
+    WHERE O.Id = @OrganizationId
+    AND (@TeamId IS NULL OR T.Id = @TeamId)";
 
             var teams = await _dapper.GetAllAsync<(int TeamId, string TeamName)>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
 
-            var result = new List<dynamic>();
+            var userAchievementCounts = new Dictionary<int, (string FullName, int AchievedDays, double TotalWorkingHours, double TotalProductiveHours)>();
 
             foreach (var team in teams)
             {
-
                 var TeamName = team.TeamName;
                 teamId = team.TeamId;
-                //var usagess = await GetAppUsagesSS(organizationId, teamId, userId, fromDate, toDate);
-                var urlUsageQuery = "GetGoalsDetails";
+
                 var parameters = new
                 {
                     OrganizationId = organizationId,
@@ -133,16 +319,16 @@ namespace Hublog.Repository.Repositories
                     ToDate = toDate
                 };
 
-                IEnumerable<dynamic> results = await _dapper.GetAllAsync<dynamic>(urlUsageQuery, parameters);
-                var getUsers = @"
-                SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
-                FROM Users 
-                WHERE TeamId = @TeamId
-                AND Active = 1 -- Filter only active users";
+                IEnumerable<dynamic> results = await _dapper.GetAllAsync<dynamic>("GetGoalsDetails", parameters);
 
-                var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters);
+                var getUsersQuery = @"
+        SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
+        FROM Users 
+        WHERE TeamId = @TeamId AND Active = 1";
 
-                var tt = results.Concat(getUsers1)
+                var getUsers = await _dapper.GetAllAsync<dynamic>(getUsersQuery, parameters);
+
+                var usersList = results.Concat(getUsers)
                     .GroupBy(item => item.UserId)
                     .Select(group =>
                     {
@@ -150,143 +336,104 @@ namespace Hublog.Repository.Repositories
                         return usageEntry ?? group.First();
                     })
                     .ToList();
-                
-                int? userId;
-                foreach (var us in tt)
+
+                foreach (var user in usersList)
                 {
-                    var FullANme = us.FullName;
-                    userId = us.UserId;
+                    var fullName = user.FullName;
+                    int userId = user.UserId;
 
-                    int totalProductiveDuration = 0;
+                    int achievedCount = 0;
+                    double totalWorkingHours = 0.0;
+                    double totalProductiveHours = 0.0;
 
-                    var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
-
-                    var totalUsages = usages
-                    .GroupBy(u => u.ApplicationName)
-                    .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
-                    .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
-
-                    foreach (var usage in usages)
+                    for (DateTime date = fromDate; date <= toDate; date = date.AddDays(1))
                     {
-                        usage.ApplicationName = usage.ApplicationName.ToLower();
+                        int totalProductiveDurationInSeconds = 0;
+                        double totalWorkingTimeInSeconds = 0.0;
 
-                        if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
+                        var usages = await GetAppUsages(organizationId, teamId, userId, date, date);
+
+                        var totalUsages = usages
+                            .GroupBy(u => u.ApplicationName)
+                            .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
+                            .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
+
+                        foreach (var usage in usages)
                         {
-                            if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
-                            {
-                                usage.TotalSeconds = totalSeconds;
-                                usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
-                            }
+                            usage.ApplicationName = usage.ApplicationName.ToLower();
 
-                            var parameters1 = new { ApplicationName = usage.ApplicationName.ToLower() };
-                            var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity",
-                                parameters1,
-                                commandType: CommandType.StoredProcedure
-                            );
-                            if (app != null)
+                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
-                                if (app == "Productive")
+                                if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
                                 {
-                                    totalProductiveDuration += usage.TotalSeconds;
+                                    usage.TotalSeconds = totalSeconds;
+                                }
+
+                                var parameters1 = new { ApplicationName = usage.ApplicationName.ToLower() };
+                                var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity",
+                                    parameters1,
+                                    commandType: CommandType.StoredProcedure
+                                );
+
+                                if (app != null && app == "Productive")
+                                {
+                                    totalProductiveDurationInSeconds += usage.TotalSeconds;
                                 }
                             }
                         }
+
+                        totalWorkingTimeInSeconds = results
+                            .Where(u => u.UserId == userId && ((DateTime)u.AttendanceDate).Date == date.Date)
+                            .Select(u => (double?)u.ActiveTimeInSeconds)
+                            .FirstOrDefault() ?? 0.0;
+
+                        // ** Convert seconds to hours **
+                        double totalWorkingTimeInHours = totalWorkingTimeInSeconds / 3600.0;
+                        double totalProductiveDurationInHours = totalProductiveDurationInSeconds / 3600.0;
+
+                        totalWorkingHours += totalWorkingTimeInHours;
+                        totalProductiveHours += totalProductiveDurationInHours;
+
+                        // Check if the user meets the goals in hours
+                        if (totalWorkingTimeInHours >= workingTimeThreshold && totalProductiveDurationInHours >= productiveTimeThreshold)
+                        {
+                            achievedCount++;
+                        }
                     }
-                    double? total_wokingtimeInSeconds = us.ActiveTimeInSeconds;  // Nullable double
 
-                    total_wokingtimeInSeconds = us.ActiveTimeInSeconds ?? 0.0;
-
-                    var dateDifferenceInDays = (toDate - fromDate).TotalDays;
-
-                    if (dateDifferenceInDays <= 0)
-                    {
-                        dateDifferenceInDays = 1;
-                    }
-
-                    // Helper function to format durations
-                    string FormatDuration(double totalSeconds)
-                    {
-                        var hours = (long)(totalSeconds / 3600); // Total hours
-                        var minutes = (long)((totalSeconds % 3600) / 60); // Remaining minutes
-                        var seconds = (long)(totalSeconds % 60); // Remaining seconds
-                        return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
-                    }
-
-                    var dynamicItem = new ExpandoObject() as dynamic;
-
-                    dynamicItem.UserId = userId;
-                    dynamicItem.Team_Name = TeamName;
-                    dynamicItem.full_Name = FullANme;
-
-                    // Format durations using the helper function, ensure no null values
-                    dynamicItem.total_wokingtime = FormatDuration(total_wokingtimeInSeconds ?? 0.0);
-
-                    dynamicItem.TotalProductiveDuration = FormatDuration(totalProductiveDuration);
-
-                    result.Add(dynamicItem);
+                    userAchievementCounts[userId] = (fullName, achievedCount, totalWorkingHours, totalProductiveHours);
                 }
-                userId = null;
             }
-            var getGoalsQuery = "SELECT * FROM Goals WHERE OrganizationId = @OrganizationId";
-            var GoalsData = await _dapper.QueryFirstOrDefaultAsync<Goal>(getGoalsQuery, new { OrganizationId = organizationId });
-            Console.WriteLine(GoalsData);
-
-            int workingTimeThreshold = GoalsData?.WorkingTime ?? 0;
-            int productiveTimeThreshold = GoalsData?.ProductiveTime ?? 0;
-
-
-            // Convert HH:mm:ss to total hours
-            Func<string, double> ConvertToHours = (time) =>
-            {
-                TimeSpan ts;
-                if (TimeSpan.TryParseExact(time, @"hh\:mm\:ss", CultureInfo.InvariantCulture, out ts))
+            // ** Get Top 3 Achievers (Only users who achieved at least 1 day) **
+            var topAchievers = userAchievementCounts
+                .Where(u => u.Value.AchievedDays > 0)  // Only users who achieved at least once
+                .OrderByDescending(u => u.Value.AchievedDays)
+                .Take(3)
+                .Select(u => new
                 {
-                    return ts.TotalHours;
-                }
-                return 0;
-            };
+                    UserId = u.Key,
+                    FullName = u.Value.FullName,
+                    AchievedDays = u.Value.AchievedDays
+                })
+                .ToList();
 
-            var filteredUsers = result
-      .Where(user =>
-          ConvertToHours(user.total_wokingtime) > workingTimeThreshold &&
-          ConvertToHours(user.TotalProductiveDuration) > productiveTimeThreshold)
-      .ToList();
-
-            // Get top 3 users (highest productive time, then working time)
-            var topUsers = filteredUsers
-                .OrderByDescending(user => ConvertToHours(user.TotalProductiveDuration))
-                .ThenByDescending(user => ConvertToHours(user.total_wokingtime))
+            // ** Get Bottom 3 from Users who NEVER achieved the goal**
+            var leastAchievers = userAchievementCounts
+                .Where(u => u.Value.AchievedDays == 0)  // Users who never achieved the goal
+                .OrderBy(u => u.Value.TotalWorkingHours)  // Sort by lowest working hours
+                .ThenBy(u => u.Value.TotalProductiveHours)  // Then by lowest productive hours
                 .Take(3)
+                .Select(u => new
+                {
+                    UserId = u.Key,
+                    FullName = u.Value.FullName,
+                    TotalWorkingHours = u.Value.TotalWorkingHours,
+                    TotalProductiveHours = u.Value.TotalProductiveHours
+                })
                 .ToList();
 
-            // Get users who did not meet the threshold condition
-            var nonAchievedUsers = result
-                .Where(user =>
-                    ConvertToHours(user.total_wokingtime) <= workingTimeThreshold ||
-                    ConvertToHours(user.TotalProductiveDuration) <= productiveTimeThreshold)
-                .ToList();
-
-            // Get least 3 users (who did not achieve the condition, sorted by lowest productivity first)
-            var leastUsers = nonAchievedUsers
-                .OrderBy(user => ConvertToHours(user.TotalProductiveDuration))  // Lowest productive first
-                .ThenBy(user => ConvertToHours(user.total_wokingtime))  // Then lowest working time
-                .Take(3)
-                .ToList();
-
-            // Combine top and least users into a dictionary or an anonymous object
-            var resultData = new
-            {
-                top = topUsers,
-                least = leastUsers
-            };
-
-            Console.WriteLine(resultData);
-
-            return resultData;
-
+            return new { top = topAchievers, least = leastAchievers };
         }
-
-
 
         public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {

@@ -131,7 +131,7 @@ namespace Hublog.Repository.Repositories
         }
         public async Task<IEnumerable<Hublog.Repository.Entities.Model.Version>> GetHublogVersion()
         {
-            string query = "SELECT id, versionNumber FROM HublogVersion";
+            string query = "SELECT id, versionNumber, DownloadUrl FROM HublogVersion";
             return await _dapper.GetAllAsync<Entities.Model.Version>(query);
         }
 
