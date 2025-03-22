@@ -30,7 +30,7 @@ namespace Hublog.API.Hub
                 Console.WriteLine($"Server received data: {data.UserId}, {data.OrganizationId}, {data.ActiveApp}");
 
                 // Broadcast to all connected clients
-                await Clients.All.SendAsync("ReceiveLiveData", data.UserId, data.OrganizationId, data.ActiveApp, data.ActiveUrl, data.LiveStreamStatus, data.ActiveAppLogo, data.ActiveScreenshot);
+                await Clients.All.SendAsync("ReceiveLiveData", data.UserId, data.OrganizationId, data.ActiveApp, data.ActiveUrl, data.LiveStreamStatus, data.ActiveAppLogo, data.ActiveScreenshot, data.Latitude, data.Longitude);
             }
             catch (Exception ex)
             {

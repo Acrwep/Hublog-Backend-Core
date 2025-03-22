@@ -29,5 +29,11 @@ namespace Hublog.Repository.Entities.Model.LivestreamModal
 
         [JsonPropertyName("activeScreenshot")]
         public string ActiveScreenshot { get; set; }
+
+        [JsonPropertyName("latitude")]
+        public double Latitude { get; set; }
+
+        [JsonPropertyName("longitude")]
+        public double Longitude { get; set; }
     }
 }
