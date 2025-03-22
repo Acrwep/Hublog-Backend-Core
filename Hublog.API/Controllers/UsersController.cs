@@ -519,5 +519,26 @@ namespace Hublog.API.Controllers
                 return BadRequest("Model state is not valid");
             }
         }
+
+        [HttpGet]
+        [Route("GetPunchIn_Users")]
+        public async Task<IActionResult> GetPunchInUser(int organizationId,[FromQuery] DateTime date)
+        {
+            try
+            {
+                var result = await _userService.GetPunchIn_Users(organizationId,date);
+                if (result ==null || !result.Any())
+                {
+                    return BadRequest("PunchIn Users Not Found");
+                }
+              
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

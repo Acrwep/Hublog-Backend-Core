@@ -1,37 +1,45 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\",
+  "WorkspaceRootPath": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\screenshotrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\screenshotrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\entities\\model\\usermodels\\punchinusers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\entities\\model\\usermodels\\punchinusers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\goalrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\goalrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.service\\interface\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\interface\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.repository\\entities\\model\\livestreammodal\\livestreammodal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\entities\\model\\livestreammodal\\livestreammodal.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\interface\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\interface\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\hub\\livestreamhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\hub\\livestreamhub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\controllers\\userscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "AbsoluteMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.service\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{62F98EC2-71A7-401D-95AB-B3AF0CB6E875}|Hublog.Service\\Hublog.Service.csproj|solutionrelative:hublog.service\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{FC17CC47-9183-4310-81EC-214298E93178}|Hublog.API\\Hublog.API.csproj|solutionrelative:hublog.api\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\productivityrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\common\\dapperr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\common\\dapperr.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\productivityrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\productivityrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\admin prakash\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\loginrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|c:\\users\\acte\\onedrive\\documents\\github\\hublog-backend-core\\hublog.repository\\repositories\\loginrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{783031E4-3083-4E00-80DC-96A0524236DF}|Hublog.Repository\\Hublog.Repository.csproj|solutionrelative:hublog.repository\\repositories\\loginrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -42,111 +50,141 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ScreenshotRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\ScreenshotRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\ScreenshotRepository.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\ScreenshotRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Repositories\\ScreenshotRepository.cs",
-              "ViewState": "AQIAABMAAAAAAAAAAAAgwBoAAAAkAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T05:01:55.552Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "LivestreamModal.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\LivestreamModal\\LivestreamModal.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Entities\\Model\\LivestreamModal\\LivestreamModal.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\LivestreamModal\\LivestreamModal.cs",
-              "RelativeToolTip": "Hublog.Repository\\Entities\\Model\\LivestreamModal\\LivestreamModal.cs",
-              "ViewState": "AQIAABgAAAAAAAAAAAAxwB4AAAA0AAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-21T11:26:38.713Z",
-              "EditorCaption": ""
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "LiveStreamHub.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Hub\\LiveStreamHub.cs",
-              "RelativeDocumentMoniker": "Hublog.API\\Hub\\LiveStreamHub.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Hub\\LiveStreamHub.cs",
-              "RelativeToolTip": "Hublog.API\\Hub\\LiveStreamHub.cs",
-              "ViewState": "AQIAAAQAAAAAAAAAAAAlwBEAAAARAAAA",
+              "Title": "UsersController.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\UsersController.cs",
+              "RelativeDocumentMoniker": "Hublog.API\\Controllers\\UsersController.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Controllers\\UsersController.cs",
+              "RelativeToolTip": "Hublog.API\\Controllers\\UsersController.cs",
+              "ViewState": "AgIAAAACAAAAAAAAAAAEwBACAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-21T06:56:37.402Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "LoginRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\LoginRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\LoginRepository.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\LoginRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Repositories\\LoginRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAE4AAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-20T12:41:42.042Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ProductivityRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\ProductivityRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\ProductivityRepository.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\ProductivityRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Repositories\\ProductivityRepository.cs",
-              "ViewState": "AQIAALYDAAAAAAAAAAAiwNcDAABjAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-20T08:39:11.512Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "GoalRepository.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\GoalRepository.cs",
-              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\GoalRepository.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\GoalRepository.cs",
-              "RelativeToolTip": "Hublog.Repository\\Repositories\\GoalRepository.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAFQBAAARAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-20T07:29:26.41Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Program.cs",
-              "RelativeDocumentMoniker": "Hublog.API\\Program.cs",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\Program.cs",
-              "RelativeToolTip": "Hublog.API\\Program.cs",
-              "ViewState": "AQIAADMAAAAAAAAAAAAAAEAAAAAXAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-01-30T12:00:44.946Z",
+              "WhenOpened": "2025-03-22T05:03:29.649Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 5,
+              "Title": "UserService.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\UserService.cs",
+              "RelativeDocumentMoniker": "Hublog.Service\\Services\\UserService.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Services\\UserService.cs",
+              "RelativeToolTip": "Hublog.Service\\Services\\UserService.cs",
+              "ViewState": "AgIAAPwAAAAAAAAAAAArwCIBAABNAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T05:01:34.648Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IUserService.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IUserService.cs",
+              "RelativeDocumentMoniker": "Hublog.Service\\Interface\\IUserService.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Service\\Interface\\IUserService.cs",
+              "RelativeToolTip": "Hublog.Service\\Interface\\IUserService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADIAAABNAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T05:01:18.848Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IUserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IUserRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Interface\\IUserRepository.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Interface\\IUserRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Interface\\IUserRepository.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAQwDAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T04:38:54.235Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UserRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\UserRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\UserRepository.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\UserRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Repositories\\UserRepository.cs",
+              "ViewState": "AgIAABsDAAAAAAAAAAAuwCwDAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T04:20:00.013Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
               "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\appsettings.json",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\appsettings.json",
               "RelativeDocumentMoniker": "Hublog.API\\appsettings.json",
-              "ToolTip": "C:\\Users\\ADMIN PRAKASH\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\appsettings.json",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.API\\appsettings.json",
               "RelativeToolTip": "Hublog.API\\appsettings.json",
-              "ViewState": "AQIAAAMAAAAAAAAAAAAAAA8AAABVAAAA",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAABFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-02-14T04:55:13.969Z"
+              "WhenOpened": "2025-03-22T05:16:45.606Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Dapperr.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Common\\Dapperr.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Common\\Dapperr.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Common\\Dapperr.cs",
+              "RelativeToolTip": "Hublog.Repository\\Common\\Dapperr.cs",
+              "ViewState": "AgIAACoAAAAAAAAAAAA9wEIAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T05:11:42.795Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PunchInUsers.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\UserModels\\PunchInUsers.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Entities\\Model\\UserModels\\PunchInUsers.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Entities\\Model\\UserModels\\PunchInUsers.cs",
+              "RelativeToolTip": "Hublog.Repository\\Entities\\Model\\UserModels\\PunchInUsers.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAoAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T04:37:56.587Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "LoginRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\LoginRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\LoginRepository.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\LoginRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Repositories\\LoginRepository.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAAuwEsAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T05:09:34.051Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "ProductivityRepository.cs",
+              "DocumentMoniker": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\ProductivityRepository.cs",
+              "RelativeDocumentMoniker": "Hublog.Repository\\Repositories\\ProductivityRepository.cs",
+              "ToolTip": "C:\\Users\\ACTE\\OneDrive\\Documents\\GitHub\\Hublog-Backend-Core\\Hublog.Repository\\Repositories\\ProductivityRepository.cs",
+              "RelativeToolTip": "Hublog.Repository\\Repositories\\ProductivityRepository.cs",
+              "ViewState": "AgIAAJIBAAAAAAAAAAAkwKwBAABMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T05:09:33.998Z",
+              "EditorCaption": ""
             }
           ]
         }

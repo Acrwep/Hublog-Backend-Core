@@ -16,7 +16,7 @@ namespace Hublog.Repository.Repositories
         }
 
         #region AdminLogin
-        public async Task<Users> AdminLogin(string email, string password)
+        public async Task<Users> AdminLogin(string email, string password) 
         {
             var query = "SELECT A.*, B.Name as RoleName, B.AccessLevel, " +
                         "C.Name as DesignationName, D.Name as TeamName " +

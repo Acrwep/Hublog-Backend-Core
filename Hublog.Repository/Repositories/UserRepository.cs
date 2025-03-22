@@ -21,6 +21,7 @@ using MimeKit;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MailKit.Net.Smtp;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Hublog.Repository.Repositories
 {
@@ -808,5 +809,14 @@ namespace Hublog.Repository.Repositories
             }
         }
 
+        public async Task<IEnumerable<PunchInUsers>> GetPunchIn_Users(int organizationId, DateTime date)
+        {
+           
+            string query = "GetPunchInUsers";
+
+            var result= await _dapper.QueryAsync<PunchInUsers>(query, new { OrganizationId = organizationId, Date = date },commandType:CommandType.StoredProcedure); 
+            return result;
+        }
+    
     }
 }

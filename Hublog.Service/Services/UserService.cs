@@ -285,5 +285,11 @@ namespace Hublog.Service.Services
         {
             return await _userRepository.Insert_IdealActivity(activity);
         }
+
+        public async Task<IEnumerable<PunchInUsers>> GetPunchIn_Users(int organizationId, DateTime date)
+        {
+            var result= await _userRepository.GetPunchIn_Users(organizationId,date);
+           return result;
+        }
     }
 }

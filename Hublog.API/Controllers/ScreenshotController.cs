@@ -7,7 +7,7 @@ namespace Hublog.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+    //[Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
     public class ScreenshotController : ControllerBase
     {
         private readonly IScreenshotService _screenshotService;

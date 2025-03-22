@@ -46,5 +46,8 @@ namespace Hublog.Service.Interface
         Task<List<UserActivity>> Get_Active_Time(int userid, DateTime startDate, DateTime endDate);
 
         Task<IdealActivity> Insert_IdealActivity(IdealActivity activity);
+
+
+        Task<IEnumerable<PunchInUsers>> GetPunchIn_Users(int organizationId, DateTime date);
     }
 }
