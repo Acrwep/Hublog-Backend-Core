@@ -65,5 +65,18 @@ namespace Hublog.Service.Services
                 MaxUsage = result.MaxUsage
             };
         }
+
+        public async Task InsertDefaultRecordsAsync(int organizationId)
+        {
+            try
+            {
+                await _appsUrlsRepository.InsertDefaultRecordsAsync(organizationId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException(ex.Message);
+            }
+            
+        }
     }
 }

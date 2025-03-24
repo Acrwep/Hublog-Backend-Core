@@ -111,5 +111,28 @@ namespace Hublog.API.Controllers
             return Ok(result);
 
         }
+
+        [HttpPost("InsertDefaultAppsAndUrlsRecords/{organizationId}")]
+        public async Task<IActionResult> InsertDefaultAppsAndUrlsRecords(int organizationId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Please Give OrganizationId");
+                }
+                await _appsUrlsService.InsertDefaultRecordsAsync(organizationId);
+                return Ok(new { message = "Default records inserted successfully." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            } 
+            catch (Exception ex)
+            {
+                return BadRequest($"Error Default records insert data: {ex.Message}");
+            }
+           
+        }
     }
 }

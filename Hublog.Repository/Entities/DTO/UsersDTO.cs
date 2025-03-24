@@ -27,5 +27,6 @@ namespace Hublog.Repository.Entities.DTO
         public string DesignationName { get; set; }
         public string TeamName { get; set; }
         public string EmployeeID { get; set; }
+        public bool ManagerStatus { get; set; }
     }
 }

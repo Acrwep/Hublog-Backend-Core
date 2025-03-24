@@ -10,6 +10,7 @@ using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using System.Data;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Hublog.Repository.Repositories
 {
@@ -335,6 +336,22 @@ ORDER BY
             return(mostUsedCategoryName, FormatDuration(mostUsedCategoryTime));
         }
 
+        public async Task InsertDefaultRecordsAsync(int organizationId)
+        {
+
+            string checkQuery = "SELECT COUNT(*) FROM ImbuildAppsAndUrls WHERE OrganizationId = @OrganizationId";
+            int existingCount = await _dapper.ExecuteScalarAsync<int>(checkQuery, new { OrganizationId = organizationId });
+
+            if (existingCount > 0)
+            {
+                throw new InvalidOperationException("OrganizationId already exists.");
+            }
+
+            var query = "InsertDefaultAppsAndUrlsRecords";
+            var parameters = new { OrganizationId = organizationId };
+
+            await _dapper.ExecuteAsync(query, parameters,commandType: CommandType.StoredProcedure);
+        }
     }
 
 }

@@ -632,9 +632,9 @@ namespace Hublog.Repository.Repositories
 
             string insertQuery = @"
                             INSERT INTO Users (First_Name, Last_Name, Email, DOB, DOJ, Phone, UsersName, Password, 
-                                Gender, OrganizationId, RoleId, DesignationId, TeamId, Active, EmployeeID) 
+                                Gender, OrganizationId, RoleId, DesignationId, TeamId, Active, EmployeeID, ManagerStatus) 
                             VALUES (@First_Name, @Last_Name, @Email, @DOB, @DOJ, @Phone, @UsersName, @Password,
-                                @Gender, @OrganizationId, @RoleId, @DesignationId, @TeamId, @Active, @EmployeeID);
+                                @Gender, @OrganizationId, @RoleId, @DesignationId, @TeamId, @Active, @EmployeeID, @ManagerStatus);
                             SELECT CAST(SCOPE_IDENTITY() as int)";
 
             user.Active = true;
@@ -650,7 +650,7 @@ namespace Hublog.Repository.Repositories
             UPDATE Users 
             SET First_Name = @First_Name, Last_Name = @Last_Name, Email = @Email, DOB = @DOB, DOJ = @DOJ, Phone = @Phone, 
                 UsersName = @UsersName, Password = @Password, Gender = @Gender, OrganizationId = @OrganizationId, 
-                RoleId = @RoleId, DesignationId = @DesignationId, TeamId = @TeamId, Active = @Active, EmployeeID = @EmployeeID 
+                RoleId = @RoleId, DesignationId = @DesignationId, TeamId = @TeamId, Active = @Active, EmployeeID = @EmployeeID, ManagerStatus = @ManagerStatus
             WHERE Id = @Id";
 
             return await _dapper.ExecuteAsync(query, user);
