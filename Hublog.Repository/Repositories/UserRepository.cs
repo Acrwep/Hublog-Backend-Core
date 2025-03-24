@@ -439,6 +439,7 @@ namespace Hublog.Repository.Repositories
                 u.TeamId,
                 u.Active,
                 u.EmployeeID,
+                u.ManagerStatus,
                 t.Name AS TeamName
             FROM 
                 Users u

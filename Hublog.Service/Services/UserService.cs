@@ -194,7 +194,8 @@ namespace Hublog.Service.Services
                         DesignationId = u.DesignationId,
                         TeamId = u.TeamId,
                         Active = u.Active,
-                        EmployeeID = u.EmployeeID
+                        EmployeeID = u.EmployeeID,
+                        ManagerStatus = u.ManagerStatus,
                     }).ToList()
                 }
             };
