@@ -64,7 +64,8 @@ namespace Hublog.Service.Services
                 AccessLevel = user.AccessLevel,
                 DesignationName = user.DesignationName,
                 TeamName = user.TeamName,
-                EmployeeID = user.EmployeeID
+                EmployeeID = user.EmployeeID,
+                ManagerStatus=user.ManagerStatus
             };
 
             var token = CreateToken(user);
