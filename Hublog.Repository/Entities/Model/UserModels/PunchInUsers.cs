@@ -9,7 +9,7 @@ namespace Hublog.Repository.Entities.Model.UserModels
     public class PunchInUsers
     {
         public int Id { get; set; }
-        public string FullName { get; set; }
+        public string Full_Name { get; set; }
         public string StartTime { get; set; }
     }
 }
