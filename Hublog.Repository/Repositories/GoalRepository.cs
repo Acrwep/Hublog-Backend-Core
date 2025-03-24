@@ -412,7 +412,7 @@ namespace Hublog.Repository.Repositories
                 .Select(u => new
                 {
                     UserId = u.Key,
-                    full_Name = u.Value.FullName,
+                    FullName = u.Value.FullName,
                     AchievedDays = u.Value.AchievedDays
                 })
                 .ToList();
@@ -426,7 +426,7 @@ namespace Hublog.Repository.Repositories
                 .Select(u => new
                 {
                     UserId = u.Key,
-                    full_Name = u.Value.FullName,
+                    FullName = u.Value.FullName,
                     TotalWorkingHours = u.Value.TotalWorkingHours,
                     TotalProductiveHours = u.Value.TotalProductiveHours
                 })
