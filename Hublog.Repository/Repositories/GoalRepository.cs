@@ -55,7 +55,7 @@ namespace Hublog.Repository.Repositories
         #endregion
 
 
-        #region InsertGoals
+        #region InsertGoals  
         public async Task<Goal> InsertGoals(Goal goal)
         {
             const string query = @"INSERT INTO Goals (OrganizationId, WorkingTime, ProductiveTime)

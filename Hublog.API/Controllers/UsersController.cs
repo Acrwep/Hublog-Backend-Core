@@ -403,6 +403,10 @@ namespace Hublog.API.Controllers
                     return NotFound("User not found");
                 }
             }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message); // Return custom error message
+            }
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, "Error updating user");

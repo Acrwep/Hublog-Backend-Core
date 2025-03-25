@@ -256,9 +256,26 @@ namespace Hublog.Service.Services
         }
         #endregion
 
+       
+
         #region UpdateUser
         public async Task<Users> UpdateUser(Users user)
         {
+
+            // First, fetch the existing user details to check RoleId
+            var existingUser = await _userRepository.GetUserById(user.Id);
+
+            if (existingUser == null)
+            {
+                return null;
+            }
+
+            // If the user is an Admin (RoleId = 2), ensure ManagerStatus remains 0
+            if (existingUser.RoleId == 2 && user.ManagerStatus == true)
+            {
+                throw new InvalidOperationException("Admin users cannot be changed to managers");
+            }
+
             var rowsAffected = await _userRepository.UpdateUser(user);  
 
             if (rowsAffected > 0)

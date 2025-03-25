@@ -34,7 +34,7 @@ namespace Hublog.Repository.Interface
         Task<List<UsersDTO>> GetActiveUsers(string loggedInUserEmail, int organizationid, string searchQuery);
 
         Task<int> InsertUser(Users user);
-
+        Task<Users> GetUserById(int userId);
         Task<int> UpdateUser(Users user); 
         
         Task<int> DeleteUser(int userId);

@@ -644,9 +644,16 @@ namespace Hublog.Repository.Repositories
         }
         #endregion
 
+        public async Task<Users> GetUserById(int userId)
+        {
+            string query = "SELECT * FROM Users WHERE Id = @Id";
+            return await _dapper.QueryFirstOrDefaultAsync<Users>(query, new { Id = userId });
+        }
+
         #region UpdateUser
         public async Task<int> UpdateUser(Users user)
         {
+           
             string query = @"
             UPDATE Users 
             SET First_Name = @First_Name, Last_Name = @Last_Name, Email = @Email, DOB = @DOB, DOJ = @DOJ, Phone = @Phone, 
