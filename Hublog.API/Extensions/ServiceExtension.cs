@@ -149,7 +149,7 @@ namespace Hublog.API.Extensions
                     policy.RequireClaim(ClaimTypes.Role, CommonConstant.Role.Employee));
 
                 options.AddPolicy(CommonConstant.Policies.AdminPolicy, policy =>
-                    policy.RequireClaim(ClaimTypes.Role, CommonConstant.Role.Admin));
+                    policy.Requirements.Add(new AdminOrManagerRequirement()));
 
                 options.AddPolicy(CommonConstant.Policies.UserOrAdminPolicy, policy =>
                     policy.RequireClaim(ClaimTypes.Role,

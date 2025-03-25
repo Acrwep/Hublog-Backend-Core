@@ -2,6 +2,7 @@ using Hublog.API.Extensions;
 using Hublog.API.Hub;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.UserModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
@@ -27,6 +28,7 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 // Scope
 builder.Services.ConfigureScope(configuration);
 builder.Services.ConfigureServices(configuration);
+builder.Services.AddSingleton<IAuthorizationHandler, AdminOrManagerHandler>();
 
 builder.Services.AddSignalR(options =>
 {
