@@ -19,8 +19,11 @@ namespace Hublog.Service.Interface
         Task<TopUrlUsageResponse> GetTopUrlUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate);
 
         Task<TopAppUsageResponse> GetTopAppUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate);
-        Task<TopAppUsageResponse> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate,  DateTime toDate);
 
+        Task<TopAppAndUrlUsageResponse> GetTopAppAndUrlsUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate);
+
+        Task<TopAppUsageResponse> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate,  DateTime toDate);
+      
         Task InsertDefaultRecordsAsync(int organizationId);
     }
 }

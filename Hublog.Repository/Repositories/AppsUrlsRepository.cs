@@ -216,6 +216,41 @@ ORDER BY
             return (result.ApplicationName, FormatDuration(result.TotalUsageSeconds));
         }
 
+
+        public async Task<(string Url, string UrlMaxUsage, string ApplicationName, string AppMaxUsage)> GetTopAppAndUrlsUsageAsync(
+    int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
+        {
+            var parameters = new
+            {
+                @OrganizationId = organizationId,
+                @TeamId = teamId,
+                @UserId = userId,
+                @StartDate = startDate,
+                @EndDate = endDate
+            };
+
+            string query = "GetTopAppandUrlUsage";
+
+            var result = await _dapper.GetSingleAsync<(
+                string Url, long UrlMaxUsageSeconds,
+                string ApplicationName, long AppMaxUsageSeconds)>(
+                query,
+                parameters,
+                CommandType.StoredProcedure
+            );
+
+            string FormatDuration(long totalSeconds)
+            {
+                var hours = totalSeconds / 3600;
+                var minutes = (totalSeconds % 3600) / 60;
+                var seconds = totalSeconds % 60;
+                return $"{hours}:{minutes:D2}:{seconds:D2}";
+            }
+
+            return (result.Url, FormatDuration(result.UrlMaxUsageSeconds),
+                    result.ApplicationName, FormatDuration(result.AppMaxUsageSeconds));
+        }
+
         public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
             string appUsageQuery = "get_ApplicationUsage";

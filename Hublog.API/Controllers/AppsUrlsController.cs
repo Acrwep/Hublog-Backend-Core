@@ -1,5 +1,6 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model.ApplicationModel;
+using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Service.Interface;
 using Hublog.Service.Services;
@@ -104,6 +105,24 @@ namespace Hublog.API.Controllers
                 return BadRequest($"Error retrieving top URL usage: {ex.Message}");
             }
         }
+
+
+        [HttpGet("GetTopAppAndUrlUsage")]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        public async Task<IActionResult> GetTopAppAndUrlUsage(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var result = await _appsUrlsService.GetTopAppAndUrlsUsageAsync(organizationId, teamId, userId, startDate, endDate);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error retrieving top URL usage: {ex.Message}");
+            }
+        }
+
+
         [HttpGet("GetTopCategory")]
         public async Task<IActionResult> GetTopCategory(int organizationId, int? teamId, int? userId,DateTime fromDate,  DateTime toDate)
         {

@@ -39,19 +39,38 @@ namespace Hublog.Repository.Repositories
 
 
 
-        public async Task<List<Alert>> GetAlert(int organizationId, int? userId, DateTime triggeredTime)
+        //public async Task<List<Alert>> GetAlert(int organizationId, int? userId, DateTime triggeredTime)
+        //{
+        //    // Define the stored procedure name
+        //    var procedure = "EXEC GetAlerts @OrganizationId, @UserId, @TriggeredTime";
+        //    var parameters = new
+        //    {
+        //        OrganizationId = organizationId,
+        //        UserId = userId,
+        //        TriggeredTime = triggeredTime
+        //    };
+        //    var result = await _dapper.GetAllAsync<Alert>(procedure, parameters);
+        //    return result.ToList();
+        //}
+
+        public async Task<List<Alert>> GetAlert(int organizationId, int? teamId, int? userId, DateTime triggeredTime)
         {
-            // Define the stored procedure name
-            var procedure = "EXEC GetAlerts @OrganizationId, @UserId, @TriggeredTime";
+            var procedure = "EXEC Sp_GetAlerts @OrganizationId, @TeamId, @UserId, @TriggeredTime";
+
             var parameters = new
             {
                 OrganizationId = organizationId,
+                TeamId = teamId,
                 UserId = userId,
                 TriggeredTime = triggeredTime
             };
+
             var result = await _dapper.GetAllAsync<Alert>(procedure, parameters);
             return result.ToList();
         }
+
+
+
         public async Task<Alert_Rule> InsertAlertRule(Alert_Rule alert_Rule)
         {
             try

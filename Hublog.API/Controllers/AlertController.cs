@@ -39,15 +39,15 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("GetAlert")]
-        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
-        public async Task<IActionResult> GetAlert(int organizationId, int? userId, DateTime triggeredTime = default)
+       // [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+        public async Task<IActionResult> GetAlert(int organizationId, int? teamId, int? userId, DateTime triggeredTime = default)
         {
             if (triggeredTime == default)
             {
                 return BadRequest("Invalid or missing triggered time.");
             }
 
-            var result = await _alertService.GetAlert(organizationId, userId, triggeredTime);
+            var result = await _alertService.GetAlert(organizationId, teamId, userId, triggeredTime);
             return Ok(result);
         }
         [HttpPost("InsertAlertRule")]

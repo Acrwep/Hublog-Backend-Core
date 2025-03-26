@@ -56,6 +56,19 @@ namespace Hublog.Service.Services
                 MaxUsage = result.MaxUsage
             };
         }
+
+        public async Task<TopAppAndUrlUsageResponse> GetTopAppAndUrlsUsageAsync(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
+        {
+            var result = await _appsUrlsRepository.GetTopAppAndUrlsUsageAsync(organizationId, teamId, userId, startDate, endDate);
+            return new TopAppAndUrlUsageResponse
+            {
+                ApplicationName = result.ApplicationName,
+                AppMaxUsage = result.AppMaxUsage,
+                Url = result.Url,
+                UrlMaxUsage = result.UrlMaxUsage
+            };
+        }
+
         public async Task<TopAppUsageResponse> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate)
         {
             var result = await _appsUrlsRepository.GetTopCategory(organizationId, teamId, userId, startDate, endDate);
@@ -78,5 +91,7 @@ namespace Hublog.Service.Services
             }
             
         }
+
+
     }
 }

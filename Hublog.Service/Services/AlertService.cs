@@ -25,9 +25,9 @@ namespace Hublog.Service.Services
                 await _alertRepository.InsertAlert(model);
             }
         }
-        public async Task<List<Alert>> GetAlert(int organizationId, int? userId,  DateTime triggeredTime)
+        public async Task<List<Alert>> GetAlert(int organizationId, int? teamId, int? userId,  DateTime triggeredTime)
         {
-            var alerts = await _alertRepository.GetAlert(organizationId, userId, triggeredTime);
+            var alerts = await _alertRepository.GetAlert(organizationId, teamId, userId, triggeredTime);
             return alerts;
         }
         public async Task<Alert_Rule> InsertAlertRule(Alert_Rule alert_Rule)

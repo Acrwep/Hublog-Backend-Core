@@ -9,7 +9,7 @@ namespace Hublog.Repository.Interface
     public interface IAlertRepository
     {
         Task<int> InsertAlert(Alert Alert);
-        Task<List<Alert>> GetAlert(int organizationId,int? userId, DateTime triggeredTime);
+        Task<List<Alert>> GetAlert(int organizationId, int? teamId, int? userId, DateTime triggeredTime);
         Task<Alert_Rule> InsertAlertRule(Alert_Rule alert_Rule);
         Task<Alert_Rule> UpdateAlertRule(Alert_Rule alert_Rule);
         Task<List<Alert_Rule>> GetAlertRule(int organizationId,string? searchQuery); 
