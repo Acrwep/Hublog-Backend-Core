@@ -6,6 +6,7 @@ using Hublog.Service.Interface;
 using Hublog.Service.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Hublog.API.Controllers
 {
@@ -21,7 +22,7 @@ namespace Hublog.API.Controllers
 
         #region GetApplicationUsage
         [HttpGet("GetAppUsage")]
-        [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> GetApplicationUsage(int? userId,int? teamid, int organizationId, DateTime startDate, DateTime endDate)
         {
             try
@@ -51,19 +52,52 @@ namespace Hublog.API.Controllers
             }
         }
 
+        private bool FinalApplicationNameValidation(string applicationName)
+        {
+            // Remove all non-alphabetic characters and count only alphabetic letters
+            var letterCount = applicationName.Count(char.IsLetter);
+
+            // Check if there are at least two alphabetic letters
+            return letterCount >= 2;
+        }
 
         [HttpPost("Application")]
         //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> LogApplicationUsage(ApplicationUsage applicationUsage)
         {
-            var result = await _appsUrlsService.LogApplicationUsageAsync(applicationUsage);
+            if (!ModelState.IsValid ||
+                 string.IsNullOrWhiteSpace(applicationUsage.ApplicationName) ||
+                 string.IsNullOrWhiteSpace(applicationUsage.TotalUsage) ||
+                 string.IsNullOrWhiteSpace(applicationUsage.Details) ||
+                 string.IsNullOrWhiteSpace(applicationUsage.UsageDate))
+            {
+                return BadRequest("Invalid Insert Operation: Fields cannot be empty.");
+            }
+            if (applicationUsage.ApplicationName == "firefox" || applicationUsage.ApplicationName == "msedge" || applicationUsage.ApplicationName == "chrome" ||  applicationUsage.ApplicationName == "opera" || applicationUsage.ApplicationName == "brave")
+            {
+                return BadRequest("Invalid Insert Operation");
+            }
 
-            Console.WriteLine($"Result from InsertApplicationUsage: {result}");
+            bool finalValidationStatus = FinalApplicationNameValidation(applicationUsage.ApplicationName);
+            if (finalValidationStatus==true)
+            {
+                var result = await _appsUrlsService.LogApplicationUsageAsync(applicationUsage);
 
-            if (result)
-                return Ok(new { Message = "Application usage logged successfully" });
+                Console.WriteLine($"Result from InsertApplicationUsage: {result}");
 
-            return BadRequest(new { Message = "Failed to log application usage" });
+                if (result)
+                    return Ok(new { Message = "Application usage logged successfully" });
+                else
+                {
+                    return BadRequest(new { Message = "Failed to log application usage" });
+                }
+            }
+            else
+            {
+                return BadRequest("ApplicationName must have 2 Letters");
+            }
+
+           
         }
 
         [HttpPost("Url")]
