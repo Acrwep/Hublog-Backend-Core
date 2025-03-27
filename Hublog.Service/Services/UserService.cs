@@ -276,6 +276,15 @@ namespace Hublog.Service.Services
                 throw new InvalidOperationException("Admin users cannot be changed to managers");
             }
 
+            if (user.ManagerStatus == true)
+            {
+                int managerCount = await _userRepository.GetTeamManagerCount(user.TeamId);
+                if (managerCount>=2 && existingUser.ManagerStatus==false)
+                {
+                    throw new InvalidOperationException("This team already has 2 managers. Cannot add another.");
+                }
+            }
+          
             var rowsAffected = await _userRepository.UpdateUser(user);  
 
             if (rowsAffected > 0)

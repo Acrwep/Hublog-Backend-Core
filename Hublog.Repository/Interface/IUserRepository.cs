@@ -35,6 +35,7 @@ namespace Hublog.Repository.Interface
 
         Task<int> InsertUser(Users user);
         Task<Users> GetUserById(int userId);
+        Task<int> GetTeamManagerCount(int teamId);
         Task<int> UpdateUser(Users user); 
         
         Task<int> DeleteUser(int userId);

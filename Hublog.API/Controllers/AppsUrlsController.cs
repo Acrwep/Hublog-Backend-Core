@@ -62,7 +62,7 @@ namespace Hublog.API.Controllers
         }
 
         [HttpPost("Application")]
-        //[Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
+       // [Authorize(Policy = CommonConstant.Policies.UserOrAdminPolicy)]
         public async Task<IActionResult> LogApplicationUsage(ApplicationUsage applicationUsage)
         {
             if (!ModelState.IsValid ||

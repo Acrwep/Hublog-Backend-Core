@@ -650,6 +650,14 @@ namespace Hublog.Repository.Repositories
             return await _dapper.QueryFirstOrDefaultAsync<Users>(query, new { Id = userId });
         }
 
+        public async Task<int> GetTeamManagerCount(int teamId)
+        {
+            var query = "SELECT COUNT(*) FROM Users WHERE TeamId = @TeamId AND ManagerStatus = 1";
+            var parameter = new { TeamId = teamId };
+            var result = await _dapper.ExecuteScalarAsync<int>(query,parameter);
+            return result;
+        }
+
         #region UpdateUser
         public async Task<int> UpdateUser(Users user)
         {
