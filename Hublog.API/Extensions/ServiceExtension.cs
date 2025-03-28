@@ -80,6 +80,9 @@ namespace Hublog.API.Extensions
 
             services.AddTransient<IForgotPasswordRepository, ForgotPasswordRepository>();
             services.AddTransient<IForgotPasswordService, ForgotPasswordService>();
+
+            services.AddTransient<IOrganizationRepository, OrganizationRepository>();
+            services.AddTransient<IOrganizationService, OrganizationService>();
         }
 
         public static void ConfigureServices(this IServiceCollection services, IConfiguration configuration)

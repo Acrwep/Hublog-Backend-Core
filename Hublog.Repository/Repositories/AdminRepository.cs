@@ -135,7 +135,6 @@ namespace Hublog.Repository.Repositories
 
                 ///default code
 
-
                 //var createdShiftmaster = await _dapper.ExecuteAsync(query, shiftMaster);
                 //shiftMaster.Id = createdShiftmaster;
                 //return shiftMaster;
