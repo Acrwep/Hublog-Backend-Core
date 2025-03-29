@@ -14,6 +14,7 @@ namespace Hublog.Service.Interface
     {
         Task<ResultModel> InsertWellness(List<UserBreakModel> userBreakModels);
         Task<object> GetWellness([FromQuery] int OrganizationId);
+        Task<object> InsertWellnessAsync(WellNess wellness);
         Task<WellNess> UpdateWellNess(int OrganizationId, WellNess WellNess);
         Task<object> GetWellnessSummary(int organizationId, int? teamId, [FromQuery] DateTime Date);
         Task<object> GetWellnessDetails(int organizationId, int? teamId, int? userId, [FromQuery] DateTime startDate, [FromQuery] DateTime endDate);

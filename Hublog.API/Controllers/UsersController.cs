@@ -1,4 +1,4 @@
-﻿using Hublog.Repository.Common;
+﻿ using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.AlertModel;

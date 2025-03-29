@@ -8,6 +8,7 @@ namespace Hublog.Repository.Entities.Model.WellNess_Model
 {
     public class WellNess
     {
+        public int Id { get; set; }
         public int OrganizationId { get; set; }
         public int? TeamId { get; set; }
         public string? TeamName { get; set; }

@@ -1,4 +1,6 @@
-﻿using Hublog.Service.Model;
+﻿using Dapper;
+using Hublog.Service.Model;
+using System.Data;
 using System.Text.Json;
 
 namespace Hublog.API.Extensions
@@ -42,5 +44,7 @@ namespace Hublog.API.Extensions
             var result = JsonSerializer.Serialize(errorMessage);
             return context.Response.WriteAsync(result);
         }
+
+       
     }
 }

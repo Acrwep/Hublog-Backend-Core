@@ -1,3 +1,5 @@
+using System.Data;
+using System.Data.SqlClient;
 using Hublog.API.Extensions;
 using Hublog.API.Hub;
 using Hublog.Repository.Entities.Model;
@@ -5,8 +7,10 @@ using Hublog.Repository.Entities.Model.UserModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
+using static Hublog.Repository.Common.Dapperr;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +33,15 @@ builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("Emai
 builder.Services.ConfigureScope(configuration);
 builder.Services.ConfigureServices(configuration);
 builder.Services.AddSingleton<IAuthorizationHandler, AdminOrManagerHandler>();
+
+
+//builder.Services.AddScoped<IDbConnection>(sp =>
+//{
+//    var configuration = sp.GetRequiredService<IConfiguration>();
+//    string connectionString = configuration.GetConnectionString("DataBaseConnectionString");
+//    return new Microsoft.Data.SqlClient.SqlConnection(connectionString);
+//});
+
 
 builder.Services.AddSignalR(options =>
 {
@@ -58,6 +71,7 @@ var app = builder.Build();
 app.UseStaticFiles();
 app.UseCors("AllowSpecificOrigin");
 
+
 app.MapHub<LiveStreamHub>("/livestreamHub");
 
 // Configure the HTTP request pipeline.
@@ -73,8 +87,10 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 app.UseMiddleware<ExceptionMiddleware>();
 
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 
 app.MapControllers();
 

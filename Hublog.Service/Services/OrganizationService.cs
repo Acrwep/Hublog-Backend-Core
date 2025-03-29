@@ -17,6 +17,8 @@ namespace Hublog.Service.Services
         {
             _organizationRepository=organizationRepository;
         }
+
+      
         public async Task<List<Organizations>> GetAllAsync()
         {
             return await _organizationRepository.GetAllAsync();
@@ -43,5 +45,11 @@ namespace Hublog.Service.Services
             return updatedOrganization;
 
         }
+
+        public async Task<bool> CheckDomainAvailabilityAsync(string domain)
+        {
+            return await _organizationRepository.CheckDomainAvailabilityAsync(domain);
+        }
+
     }
 }

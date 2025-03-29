@@ -1,6 +1,8 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using System.Data;
 
 namespace Hublog.Repository.Common
@@ -109,5 +111,44 @@ namespace Hublog.Repository.Common
                 _disposed = true;
             }
         }
+
+        //public class PlanValidationMiddleware
+        //{
+        //    private readonly RequestDelegate _next;
+        //    private readonly IConfiguration _configuration;
+
+        //    public PlanValidationMiddleware(RequestDelegate next, IConfiguration configuration)
+        //    {
+        //        _next = next;
+        //        _configuration = configuration;
+        //    }
+
+        //    public async Task Invoke(HttpContext context, IServiceProvider serviceProvider)
+        //    {
+        //        using var scope = serviceProvider.CreateScope(); // Create a new DI scope
+        //        var dbConnection = scope.ServiceProvider.GetRequiredService<IDbConnection>();
+
+        //        var organizationId = context.User.FindFirst("OrganizationId")?.Value;
+        //        if (string.IsNullOrEmpty(organizationId))
+        //        {
+        //            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+        //            await context.Response.WriteAsync("Unauthorized: Organization ID is missing.");
+        //            return;
+        //        }
+
+        //        string query = "SELECT PlanEndDate FROM Organization WHERE Id = @Id";
+        //        var planEndDate = await dbConnection.QueryFirstOrDefaultAsync<DateTime?>(query, new { Id = organizationId });
+
+        //        if (planEndDate == null || planEndDate < DateTime.UtcNow)
+        //        {
+        //            context.Response.StatusCode = StatusCodes.Status403Forbidden;
+        //            await context.Response.WriteAsync("Access Denied: Subscription expired.");
+        //            return;
+        //        }
+
+        //        await _next(context);
+        //    }
+        //}
+
     }
 }

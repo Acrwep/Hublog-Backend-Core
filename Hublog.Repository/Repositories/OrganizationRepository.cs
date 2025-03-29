@@ -130,5 +130,12 @@ namespace Hublog.Repository.Repositories
             }
 
         }
+
+        public async Task<bool> CheckDomainAvailabilityAsync(string domain)
+        {
+            string query = "SELECT COUNT(1) FROM Organization WHERE Domain = @Domain";
+            int count = await _dapper.ExecuteScalarAsync<int>(query, new { Domain = domain });
+            return count > 0;
+        }
     }
 }

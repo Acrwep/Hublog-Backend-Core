@@ -659,9 +659,24 @@ namespace Hublog.Repository.Repositories
         }
 
         #region UpdateUser
+
+        public async Task<bool> UpdateNameExistsAsync(string email, int id)
+        {
+            const string query = @"SELECT COUNT(1) FROM Users WHERE Email = @Email AND Id <> @Id";
+            int count = await _dapper.ExecuteScalarAsync<int>(query, new { Email = email, Id = id });
+            return count > 0;
+        }
+
         public async Task<int> UpdateUser(Users user)
         {
-           
+
+            // Check if the name already exists
+            bool nameExists = await UpdateNameExistsAsync(user.Email, user.Id);
+            if (nameExists)
+            {
+                return -1; // Returning null to indicate a duplicate
+            }
+
             string query = @"
             UPDATE Users 
             SET First_Name = @First_Name, Last_Name = @Last_Name, Email = @Email, DOB = @DOB, DOJ = @DOJ, Phone = @Phone, 

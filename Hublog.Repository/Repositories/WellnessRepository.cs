@@ -15,6 +15,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Hublog.Repository.Entities.Model.WellNess_Model;
 using System.Globalization;
 using System.Data;
+using Hublog.Repository.Entities.Model.Organization;
 
 namespace Hublog.Repository.Repositories
 {
@@ -96,9 +97,9 @@ namespace Hublog.Repository.Repositories
 
             var setClauses = new List<string>();
             var parameters = new Dictionary<string, object>
-    {
-        { "OrganizationId", organizationId }
-    };
+            {
+               { "OrganizationId", organizationId }
+            };
 
             if (wellNess.Underutilized.HasValue)
             {
@@ -494,5 +495,28 @@ namespace Hublog.Repository.Repositories
             };
         }
 
+        public async Task<object> InsertWellnessAsync(WellNess wellness)
+        {
+            try
+            {
+                var insertQuery = @"insert into wellness(OrganizationId,Healthy,Overburdened,Underutilized)
+                                 values(@OrganizationId,@Healthy,@Overburdened,@Underutilized);SELECT SCOPE_IDENTITY();";
+                var parameter = new
+                {
+                    OrganizationId = wellness.OrganizationId,
+                    Healthy = wellness.Healthy,
+                    Overburdened = wellness.Overburdened,
+                    Underutilized = wellness.Underutilized
+                };
+                int newId = await _dapper.GetSingleAsync<int>(insertQuery, parameter);
+                wellness.Id = newId;
+                return wellness;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error creating shiftmaster", ex);
+            }
+           
+        }
     }
 }

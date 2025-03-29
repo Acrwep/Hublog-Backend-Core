@@ -2,6 +2,7 @@
 using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Break;
+using Hublog.Repository.Entities.Model.Organization;
 using Hublog.Repository.Entities.Model.WellNess_Model;
 using Hublog.Service.Interface;
 using Hublog.Service.Services;
@@ -19,7 +20,7 @@ namespace Hublog.API.Controllers
         {
             _WellnessService = wellnessService;
         }
-        [HttpPost("InsertWellness")]
+        [HttpPost("InsertBreakModelWellness")]
         public async Task<IActionResult> InsertWellness(List<UserBreakModel> model)
         {
             if (!ModelState.IsValid)
@@ -66,6 +67,33 @@ namespace Hublog.API.Controllers
             }
         }
         #endregion
+
+
+        [HttpPost("insertWellness")]
+        public async Task<IActionResult> Insert([FromBody] WellNess wellNess)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Model state is not valid");
+                }
+
+                var insertedRecord = await _WellnessService.InsertWellnessAsync(wellNess);
+               
+                if (insertedRecord != null)
+                {
+                    return Ok(insertedRecord);
+                }
+                return BadRequest("Insert Wellness failed");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
+        }
+
         [HttpPut("UpdateWellNess")]
         public async Task<IActionResult> UpdateWellNess(int OrganizationId, WellNess WellNess)
         {

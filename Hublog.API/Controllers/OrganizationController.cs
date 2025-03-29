@@ -1,4 +1,5 @@
 ﻿using Hublog.Repository.Entities.Model.Organization;
+using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,10 +11,12 @@ namespace Hublog.API.Controllers
     public class OrganizationController : ControllerBase
     {
         private readonly IOrganizationService _organizationService;
+        private readonly IEmailService _emailService;
 
-        public OrganizationController(IOrganizationService organizationService)
+        public OrganizationController(IOrganizationService organizationService, IEmailService emailService)
         {
             _organizationService = organizationService;
+            _emailService = emailService;
         }
 
         [HttpPost("insert")]
@@ -27,6 +30,7 @@ namespace Hublog.API.Controllers
                 }
 
                 var insertedRecord = await _organizationService.InsertAsync(organization);
+                await _emailService.SendOrganizationEmailAsync(organization);
 
                 if (insertedRecord != null)
                 {
@@ -71,5 +75,31 @@ namespace Hublog.API.Controllers
             return Ok(result);
         }
 
+
+        [HttpGet("CheckDomain")]
+        public async Task<IActionResult> CheckDomainAvailability([FromQuery] string domain)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(domain))
+                {
+                    return BadRequest("Domain name is required.");
+                }
+
+                bool domainExists = await _organizationService.CheckDomainAvailabilityAsync(domain);
+
+                if (domainExists==false)
+                {
+                    return BadRequest(new { message = "The domain name is not exist." });
+                }
+
+                return Ok(new { message = "The domain name is exist." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+           
+        }
     }
 }

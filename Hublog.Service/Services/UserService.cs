@@ -291,6 +291,10 @@ namespace Hublog.Service.Services
             {
                 return user;
             }
+            else if (rowsAffected == -1)
+            {
+                throw new InvalidOperationException("The Email is already exists");
+            }
 
             return null;
         }

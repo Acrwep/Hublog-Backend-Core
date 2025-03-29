@@ -45,5 +45,15 @@ namespace Hublog.Service.Services
         {
             return await _IWellnessRepository.GetWellnessUserDetails(organizationId, teamId, userId, startDate, endDate);
         }
+
+        public async Task<object> InsertWellnessAsync(WellNess wellness)
+        {
+           var insertWellness=await _IWellnessRepository.InsertWellnessAsync(wellness);
+            if (insertWellness == null)
+            {
+                throw new InvalidOperationException("Insert Operation Failed");
+            }
+            return insertWellness;
+        }
     }
 }

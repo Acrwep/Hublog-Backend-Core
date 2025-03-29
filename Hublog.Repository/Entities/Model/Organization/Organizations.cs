@@ -23,5 +23,7 @@ namespace Hublog.Repository.Entities.Model.Organization
         public string WebsiteUrl { get; set; }
         public string LinkdinUrl { get; set; }
         public decimal PaidAmount { get; set; }
+
+        public string Subject { get; set; } = "Welcome to Hublog!";
     }
 }
