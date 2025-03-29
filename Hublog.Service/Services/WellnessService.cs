@@ -21,10 +21,7 @@ namespace Hublog.Service.Services
         {
             _IWellnessRepository = wellnessRepository;
         }
-        public async Task<ResultModel> InsertWellness(List<UserBreakModel> model)
-        {
-            return await _IWellnessRepository.InsertWellness(model);
-        }
+
         public async Task<object> GetWellness([FromQuery] int OrganizationId)
         {
             return await _IWellnessRepository.GetWellness(OrganizationId);

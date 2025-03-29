@@ -35,13 +35,6 @@ builder.Services.ConfigureServices(configuration);
 builder.Services.AddSingleton<IAuthorizationHandler, AdminOrManagerHandler>();
 
 
-//builder.Services.AddScoped<IDbConnection>(sp =>
-//{
-//    var configuration = sp.GetRequiredService<IConfiguration>();
-//    string connectionString = configuration.GetConnectionString("DataBaseConnectionString");
-//    return new Microsoft.Data.SqlClient.SqlConnection(connectionString);
-//});
-
 
 builder.Services.AddSignalR(options =>
 {

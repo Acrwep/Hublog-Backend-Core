@@ -8,7 +8,7 @@ namespace Hublog.Repository.Entities.Model.WellNess_Model
 {
     public class WellNessBreakdown
     {
-        public DateTime Date {  get; set; }
+        public DateTime Date { get; set; }
         public int Teamid { get; set; }
         public string TeamName { get; set; }
         public int? UserId { get; set; }

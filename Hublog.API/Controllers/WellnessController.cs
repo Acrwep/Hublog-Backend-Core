@@ -20,33 +20,7 @@ namespace Hublog.API.Controllers
         {
             _WellnessService = wellnessService;
         }
-        [HttpPost("InsertBreakModelWellness")]
-        public async Task<IActionResult> InsertWellness(List<UserBreakModel> model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest("Model State is Not Valid");
-            }
-
-            try
-            {
-                var result = await _WellnessService.InsertWellness(model);
-
-                if (result.Result == 1)
-                {
-                    return Ok("InsertBreak Success");
-                }
-                else
-                {
-                    return NotFound($"Error: {result.Msg}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Internal server error: {ex.Message}");
-            }
-        }
+       
         #region GetUsersByTeamId
         [HttpGet("GetWellness")]
         public async Task<IActionResult> GetWellness([FromQuery] int OrganizationId)
@@ -68,7 +42,7 @@ namespace Hublog.API.Controllers
         }
         #endregion
 
-
+        #region InsertWellness
         [HttpPost("insertWellness")]
         public async Task<IActionResult> Insert([FromBody] WellNess wellNess)
         {
@@ -80,7 +54,7 @@ namespace Hublog.API.Controllers
                 }
 
                 var insertedRecord = await _WellnessService.InsertWellnessAsync(wellNess);
-               
+
                 if (insertedRecord != null)
                 {
                     return Ok(insertedRecord);
@@ -93,6 +67,8 @@ namespace Hublog.API.Controllers
             }
 
         }
+        #endregion
+
 
         [HttpPut("UpdateWellNess")]
         public async Task<IActionResult> UpdateWellNess(int OrganizationId, WellNess WellNess)

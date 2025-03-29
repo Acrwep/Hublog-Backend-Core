@@ -12,7 +12,7 @@ namespace Hublog.Service.Interface
 {
     public interface IWellnessService
     {
-        Task<ResultModel> InsertWellness(List<UserBreakModel> userBreakModels);
+       
         Task<object> GetWellness([FromQuery] int OrganizationId);
         Task<object> InsertWellnessAsync(WellNess wellness);
         Task<WellNess> UpdateWellNess(int OrganizationId, WellNess WellNess);

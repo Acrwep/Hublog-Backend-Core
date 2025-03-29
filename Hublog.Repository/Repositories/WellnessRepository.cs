@@ -33,46 +33,30 @@ namespace Hublog.Repository.Repositories
             var seconds = totalSeconds % 60; // Remaining seconds
             return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
         }
-        public async Task<ResultModel> InsertWellness(List<UserBreakModel> userBreakModels)
+       
+
+        public async Task<object> InsertWellnessAsync(WellNess wellness)
         {
             try
             {
-                var formattedDetails = new List<dynamic>();
-                foreach (var item in userBreakModels)
+                var insertQuery = @"insert into wellness(OrganizationId,Healthy,Overburdened,Underutilized)
+                                 values(@OrganizationId,@Healthy,@Overburdened,@Underutilized);SELECT SCOPE_IDENTITY();";
+                var parameter = new
                 {
-                    formattedDetails.Add(new
-                    {
-                        item.OrganizationId,
-                        item.BreakEntryId,
-                        item.Id,
-                        item.UserId,
-                        BreakDate = item.BreakDate.ToString("yyyy-MM-dd HH:mm:ss"),
-                        Start_Time = item.Start_Time.ToString("yyyy-MM-dd HH:mm:ss"),
-                        End_Time = item.End_Time?.ToString("yyyy-MM-dd HH:mm:ss"),
-                        item.Status
-                    });
-                }
-
-                string details = JsonConvert.SerializeObject(formattedDetails);
-
-                var parameters = new { details };
-                var result = await _dapper.GetAsync<ResultModel>("Exec [SP_BreakEntry] @details", parameters);
-
-                Console.WriteLine($"Stored Procedure Result Message: {result.Msg}");
-
-                if (result != null && result.Msg.Contains("ongoing break"))
-                {
-                    Console.WriteLine("Entering ongoing break condition.");
-
-                }
-
-                return result;
+                    OrganizationId = wellness.OrganizationId,
+                    Healthy = wellness.Healthy,
+                    Overburdened = wellness.Overburdened,
+                    Underutilized = wellness.Underutilized
+                };
+                int newId = await _dapper.GetSingleAsync<int>(insertQuery, parameter);
+                wellness.Id = newId;
+                return wellness;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error inserting break: {ex.Message}");
-                return new ResultModel { Result = 0, Msg = ex.Message };
+                throw new Exception("Error creating shiftmaster", ex);
             }
+
         }
 
         public async Task<object> GetWellness([FromQuery] int OrganizationId)
@@ -495,28 +479,6 @@ namespace Hublog.Repository.Repositories
             };
         }
 
-        public async Task<object> InsertWellnessAsync(WellNess wellness)
-        {
-            try
-            {
-                var insertQuery = @"insert into wellness(OrganizationId,Healthy,Overburdened,Underutilized)
-                                 values(@OrganizationId,@Healthy,@Overburdened,@Underutilized);SELECT SCOPE_IDENTITY();";
-                var parameter = new
-                {
-                    OrganizationId = wellness.OrganizationId,
-                    Healthy = wellness.Healthy,
-                    Overburdened = wellness.Overburdened,
-                    Underutilized = wellness.Underutilized
-                };
-                int newId = await _dapper.GetSingleAsync<int>(insertQuery, parameter);
-                wellness.Id = newId;
-                return wellness;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error creating shiftmaster", ex);
-            }
-           
-        }
+       
     }
 }

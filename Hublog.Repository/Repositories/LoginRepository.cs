@@ -44,8 +44,8 @@ namespace Hublog.Repository.Repositories
                              C.Name as DesignationName, D.Name as TeamName 
                       FROM Users A
                       INNER JOIN Role B ON A.RoleId = B.Id
-                      INNER JOIN Designation C ON A.DesignationId = C.Id
-                      INNER JOIN Team D ON A.TeamId = D.Id
+                      LEFT JOIN Designation C ON A.DesignationId = C.Id
+                      LEFT JOIN Team D ON A.TeamId = D.Id
                       WHERE A.Email = @Email AND A.Password = @Password AND A.Active = 1";
 
             var user = await _dapper.GetAsync<Users>(query, new { Email = email, Password = password });
