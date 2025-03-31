@@ -23,6 +23,7 @@ var configuration = new ConfigurationBuilder()
 .Build();
 
 builder.Services.AddControllers();
+builder.Services.AddMemoryCache();
 builder.Services.AddLogging();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

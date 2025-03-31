@@ -1,25 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Organization;
+using Hublog.Repository.Entities.Model.OTPRequest;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using MimeKit;
+using Org.BouncyCastle.Asn1.Ocsp;
+using Org.BouncyCastle.Utilities.Collections;
+using static Hublog.Repository.Common.CommonConstant;
 
 namespace Hublog.Repository.Repositories
 {
     public class EmailRepository : IEmailRepository
     {
         private readonly EmailSettings emailSettings;
-        public EmailRepository(IOptions<EmailSettings> options)
+        private readonly IOtpRepository _otpService;
+        public EmailRepository(IOptions<EmailSettings> options, IOtpRepository otpService)
         {
             this.emailSettings = options.Value;
+            _otpService = otpService;
         }
         public async Task SendEmailAsync(Users users)
         {
@@ -70,6 +79,7 @@ namespace Hublog.Repository.Repositories
             smtp.Disconnect(true);
         }
 
+      
 
         private string getHtmlContent(Users users)
         {
@@ -189,6 +199,33 @@ namespace Hublog.Repository.Repositories
 </table>";
             return response;
         }
+
+
+
+        public async Task SendOtpEmailAsync(OtpRequest otpRequest, string otp)
+        {
+            var email = new MimeMessage();
+            email.Sender = MailboxAddress.Parse(emailSettings.Email);
+            email.To.Add(MailboxAddress.Parse(otpRequest.Email));
+            email.Subject = "Your OTP Code";
+            var builder = new BodyBuilder { HtmlBody = GetOtpHtmlContent(otp) };
+            email.Body = builder.ToMessageBody();
+
+            using var smtp = new SmtpClient();
+            smtp.Connect(emailSettings.Host, emailSettings.Port, SecureSocketOptions.StartTls);
+            smtp.Authenticate(emailSettings.Email, emailSettings.Password);
+            await smtp.SendAsync(email);
+            smtp.Disconnect(true);
+        }
+        private string GetOtpHtmlContent(string otp)
+        {
+            return $@"
+       
+        <p>Your OTP Code is: <strong>{otp}</strong></p>
+        <p>This OTP is valid for 5 minutes.</p>
+        <p>Best Regards,<br>Hublog Team</p>";
+        }
+
     }
 
 }
