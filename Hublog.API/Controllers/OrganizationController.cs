@@ -1,5 +1,8 @@
 ﻿using Hublog.Repository.Entities.Model.Organization;
+using Hublog.Repository.Entities.Model.OTPRequest;
 using Hublog.Repository.Entities.Model.UserModels;
+using Hublog.Repository.Interface;
+using Hublog.Repository.Repositories;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +15,13 @@ namespace Hublog.API.Controllers
     {
         private readonly IOrganizationService _organizationService;
         private readonly IEmailService _emailService;
+       
 
         public OrganizationController(IOrganizationService organizationService, IEmailService emailService)
         {
             _organizationService = organizationService;
             _emailService = emailService;
+           
         }
 
         [HttpPost("insert")]
@@ -101,5 +106,7 @@ namespace Hublog.API.Controllers
             }
            
         }
+
+      
     }
 }
