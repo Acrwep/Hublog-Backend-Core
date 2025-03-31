@@ -147,27 +147,25 @@ namespace Hublog.Repository.Repositories
         <tr>
           <td>
             <div style=""border-bottom: 1px solid rgb(210, 209, 214);margin-top:12px"" />
-            <p style=""font-weight: 600; margin-top: 20px;color:#222;"">Dear {organizations.FirstName + " " + organizations.LastName},</p>
-            <p style=""margin-top: 6px; line-height: 24px;color:#222;"">
-              We are pleased to inform you that your employee account has been
-              successfully created at Hublog. You can now access your account and
-              begin using our platform.
+            <p style=""font-weight: 500; margin-top: 20px;color:#222;text-align:center;"">Hi {organizations.FirstName + " " + organizations.LastName}</p>
+            <p style=""margin-top: 6px; line-height: 24px;color:#222;text-align:center;font-weight:600;"">
+            You have been successfully registered at Hublog!
             </p>
-            <p style=""margin-top: 12px;color:#222;"">Here are your login details:</p>
+            <p style=""margin-top: 12px;color:#222;"">To complete your registration, set your password using the link below:</p>
             <ul style=""margin-top: 6px; padding-left: 20px;"">
               <li style=""margin-bottom: 6px;"">
                 <span style=""font-weight: 600;color:#222;"">Email:</span>   <span style=""color:#222;"">{organizations.Email}</span>
               </li>
               <li style=""margin-bottom: 6px;"">
-                <span style=""font-weight: 600;color:#222;"">Login URL:</span>
-                <a href=""https://hublog.org/login"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
-                  https://hublog.org/login
+                <span style=""font-weight: 600;color:#222;"">Password setup URL:</span>
+                <a href=""https://hublog.org/setpassword"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
+                  https://hublog.org/setpassword
                 </a>
               </li>
               <li style=""margin-bottom: 6px;"">
-                <span style=""font-weight: 600;color:#222;"">Download App URL:</span>
-                <a href=""https://hublog.org/downloads"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
-                  https://hublog.org/downloads
+                <span style=""font-weight: 600;color:#222;"">Login URL:</span>
+                <a href=""https://hublog.org/login"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
+                  https://hublog.org/login
                 </a>
               </li>
             </ul>
@@ -189,6 +187,6 @@ namespace Hublog.Repository.Repositories
 </table>";
             return response;
         }
-    }
+}
 
 }

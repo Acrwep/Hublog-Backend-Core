@@ -39,7 +39,7 @@ namespace Hublog.API.Controllers
         }
 
         [HttpGet("GetAlert")]
-       // [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         public async Task<IActionResult> GetAlert(int organizationId, int? teamId, int? userId, DateTime triggeredTime = default)
         {
             if (triggeredTime == default)
@@ -51,7 +51,6 @@ namespace Hublog.API.Controllers
             return Ok(result);
         }
         [HttpPost("InsertAlertRule")]
-        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         public async Task<IActionResult> InsertAlertRule(Alert_Rule alert_Rule)
         {
             if (ModelState.IsValid)
@@ -107,6 +106,7 @@ namespace Hublog.API.Controllers
             }
         }
         [HttpGet("GetAlertRule")]
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         public async Task<IActionResult> GetAlertRule(int organizationId, string? seachQuery = "")
         {
             try
