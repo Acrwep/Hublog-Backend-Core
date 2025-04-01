@@ -25,7 +25,7 @@ namespace Hublog.Repository.Repositories
         #region AttendanceReport
         public async Task<List<AttendanceReport>> AttendanceReport(int? userId, int? teamId, int organizationId, DateTime date)
         {
-            var query = "GetAttendanceReport";
+            var query = "sp_GetAttendanceReport";
 
             var parameters = new
             {
