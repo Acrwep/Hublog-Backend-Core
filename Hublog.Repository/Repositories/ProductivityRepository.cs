@@ -58,34 +58,10 @@ namespace Hublog.Repository.Repositories
         }
         public async Task<List<MappingModel>> GetImbuildAppsAndUrls(int OrganizationId,string userSearchQuery, string type, string category)
         {
-            //var query = "SELECT I.Type, I.Name " +
-            //            "FROM ImbuildAppsAndUrls I " +
-            //            "LEFT JOIN Categories C ON C.ProductivityId = I.CategoryId";
 
-            // You can include the filtering logic here
-            var query = @"SELECT I.id,I.[name],I.[type],I.[CategoryId],I.[OrganizationId]
-             FROM ImbuildAppsAndUrls I
-inner join Organization O 
-on O.id=I.OrganizationId
-             WHERE 
-    I.OrganizationId=@OrganizationId
-    and
-    (
-        (@userSearchQuery IS NULL OR @userSearchQuery = '') 
-        AND (@type IS NULL OR @type = '') 
-        AND (@category IS NULL OR @category = '')
-    )
-    OR
-    (
-        (@userSearchQuery IS NULL OR @userSearchQuery = '' OR I.Name LIKE '%' + @userSearchQuery + '%') 
-        AND (@type IS NULL OR @type = '' OR I.Type = @type)
-        AND (
-            (@category = 'mapped' AND I.CategoryId IS NOT NULL) OR 
-            (@category = 'unmapped' AND I.CategoryId IS NULL) OR 
-            @category IS NULL OR @category = ''
-        )
-    )";
-            var parameters = new
+            var query = "Sp_GetImbuildAppsAndUrls";
+
+           var parameters = new
             {
                 OrganizationId= OrganizationId,
                 userSearchQuery = userSearchQuery,
