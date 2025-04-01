@@ -16,5 +16,7 @@ namespace Hublog.Repository.Interface
         Task SendOrganizationEmailAsync(Organizations organizations);
 
         Task SendOtpEmailAsync(OtpRequest otpRequest, string otp);
+
+        Task<(string FirstName, string LastName)> GetUserDetailsByEmailAsync(string email);
     }
 }

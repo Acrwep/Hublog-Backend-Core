@@ -5,6 +5,7 @@ using System.Numerics;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Organization;
 using Hublog.Repository.Entities.Model.OTPRequest;
@@ -25,10 +26,12 @@ namespace Hublog.Repository.Repositories
     {
         private readonly EmailSettings emailSettings;
         private readonly IOtpRepository _otpService;
-        public EmailRepository(IOptions<EmailSettings> options, IOtpRepository otpService)
+        private readonly Dapperr _dapper;
+        public EmailRepository(IOptions<EmailSettings> options, IOtpRepository otpService, Dapperr dapper)
         {
             this.emailSettings = options.Value;
             _otpService = otpService;
+            _dapper = dapper;
         }
         public async Task SendEmailAsync(Users users)
         {
@@ -202,11 +205,18 @@ namespace Hublog.Repository.Repositories
 
         public async Task SendOtpEmailAsync(OtpRequest otpRequest, string otp)
         {
+            var userDetails = await GetUserDetailsByEmailAsync(otpRequest.Email);
+
+            if (string.IsNullOrEmpty(userDetails.FirstName) || string.IsNullOrEmpty(userDetails.LastName))
+            {
+                throw new Exception("User details not found for the given email.");
+            }
             var email = new MimeMessage();
             email.Sender = MailboxAddress.Parse(emailSettings.Email);
             email.To.Add(MailboxAddress.Parse(otpRequest.Email));
             email.Subject = "Your OTP Code";
-            var builder = new BodyBuilder { HtmlBody = GetOtpHtmlContent(otp) };
+
+            var builder = new BodyBuilder { HtmlBody = GetOtpHtmlContent(otp,userDetails.FirstName,userDetails.LastName) };
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
@@ -215,10 +225,11 @@ namespace Hublog.Repository.Repositories
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
         }
-        private string GetOtpHtmlContent(string otp)
+        private string GetOtpHtmlContent(string otp, string firstName, string lastName)
         {
             return $@"
             <div>
+            <p>Dear <span style=""font-weight: 600;"">{firstName} {lastName}</span>,</p>
             <p>Your One Time Password (OTP) is <span style=""font-weight: 600;"">{otp}</span>. This OTP will be valid for next 5 mins.</p>
 
             <div style=""font-size: 14px;color:#222;"">
@@ -228,6 +239,13 @@ namespace Hublog.Repository.Repositories
             </div>";
         }
 
+        public async Task<(string FirstName, string LastName)> GetUserDetailsByEmailAsync(string email)
+        {
+            string query = "SELECT First_Name, Last_Name FROM Users WHERE Email = @Email";
+
+            return await _dapper.QueryFirstOrDefaultAsync<(string, string)>(query, new { Email = email });
+            
+        }
     }
 
 }
