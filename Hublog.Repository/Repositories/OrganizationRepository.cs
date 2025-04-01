@@ -33,6 +33,12 @@ namespace Hublog.Repository.Repositories
             int count = await _dapper.ExecuteScalarAsync<int>(query, new { Email = email });
             return count > 0;
         }
+        public async Task<bool> IsUserEmailExistsAsync(string email)
+        {
+            const string query = "SELECT COUNT(1) FROM Users WHERE Email = @Email";
+            int count = await _dapper.ExecuteScalarAsync<int>(query, new { Email = email });
+            return count > 0;
+        }
 
         public async Task<Organizations> InsertAsync(Organizations organization)
         {
@@ -41,6 +47,12 @@ namespace Hublog.Repository.Repositories
                 // Check if the name already exists
                 bool emailExists = await IsNameExistsAsync(organization.Email);
                 if (emailExists)
+                {
+                    return null; // Returning null to indicate a duplicate
+                }
+
+                bool userEmailExists = await IsUserEmailExistsAsync(organization.Email);
+                if (userEmailExists)
                 {
                     return null; // Returning null to indicate a duplicate
                 }
