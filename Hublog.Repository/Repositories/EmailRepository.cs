@@ -218,10 +218,14 @@ namespace Hublog.Repository.Repositories
         private string GetOtpHtmlContent(string otp)
         {
             return $@"
-       
-        <p>Your OTP Code is: <strong>{otp}</strong></p>
-        <p>This OTP is valid for 5 minutes.</p>
-        <p>Best Regards,<br>Hublog Team</p>";
+            <div>
+            <p>Your One Time Password (OTP) is <span style=""font-weight: 600;"">{otp}</span>. This OTP will be valid for next 5 mins.</p>
+
+            <div style=""font-size: 14px;color:#222;"">
+            <p style=""margin-bottom: 0px;"">Best Regards,</p>
+            <p style=""margin-top: 2px;"">Hublog Team</p>
+            </div>
+            </div>";
         }
 
     }
