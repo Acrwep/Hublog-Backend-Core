@@ -229,8 +229,8 @@ namespace Hublog.Repository.Repositories
         {
             return $@"
             <div>
-            <p>Dear <span style=""font-weight: 600;"">{firstName} {lastName}</span>,</p>
-            <p>Your One Time Password (OTP) is <span style=""font-weight: 600;"">{otp}</span>. This OTP will be valid for next 5 mins.</p>
+            <p>Dear {firstName} {lastName},</p>
+            <p>Your One Time Password (OTP) is <span style=""font-weight: 600;margin-top:6px"">{otp}</span>. This OTP will be valid for next 5 mins.</p>
 
             <div style=""font-size: 14px;color:#222;"">
             <p style=""margin-bottom: 0px;"">Best Regards,</p>
