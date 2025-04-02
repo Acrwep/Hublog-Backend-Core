@@ -13,9 +13,9 @@ namespace Hublog.Service.Services
         {
             _productivityRepository = productivityRepository;
         }
-        public async Task<List<CategoryModel>> GetCategoryProductivity(string categoryName)
+        public async Task<List<CategoryModel>> GetCategoryProductivity(string categoryName, int organizationId)
         {
-            return await _productivityRepository.GetCategoryProductivity(categoryName);
+            return await _productivityRepository.GetCategoryProductivity(categoryName, organizationId);
         }
 
         public async Task<bool> UpdateProductivityId(int categoryId, int? productivityId)

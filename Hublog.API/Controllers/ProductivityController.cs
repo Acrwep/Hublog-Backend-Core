@@ -17,11 +17,11 @@ namespace Hublog.API.Controllers
         {
             _productivityService = productivityService;
         }
-        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+       // [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpGet("Category")]
-        public async Task<IActionResult> GetCategory([FromQuery] string categoryName = "")
+        public async Task<IActionResult> GetCategory(int organizationId,[FromQuery] string categoryName = "")
         {
-            var categories = await _productivityService.GetCategoryProductivity(categoryName);
+            var categories = await _productivityService.GetCategoryProductivity(categoryName, organizationId);
 
             if (categories == null || !categories.Any())
                 return NotFound(new { message = "No categories found." });

@@ -1,6 +1,7 @@
 ﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.AlertModel;
+using Hublog.Repository.Entities.Model.Organization;
 using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Repository.Entities.Model.UserModels;
@@ -22,27 +23,26 @@ namespace Hublog.Repository.Repositories
         {
             _dapper = dapper;
         }
-        public async Task<List<CategoryModel>> GetCategoryProductivity(string categoryName)
+        public async Task<List<CategoryModel>> GetCategoryProductivity(string categoryName, int organizationId)
         {
-            var query = @"
-            SELECT 
-                C.Id AS CategoryId,
-                C.CategoryName,
-                PA.Id AS ProductivityId,
-                PA.Name AS ProductivityName
-            FROM 
-                Categories C
-            LEFT JOIN 
-                ProductivityAssign PA ON C.ProductivityId = PA.Id";
+           
+            var query = @"SELECT  C.Id AS CategoryId,C.CategoryName,c.OrganizationId,PA.Id AS ProductivityId,PA.Name AS ProductivityName
+                        FROM  Categories C
+                        LEFT JOIN 
+                        ProductivityAssign PA ON C.ProductivityId = PA.Id where OrganizationId=@OrganizationId";
+            var parameters = new { OrganizationId= organizationId };
+
+            var result= await _dapper.GetAllAsync<CategoryModel>(query, parameters);
 
             if (!string.IsNullOrWhiteSpace(categoryName))
             {
                 query += " WHERE C.CategoryName LIKE @CategoryName";
-                var parameters = new { CategoryName = $"%{categoryName}%" };
-                return await _dapper.GetAllAsync<CategoryModel>(query, parameters);
+                var parameterss = new { CategoryName = $"%{categoryName}%" };
+                return await _dapper.GetAllAsync<CategoryModel>(query, parameterss);
             }
 
-            return await _dapper.GetAllAsync<CategoryModel>(query);
+            //return await _dapper.GetAllAsync<CategoryModel>(query);
+            return result;
         }
 
         public async Task<int> UpdateProductivityId(int categoryId, int? productivityId)
@@ -59,7 +59,7 @@ namespace Hublog.Repository.Repositories
         public async Task<List<MappingModel>> GetImbuildAppsAndUrls(int OrganizationId,string userSearchQuery, string type, string category)
         {
 
-            var query = "Sp_GetImbuildAppsAndUrls";
+            var query = "Sp_GetImbuildAppsAndUrls"; 
 
            var parameters = new
             {

@@ -5,7 +5,7 @@ namespace Hublog.Repository.Interface
 {
     public interface IProductivityRepository
     {
-        Task<List<CategoryModel>> GetCategoryProductivity(string categoryName);
+        Task<List<CategoryModel>> GetCategoryProductivity(string categoryName, int organizationId);
 
         Task<int> UpdateProductivityId(int categoryId, int? productivityId);
         Task<List<MappingModel>> GetImbuildAppsAndUrls(int OrganizationId,string userSearchQuery, string type, string category);
