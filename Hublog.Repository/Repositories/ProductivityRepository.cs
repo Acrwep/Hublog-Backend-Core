@@ -25,14 +25,14 @@ namespace Hublog.Repository.Repositories
         }
         public async Task<List<CategoryModel>> GetCategoryProductivity(string categoryName, int organizationId)
         {
-           
+
             var query = @"SELECT  C.Id AS CategoryId,C.CategoryName,c.OrganizationId,PA.Id AS ProductivityId,PA.Name AS ProductivityName
                         FROM  Categories C
                         LEFT JOIN 
                         ProductivityAssign PA ON C.ProductivityId = PA.Id where OrganizationId=@OrganizationId";
-            var parameters = new { OrganizationId= organizationId };
+            var parameters = new { OrganizationId = organizationId };
 
-            var result= await _dapper.GetAllAsync<CategoryModel>(query, parameters);
+            var result = await _dapper.GetAllAsync<CategoryModel>(query, parameters);
 
             if (!string.IsNullOrWhiteSpace(categoryName))
             {
@@ -56,20 +56,20 @@ namespace Hublog.Repository.Repositories
 
             return await _dapper.ExecuteAsync(query, parameters);
         }
-        public async Task<List<MappingModel>> GetImbuildAppsAndUrls(int OrganizationId,string userSearchQuery, string type, string category)
+        public async Task<List<MappingModel>> GetImbuildAppsAndUrls(int OrganizationId, string userSearchQuery, string type, string category)
         {
 
-            var query = "Sp_GetImbuildAppsAndUrls"; 
+            var query = "Sp_GetImbuildAppsAndUrls";
 
-           var parameters = new
+            var parameters = new
             {
-                OrganizationId= OrganizationId,
+                OrganizationId = OrganizationId,
                 userSearchQuery = userSearchQuery,
                 type = type,
                 category = category
             };
 
-            var result=await _dapper.GetAllAsync<MappingModel>(query, parameters);
+            var result = await _dapper.GetAllAsync<MappingModel>(query, parameters);
             return result;
         }
         public async Task<List<MappingModel>> GetByIdImbuildAppsAndUrls(int id)
@@ -108,7 +108,7 @@ namespace Hublog.Repository.Repositories
                 Name = mappingModel.Name,
                 Type = mappingModel.Type,
                 CategoryId = mappingModel.CategoryId,
-                OrganizationId= mappingModel.OrganizationId
+                OrganizationId = mappingModel.OrganizationId
             };
 
             try
@@ -176,7 +176,7 @@ namespace Hublog.Repository.Repositories
                 var usages = await _dapper.GetAllAsyncs<AppUsage>("Sp_GetAppUsageEmployeeList", parameterss, commandType: CommandType.StoredProcedure);
 
 
-                // Calculate TotalUsage for each ApplicationName
+                // Calculate TotalUsage for each ApplicationName 
                 var totalUsages = usages
                 .GroupBy(u => u.ApplicationName)
                 .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
@@ -203,52 +203,55 @@ namespace Hublog.Repository.Repositories
                         var imbuildAppQuery = @"
                         SELECT CategoryId 
                          FROM ImbuildAppsAndUrls 
-                        WHERE Name LIKE '%' + @ApplicationName + '%'";
-                        var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName });
+                        WHERE Name LIKE '%' + @ApplicationName + '%' And OrganizationId=@OrganizationId";
+                        
+                        // Fetch all CategoryIds matching the criteria
+                        var categoryIds = await _dapper.QueryAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName, OrganizationId = organizationId });
 
-                        if (categoryId.HasValue)
+                        if (categoryIds.Any())  // Check if any values were returned
                         {
-                            usage.CategoryId = categoryId.Value;
-
-                            var categoryQuery = @"
-                        SELECT CategoryName, ProductivityId 
-                        FROM Categories 
-                         WHERE Id = @CategoryId";
-
-                            var category = await _dapper.QueryFirstOrDefaultAsync<(string CategoryName, int ProductivityId)>(categoryQuery, new { CategoryId = categoryId.Value });
-
-                            if (category != default)
+                            foreach (var categoryId in categoryIds)
                             {
-                                usage.CategoryName = category.CategoryName;
+                                if (!categoryId.HasValue) continue; // Skip null values
+                                usage.CategoryId = categoryId.Value;
 
-                                // Fetch ProductivityName from ProductivityAssign
-                                var productivityQuery = @"
-                            SELECT Name FROM ProductivityAssign
-                            WHERE Id = @ProductivityId";
+                                var categoryQuery = @"
+                                 SELECT CategoryName, ProductivityId 
+                                 FROM Categories 
+                                 WHERE Id = @CategoryId";
 
-                                var productivityName = await _dapper.QueryFirstOrDefaultAsync<string>(productivityQuery, new { ProductivityId = category.ProductivityId });
-                                usage.ProductivityName = productivityName;
+                                var category = await _dapper.QueryFirstOrDefaultAsync<(string CategoryName, int ProductivityId)>(categoryQuery, new { CategoryId = categoryId });
 
-                                // Add to the corresponding duration
-                                switch (usage.ProductivityName)
+                                if (category != default)
                                 {
-                                    case "Productive":
-                                        totalProductiveDuration += usage.TotalSeconds;
-                                        break;
-                                    case "Unproductive":
-                                        totalUnproductiveDuration += usage.TotalSeconds;
-                                        break;
-                                    case "Neutral":
-                                        totalNeutralDuration += usage.TotalSeconds;
-                                        break;
+                                    usage.CategoryName = category.CategoryName;
+
+                                    // Fetch ProductivityName from ProductivityAssign
+                                    var productivityQuery = @"
+                                 SELECT Name FROM ProductivityAssign
+                                 WHERE Id = @ProductivityId";
+
+                                    var productivityName = await _dapper.QueryFirstOrDefaultAsync<string>(productivityQuery, new { ProductivityId = category.ProductivityId });
+                                    usage.ProductivityName = productivityName;
+
+                                    // Add to the corresponding duration
+                                    switch (usage.ProductivityName)
+                                    {
+                                        case "Productive":
+                                            totalProductiveDuration += usage.TotalSeconds;
+                                            break;
+                                        case "Unproductive":
+                                            totalUnproductiveDuration += usage.TotalSeconds;
+                                            break;
+                                        case "Neutral":
+                                            totalNeutralDuration += usage.TotalSeconds;
+                                            break;
+                                    }
                                 }
                             }
                         }
-                        //else
-                        //{
-                        //    // Assign to Neutral if no category is found
-                        //    totalNeutralDuration += usage.TotalSeconds;
-                        //}
+
+
                     }
                 }
 
@@ -341,24 +344,35 @@ namespace Hublog.Repository.Repositories
 
                     if (usage.Name != "chrome" && usage.Name != "msedge")
                     {
-                        var parameters1 = new { ApplicationName = usage.Name.ToLower() };
-                        var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity",
+                        var parameters1 = new
+                        {
+                            ApplicationName = usage.Name.ToLower(),
+                            OrganizationId = organizationId // Pass OrganizationId
+                        };
+
+                        // Fetch all matching productivity names
+                        var apps = (await _dapper.QueryAsync<string>(
+                            "sp_GetApplicationCategoryAndProductivity",
                             parameters1,
                             commandType: CommandType.StoredProcedure
-                        );
-                        if (app != null)
-                        {
-                            switch (app)
+                        )).ToList();
+
+                        if (apps.Any()) // Check if there are any results
+                         {
+                            foreach (var app in apps)
                             {
-                                case "Productive":
-                                    totalProductiveDuration += usage.TotalSeconds;
-                                    break;
-                                case "Unproductive":
-                                    totalUnproductiveDuration += usage.TotalSeconds;
-                                    break;
-                                case "Neutral":
-                                    totalNeutralDuration += usage.TotalSeconds;
-                                    break;
+                                switch (app)
+                                {
+                                    case "Productive":
+                                        totalProductiveDuration += usage.TotalSeconds;
+                                        break;
+                                    case "Unproductive":
+                                        totalUnproductiveDuration += usage.TotalSeconds;
+                                        break;
+                                    case "Neutral":
+                                        totalNeutralDuration += usage.TotalSeconds;
+                                        break;
+                                }
                             }
                         }
                     }
@@ -436,7 +450,7 @@ namespace Hublog.Repository.Repositories
             var teamResults = new List<dynamic>();
             var GrandtotalTimeDuration = 0;
             var GrandtotalProductiveDuration = 0;
-            long abc =0;
+            long abc = 0;
             foreach (var team in teams)
             {
                 teamId = team.TeamId;
@@ -455,31 +469,42 @@ namespace Hublog.Repository.Repositories
 
                 foreach (var usage in usages)
                 {
-                    usage.Name = usage.Name.ToLower();
-
+                    
                     if (usage.Name != "chrome" && usage.Name != "msedge")
                     {
-                        var parameters1 = new { ApplicationName = usage.Name.ToLower() };
-                        var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity",
+                        var parameters1 = new
+                        {
+                            ApplicationName = usage.Name.ToLower(),
+                            OrganizationId = organizationId // Pass OrganizationId
+                        };
+
+                        // Fetch all matching productivity names
+                        var apps = (await _dapper.QueryAsync<string>(
+                            "sp_GetApplicationCategoryAndProductivity",
                             parameters1,
                             commandType: CommandType.StoredProcedure
-                        );
-                        if (app != null)
+                        )).ToList();
+
+                        if (apps.Any()) // Check if there are any results
                         {
-                            switch (app)
+                            foreach (var app in apps)
                             {
-                                case "Productive":
-                                    totalProductiveDuration += usage.TotalSeconds;
-                                    break;
-                                case "Unproductive":
-                                    totalUnproductiveDuration += usage.TotalSeconds;
-                                    break;
-                                case "Neutral":
-                                    totalNeutralDuration += usage.TotalSeconds;
-                                    break;
+                                switch (app)
+                                {
+                                    case "Productive":
+                                        totalProductiveDuration += usage.TotalSeconds;
+                                        break;
+                                    case "Unproductive":
+                                        totalUnproductiveDuration += usage.TotalSeconds;
+                                        break;
+                                    case "Neutral":
+                                        totalNeutralDuration += usage.TotalSeconds;
+                                        break;
+                                }
                             }
                         }
                     }
+
 
                 }
                 GrandtotalProductiveDuration += totalProductiveDuration;
@@ -540,7 +565,7 @@ WHERE O.Id = @organizationId
 
             var formattedTime = FormatDuration(GrandtotalProductiveDuration);
             var GrandTotalpercentage =
-                                   (double)GrandtotalProductiveDuration / abc * 100 ;
+                                   (double)GrandtotalProductiveDuration / abc * 100;
 
             return new
             {
@@ -660,7 +685,7 @@ WHERE O.Id = @organizationId
             return new { data = mergedData };
 
         }
-       
+
         public async Task<dynamic> GetProductivity_Trend(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
             var parameters = new
@@ -678,73 +703,93 @@ WHERE O.Id = @organizationId
             var dateWiseDurations = new List<DailyProductivityDuration>();
             var dailyDurations = new Dictionary<DateTime, DailyProductivityDuration>();
 
+           
+
             foreach (var usage in usages)
             {
                 usage.ApplicationName = usage.ApplicationName.ToLower();
 
                 if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                 {
-                    // **Query Category & Productivity Details**
+                    // **Query all Category IDs associated with the application & organization**
                     var imbuildAppQuery = @"
-            SELECT CategoryId 
-            FROM ImbuildAppsAndUrls 
-            WHERE Name LIKE '%' + @ApplicationName + '%'";
+        SELECT CategoryId 
+        FROM ImbuildAppsAndUrls 
+        WHERE Name LIKE '%' + @ApplicationName + '%'
+        AND OrganizationId = @OrganizationId"; //Added OrganizationId filter
+            
+        var categoryIds = (await _dapper.QueryAsync<int?>(imbuildAppQuery, new
+        {
+            ApplicationName = usage.ApplicationName,
+            OrganizationId = organizationId // Pass OrganizationId
+        })).ToList();
 
-                    var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.ApplicationName });
-
-                    if (categoryId.HasValue)
+                    if (categoryIds.Any()) // Ensure we got results
                     {
-                        usage.CategoryId = categoryId.Value;
+                        foreach (var categoryId in categoryIds) // Loop through each CategoryId
+                        {
+                            // usage.CategoryId = categoryId;
+                            if (!categoryId.HasValue) continue; // Skip null values
+                            usage.CategoryId = categoryId.Value;
 
-                        var categoryQuery = @"
+                            var categoryQuery = @"
                 SELECT CategoryName, ProductivityId 
                 FROM Categories 
                 WHERE Id = @CategoryId";
 
-                        var category = await _dapper.QueryFirstOrDefaultAsync<(string CategoryName, int ProductivityId)>(categoryQuery, new { CategoryId = categoryId.Value });
+                            var category = await _dapper.QueryFirstOrDefaultAsync<(string CategoryName, int ProductivityId)>(categoryQuery, new { CategoryId = categoryId });
 
-                        if (category != default)
-                        {
-                            usage.CategoryName = category.CategoryName;
+                            if (category != default)
+                            {
+                                usage.CategoryName = category.CategoryName;
 
-                            // Fetch Productivity Name
-                            var productivityQuery = @"
+                                // Fetch all matching productivity names
+                                var productivityQuery = @"
                     SELECT Name FROM ProductivityAssign
                     WHERE Id = @ProductivityId";
 
-                            var productivityName = await _dapper.QueryFirstOrDefaultAsync<string>(productivityQuery, new { ProductivityId = category.ProductivityId });
-                            usage.ProductivityName = productivityName;
+                                var productivityNames = (await _dapper.QueryAsync<string>(productivityQuery, new { ProductivityId = category.ProductivityId })).ToList();
 
-                            var usageDate = usage.UsageDate.Date;
-
-                            if (!dailyDurations.ContainsKey(usageDate))
-                            {
-                                dailyDurations[usageDate] = new DailyProductivityDuration
+                                if (productivityNames.Any())
                                 {
-                                    Date = usageDate.ToString("yyyy-MM-dd")
-                                };
+                                    var usageDate = usage.UsageDate.Date;
+
+                                    if (!dailyDurations.ContainsKey(usageDate))
+                                    {
+                                        dailyDurations[usageDate] = new DailyProductivityDuration
+                                        {
+                                            Date = usageDate.ToString("yyyy-MM-dd")
+                                        };
+                                    }
+
+                                    var dailyData = dailyDurations[usageDate];
+
+                                    foreach (var productivityName in productivityNames)
+                                    {
+                                        usage.ProductivityName = productivityName; // Assign the latest Productivity Name
+
+                                        switch (productivityName)
+                                        {
+                                            case "Productive":
+                                                dailyData.ProductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Unproductive":
+                                                dailyData.UnproductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Neutral":
+                                                dailyData.NeutralDuration += usage.TotalSeconds;
+                                                break;
+                                        }
+                                    }
+
+                                    dailyData.TotalDuration += usage.TotalSeconds;
+                                }
                             }
-
-                            var dailyData = dailyDurations[usageDate];
-
-                            switch (usage.ProductivityName)
-                            {
-                                case "Productive":
-                                    dailyData.ProductiveDuration += usage.TotalSeconds;
-                                    break;
-                                case "Unproductive":
-                                    dailyData.UnproductiveDuration += usage.TotalSeconds;
-                                    break;
-                                case "Neutral":
-                                    dailyData.NeutralDuration += usage.TotalSeconds;
-                                    break;
-                            }
-
-                            dailyData.TotalDuration += usage.TotalSeconds;
                         }
                     }
                 }
             }
+
 
             // **Aggregate Data by Date**
             var aggregatedDurations = dailyDurations.Values
@@ -780,112 +825,114 @@ WHERE O.Id = @organizationId
 
 
 
-        public async Task<List<dynamic>> GetAppUsagesSS(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
-        {
-            var appUsageQuery = @"
-SELECT 
-    A.[UserId], 
-    CONCAT(u.[First_Name], ' ', u.[Last_Name]) AS FullName, 
-    COUNT(DISTINCT CONVERT(DATE, A.[AttendanceDate])) AS AttendanceCount,
-    MIN(A.[AttendanceDate]) AS StartDate, 
-    MAX(A.[AttendanceDate]) AS EndDate,
-    COALESCE(SUM( DATEDIFF(SECOND, 0, TRY_CONVERT(TIME, a.Total_Time)) ), 0) AS ActiveTimeInSeconds
-FROM 
-    Attendance A
-INNER JOIN 
-    Users U ON U.id = A.UserId
-INNER JOIN 
-        Team T ON T.Id = U.TeamId
-INNER JOIN 
-        Organization O ON U.OrganizationId = O.Id
-WHERE 
-    O.Id = @OrganizationId
-    AND (@TeamId IS NULL OR T.Id = @TeamId)
-    AND (@UserId IS NULL OR A.UserId = @UserId)
-    AND A.[AttendanceDate] >= @fromDate 
-    AND A.[AttendanceDate] < DATEADD(DAY, 1, @toDate)
-    AND a.Total_Time IS NOT NULL      
-GROUP BY 
-    A.[UserId], u.[First_Name], u.[Last_Name]";
+//        public async Task<List<dynamic>> GetAppUsagesSS(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
+//        {
+//            var appUsageQuery = @"
+//SELECT 
+//    A.[UserId], 
+//    CONCAT(u.[First_Name], ' ', u.[Last_Name]) AS FullName, 
+//    COUNT(DISTINCT CONVERT(DATE, A.[AttendanceDate])) AS AttendanceCount,
+//    MIN(A.[AttendanceDate]) AS StartDate, 
+//    MAX(A.[AttendanceDate]) AS EndDate,
+//    COALESCE(SUM( DATEDIFF(SECOND, 0, TRY_CONVERT(TIME, a.Total_Time)) ), 0) AS ActiveTimeInSeconds
+//FROM 
+//    Attendance A
+//INNER JOIN 
+//    Users U ON U.id = A.UserId
+//INNER JOIN 
+//        Team T ON T.Id = U.TeamId
+//INNER JOIN 
+//        Organization O ON U.OrganizationId = O.Id
+//WHERE 
+//    O.Id = @OrganizationId
+//    AND (@TeamId IS NULL OR T.Id = @TeamId)
+//    AND (@UserId IS NULL OR A.UserId = @UserId)
+//    AND A.[AttendanceDate] >= @fromDate 
+//    AND A.[AttendanceDate] < DATEADD(DAY, 1, @toDate)
+//    AND a.Total_Time IS NOT NULL      
+//GROUP BY 
+//    A.[UserId], u.[First_Name], u.[Last_Name]";
 
-            var breakdetails = @"
-    SELECT 
-    br.UserId,
-    SUM(
-        CASE 
-            WHEN br.Start_Time IS NOT NULL AND br.End_Time IS NOT NULL 
-            THEN DATEDIFF(SECOND, br.Start_Time, br.End_Time) 
-            ELSE 0 
-        END
-    ) AS TotalBreakDurationInSeconds
+//            var breakdetails = @"
+//    SELECT 
+//    br.UserId,
+//    SUM(
+//        CASE 
+//            WHEN br.Start_Time IS NOT NULL AND br.End_Time IS NOT NULL 
+//            THEN DATEDIFF(SECOND, br.Start_Time, br.End_Time) 
+//            ELSE 0 
+//        END
+//    ) AS TotalBreakDurationInSeconds
    
-FROM 
-    BreakEntry br
-INNER JOIN 
-    Users U ON U.id = br.UserId
-INNER JOIN 
-        Team T ON T.Id = U.TeamId
-INNER JOIN 
-        Organization O ON U.OrganizationId = O.Id
-WHERE 
-    CONVERT(DATE, br.BreakDate) BETWEEN @FromDate AND @ToDate
-    And O.Id = @OrganizationId
-    AND (@TeamId IS NULL OR T.Id = @TeamId)
-    AND (@UserId IS NULL OR br.UserId = @UserId)
-    AND U.Active = 1
-GROUP BY 
-    br.UserId
-ORDER BY 
-   br.UserId;";
-            var parameters = new
-            {
-                OrganizationId = organizationId,
-                TeamId = teamId,
-                UserId = userId,
-                FromDate = fromDate,
-                ToDate = toDate
-            };
+//FROM 
+//    BreakEntry br
+//INNER JOIN 
+//    Users U ON U.id = br.UserId
+//INNER JOIN 
+//        Team T ON T.Id = U.TeamId
+//INNER JOIN 
+//        Organization O ON U.OrganizationId = O.Id
+//WHERE 
+//    CONVERT(DATE, br.BreakDate) BETWEEN @FromDate AND @ToDate
+//    And O.Id = @OrganizationId
+//    AND (@TeamId IS NULL OR T.Id = @TeamId)
+//    AND (@UserId IS NULL OR br.UserId = @UserId)
+//    AND U.Active = 1
+//GROUP BY 
+//    br.UserId
+//ORDER BY 
+//   br.UserId;";
+//            var parameters = new
+//            {
+//                OrganizationId = organizationId,
+//                TeamId = teamId,
+//                UserId = userId,
+//                FromDate = fromDate,
+//                ToDate = toDate
+//            };
 
 
-            var appUsages = await _dapper.GetAllAsync<dynamic>(appUsageQuery, parameters);
-            var breakDetails = await _dapper.GetAllAsync<dynamic>(breakdetails, parameters);
+//            var appUsages = await _dapper.GetAllAsync<dynamic>(appUsageQuery, parameters);
+//            var breakDetails = await _dapper.GetAllAsync<dynamic>(breakdetails, parameters);
 
-            var result = (from app in appUsages
-                          join breakDetail in breakDetails on app.UserId equals breakDetail.UserId into breakGroup
-                          from bg in breakGroup.DefaultIfEmpty()
-                          select new
-                          {
-                              UserId = app.UserId,
-                              FullName = app.FullName,
-                              AttendanceCount = app.AttendanceCount,
-                              ActiveTimeInSeconds = app.ActiveTimeInSeconds,
-                              TotalBreakDurationInSeconds = bg != null ? bg.TotalBreakDurationInSeconds : 0,
-                              OnlineDurationInHours = app.ActiveTimeInSeconds - (bg != null ? bg.TotalBreakDurationInSeconds : 0)
-                          })
-               .Cast<dynamic>() 
-               .ToList();
+//            var result = (from app in appUsages
+//                          join breakDetail in breakDetails on app.UserId equals breakDetail.UserId into breakGroup
+//                          from bg in breakGroup.DefaultIfEmpty()
+//                          select new
+//                          {
+//                              UserId = app.UserId,
+//                              FullName = app.FullName,
+//                              AttendanceCount = app.AttendanceCount,
+//                              ActiveTimeInSeconds = app.ActiveTimeInSeconds,
+//                              TotalBreakDurationInSeconds = bg != null ? bg.TotalBreakDurationInSeconds : 0,
+//                              OnlineDurationInHours = app.ActiveTimeInSeconds - (bg != null ? bg.TotalBreakDurationInSeconds : 0)
+//                          })
+//               .Cast<dynamic>()
+//               .ToList();
 
-            var getUsers = @"
-                SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
-                FROM Users 
-                WHERE TeamId = @TeamId
-                AND (@UserId IS NULL OR Id = @UserId)";
+//            var getUsers = @"
+//                SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
+//                FROM Users 
+//                WHERE TeamId = @TeamId
+//                AND (@UserId IS NULL OR Id = @UserId)";
 
-            var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters);
+//            var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters);
 
-            var tt = result.Concat(getUsers1)
-                .GroupBy(item => item.UserId)
-                .Select(group =>
-                {
-                    var usageEntry = result.FirstOrDefault(u => u.UserId == group.Key);
-                    return usageEntry ?? group.First();
-                })
-                .ToList();
+//            var tt = result.Concat(getUsers1)
+//                .GroupBy(item => item.UserId)
+//                .Select(group =>
+//                {
+//                    var usageEntry = result.FirstOrDefault(u => u.UserId == group.Key);
+//                    return usageEntry ?? group.First();
+//                })
+//                .ToList();
 
-            return tt;
+//            return tt;
 
 
-        }
+//        }
+
+
         public async Task<dynamic> GetEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
 
@@ -907,7 +954,7 @@ ORDER BY
                     var TeamName = team.TeamName;
                     teamId = team.TeamId;
 
-                    
+
                     var urlUsageQuery = "GetAppUsagesSS";
                     var parameters = new
                     {
@@ -960,6 +1007,8 @@ ORDER BY
                         .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
                         .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
 
+                       
+
                         foreach (var usage in usages)
                         {
                             usage.ApplicationName = usage.ApplicationName.ToLower();
@@ -971,29 +1020,42 @@ ORDER BY
                                     usage.TotalSeconds = totalSeconds;
                                     usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
                                 }
-                                var parameters1 = new { ApplicationName = usage.ApplicationName.ToLower() };
-                                var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity",
+
+                                var parameters1 = new
+                                {
+                                    ApplicationName = usage.ApplicationName.ToLower(),
+                                    OrganizationId = organizationId // Ensure OrganizationId is included
+                                };
+
+                                // Fetch all matching productivity names
+                                var apps = (await _dapper.QueryAsync<string>(
+                                    "sp_GetApplicationCategoryAndProductivity",
                                     parameters1,
                                     commandType: CommandType.StoredProcedure
-                                );
-                                if (app != null)
-                                {
+                                )).ToList();
 
-                                    switch (app)
+                                if (apps.Any()) // Ensure there are results
+                                {
+                                    foreach (var app in apps)
                                     {
-                                        case "Productive":
-                                            totalProductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Unproductive":
-                                            totalUnproductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Neutral":
-                                            totalNeutralDuration += usage.TotalSeconds;
-                                            break;
+                                        switch (app)
+                                        {
+                                            case "Productive":
+                                                totalProductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Unproductive":
+                                                totalUnproductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Neutral":
+                                                totalNeutralDuration += usage.TotalSeconds;
+                                                break;
+                                        }
                                     }
                                 }
                             }
                         }
+
+
                         var AttendanceCount = us.AttendanceCount;
                         var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0; // Ensure no null value
                         double? total_wokingtimeInSeconds = us.ActiveTimeInSeconds;  // Nullable double
@@ -1111,6 +1173,7 @@ ORDER BY
                         .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
                         .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
 
+                       
                         foreach (var usage in usages)
                         {
                             usage.ApplicationName = usage.ApplicationName.ToLower();
@@ -1123,28 +1186,42 @@ ORDER BY
                                     usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
                                 }
 
-                                var parameters1 = new { ApplicationName = usage.ApplicationName.ToLower() };
-                                var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity",
+                                var parameters1 = new
+                                {
+                                    ApplicationName = usage.ApplicationName.ToLower(),
+                                    OrganizationId = organizationId // Ensure OrganizationId is included
+                                };
+
+                                // Fetch all matching productivity names
+                                var apps = (await _dapper.QueryAsync<string>(
+                                    "sp_GetApplicationCategoryAndProductivity",
                                     parameters1,
                                     commandType: CommandType.StoredProcedure
-                                );
-                                if (app != null)
+                                )).ToList();
+
+                                if (apps.Any()) // Ensure there are results
                                 {
-                                    switch (app)
+                                    foreach (var app in apps)
                                     {
-                                        case "Productive":
-                                            totalProductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Unproductive":
-                                            totalUnproductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Neutral":
-                                            totalNeutralDuration += usage.TotalSeconds;
-                                            break;
+                                        switch (app)
+                                        {
+                                            case "Productive":
+                                                totalProductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Unproductive":
+                                                totalUnproductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Neutral":
+                                                totalNeutralDuration += usage.TotalSeconds;
+                                                break;
+                                        }
                                     }
                                 }
                             }
                         }
+
+
+
                         var AttendanceCount = us.AttendanceCount;
                         var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0; // Ensure no null value
                         double? total_wokingtimeInSeconds = us.ActiveTimeInSeconds;  // Nullable double

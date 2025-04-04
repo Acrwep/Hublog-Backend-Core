@@ -3,6 +3,7 @@ using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
+using Hublog.Repository.Entities.Model.Organization;
 using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
@@ -375,6 +376,8 @@ namespace Hublog.Repository.Repositories
                         // var usages = await GetAppUsages(request.OrganizationId, teamId, userIdd, request.StartDate, request.EndDate);
                         var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
 
+                        
+
                         foreach (var usage in usages)
                         {
                             var totalSeconds = usage.TotalSeconds;
@@ -382,30 +385,39 @@ namespace Hublog.Repository.Repositories
 
                             if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
+                                usage.TotalSeconds = totalSeconds;
+                                usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
 
-                                    usage.TotalSeconds = totalSeconds;
-                                    usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
+                                // Add OrganizationId parameter
+                                var parameters2 = new { ApplicationName = usage.ApplicationName.ToLower(), OrganizationId = request.OrganizationId };
 
-                                var parameters2 = new { ApplicationName = usage.ApplicationName.ToLower() };
-                                var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity", parameters2, commandType: CommandType.StoredProcedure);
+                                var productivityNames = (await _dapper.QueryAsync<string>(
+                                    "sp_GetApplicationCategoryAndProductivity",
+                                    parameters2,
+                                    commandType: CommandType.StoredProcedure
+                                )).ToList();
 
-                                if (app != null)
+                                if (productivityNames.Any()) // Ensure we process all matching productivity types
                                 {
-                                    switch (app)
+                                    foreach (var productivityName in productivityNames)
                                     {
-                                        case "Productive":
-                                            totalProductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Unproductive":
-                                            totalUnproductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Neutral":
-                                            totalNeutralDuration += usage.TotalSeconds;
-                                            break;
+                                        switch (productivityName)
+                                        {
+                                            case "Productive":
+                                                totalProductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Unproductive":
+                                                totalUnproductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Neutral":
+                                                totalNeutralDuration += usage.TotalSeconds;
+                                                break;
+                                        }
                                     }
                                 }
                             }
                         }
+
                         var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0;
                         double? activeDurationInSeconds = us.ActiveTimeInSeconds ?? 0.0;
                         var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
@@ -547,6 +559,7 @@ namespace Hublog.Repository.Repositories
 
                         var usages = await GetAppUsages(request.OrganizationId, teamId, userIdd, request.StartDate, request.EndDate);
 
+                       
                         foreach (var usage in usages)
                         {
                             var totalSeconds = usage.TotalSeconds;
@@ -554,32 +567,39 @@ namespace Hublog.Repository.Repositories
 
                             if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
-
                                 usage.TotalSeconds = totalSeconds;
                                 usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
 
+                               // Add OrganizationId parameter
+                               var parameters2 = new { ApplicationName = usage.ApplicationName.ToLower(), OrganizationId = request.OrganizationId };
 
+                                var productivityNames = (await _dapper.QueryAsync<string>(
+                                    "sp_GetApplicationCategoryAndProductivity",
+                                    parameters2,
+                                    commandType: CommandType.StoredProcedure
+                                )).ToList();
 
-                                var parameters2 = new { ApplicationName = usage.ApplicationName.ToLower() };
-                                var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity", parameters2, commandType: CommandType.StoredProcedure);
-
-                                if (app != null)
+                                if (productivityNames.Any()) // Ensure we process all matching productivity types
                                 {
-                                    switch (app)
+                                    foreach (var productivityName in productivityNames)
                                     {
-                                        case "Productive":
-                                            totalProductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Unproductive":
-                                            totalUnproductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Neutral":
-                                            totalNeutralDuration += usage.TotalSeconds;
-                                            break;
+                                        switch (productivityName)
+                                        {
+                                            case "Productive":
+                                                totalProductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Unproductive":
+                                                totalUnproductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Neutral":
+                                                totalNeutralDuration += usage.TotalSeconds;
+                                                break;
+                                        }
                                     }
                                 }
                             }
                         }
+
 
                         var AttendanceCount = us.AttendanceCount;
                         var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0;
@@ -794,6 +814,7 @@ namespace Hublog.Repository.Repositories
                         // var usages = await GetAppUsages(request.OrganizationId, teamId, userIdd, request.StartDate, request.EndDate);
                         var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
 
+
                         foreach (var usage in usages)
                         {
                             var totalSeconds = usage.TotalSeconds;
@@ -801,30 +822,46 @@ namespace Hublog.Repository.Repositories
 
                             if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
-
                                 usage.TotalSeconds = totalSeconds;
                                 usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
 
-                                var parameters2 = new { ApplicationName = usage.ApplicationName.ToLower() };
-                                var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity", parameters2, commandType: CommandType.StoredProcedure);
-
-                                if (app != null)
+                                // Add OrganizationId parameter
+                                var parameters2 = new
                                 {
-                                    switch (app)
+                                    ApplicationName = usage.ApplicationName.ToLower(),
+                                    OrganizationId = request.OrganizationId // Ensure this variable is properly set
+                                };
+
+                                // Use QueryAsync instead of QueryFirstOrDefaultAsync to handle multiple results
+                                var productivityNames = (await _dapper.QueryAsync<string>(
+                                    "sp_GetApplicationCategoryAndProductivity",
+                                    parameters2,
+                                    commandType: CommandType.StoredProcedure
+                                )).ToList();
+
+                                // Ensure we process all matching productivity types
+                                if (productivityNames.Any())
+                                {
+                                    foreach (var productivityName in productivityNames)
                                     {
-                                        case "Productive":
-                                            totalProductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Unproductive":
-                                            totalUnproductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Neutral":
-                                            totalNeutralDuration += usage.TotalSeconds;
-                                            break;
+                                        switch (productivityName)
+                                        {
+                                            case "Productive":
+                                                totalProductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Unproductive":
+                                                totalUnproductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Neutral":
+                                                totalNeutralDuration += usage.TotalSeconds;
+                                                break;
+                                        }
                                     }
                                 }
                             }
                         }
+
+
                         var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0;
                         double? activeDurationInSeconds = us.ActiveTimeInSeconds ?? 0.0;
                         var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
@@ -955,23 +992,7 @@ namespace Hublog.Repository.Repositories
                     };
 
                     IEnumerable<dynamic> results = await _dapper.GetAllAsync<dynamic>(urlUsageQuery, parameters1);
-                //    var getUsers = @"
-                //SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
-                //FROM Users 
-                //WHERE TeamId = @TeamId
-                //AND (@UserId IS NULL OR Id = @UserId)";
-
-                //    var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters1);
-
-                //    var combinedResults = results.Concat(getUsers1)
-                //        .GroupBy(item => item.UserId)
-                //        .Select(group =>
-                //        {
-                //            var usageEntry = results.FirstOrDefault(u => u.UserId == group.Key);
-                //            return usageEntry ?? group.First();
-                //        })
-                //        .ToList();
-
+               
                     foreach (var us in results)
                     {
                         var userIdd = us.UserId;
@@ -989,28 +1010,40 @@ namespace Hublog.Repository.Repositories
 
                             if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
-
                                 usage.TotalSeconds = totalSeconds;
                                 usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
 
-
-
-                                var parameters2 = new { ApplicationName = usage.ApplicationName.ToLower() };
-                                var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity", parameters2, commandType: CommandType.StoredProcedure);
-
-                                if (app != null)
+                                // Add OrganizationId parameter
+                                var parameters2 = new
                                 {
-                                    switch (app)
+                                    ApplicationName = usage.ApplicationName.ToLower(),
+                                    OrganizationId = request.OrganizationId // Ensure this variable is properly set
+                                };
+
+                                // Use QueryAsync instead of QueryFirstOrDefaultAsync to handle multiple results
+                                var productivityNames = (await _dapper.QueryAsync<string>(
+                                    "sp_GetApplicationCategoryAndProductivity",
+                                    parameters2,
+                                    commandType: CommandType.StoredProcedure
+                                )).ToList();
+
+                                // Ensure we process all matching productivity types
+                                if (productivityNames.Any())
+                                {
+                                    foreach (var productivityName in productivityNames)
                                     {
-                                        case "Productive":
-                                            totalProductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Unproductive":
-                                            totalUnproductiveDuration += usage.TotalSeconds;
-                                            break;
-                                        case "Neutral":
-                                            totalNeutralDuration += usage.TotalSeconds;
-                                            break;
+                                        switch (productivityName)
+                                        {
+                                            case "Productive":
+                                                totalProductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Unproductive":
+                                                totalUnproductiveDuration += usage.TotalSeconds;
+                                                break;
+                                            case "Neutral":
+                                                totalNeutralDuration += usage.TotalSeconds;
+                                                break;
+                                        }
                                     }
                                 }
                             }

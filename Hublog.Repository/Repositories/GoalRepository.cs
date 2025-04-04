@@ -113,11 +113,11 @@ namespace Hublog.Repository.Repositories
             double productiveTimeThreshold = goalsData?.ProductiveTime ?? 0;
 
             var teamQuery = @"
-    SELECT T.Id, T.Name
-    FROM Team T
-    INNER JOIN Organization O ON T.OrganizationId = O.Id
-    WHERE O.Id = @OrganizationId
-    AND (@TeamId IS NULL OR T.Id = @TeamId)";
+                            SELECT T.Id, T.Name
+                            FROM Team T
+                            INNER JOIN Organization O ON T.OrganizationId = O.Id
+                            WHERE O.Id = @OrganizationId
+                            AND (@TeamId IS NULL OR T.Id = @TeamId)";
 
             var teams = await _dapper.GetAllAsync<(int TeamId, string TeamName)>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
 
@@ -161,22 +161,54 @@ namespace Hublog.Repository.Repositories
                             .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
                             .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
 
+                        //foreach (var usage in usages)
+                        //{
+                        //    usage.ApplicationName = usage.ApplicationName.ToLower();
+                        //    if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
+                        //    {
+                        //        if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
+                        //        {
+                        //            usage.TotalSeconds = totalSeconds;
+                        //        }
+                        //        var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity", new { ApplicationName = usage.ApplicationName }, commandType: CommandType.StoredProcedure);
+                        //        if (app != null && app == "Productive")
+                        //        {
+                        //            totalProductiveDurationInSeconds += usage.TotalSeconds;
+                        //        }
+                        //    }
+                        //}
                         foreach (var usage in usages)
                         {
                             usage.ApplicationName = usage.ApplicationName.ToLower();
+
                             if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
                             {
                                 if (totalUsages.TryGetValue(usage.ApplicationName, out var totalSeconds))
                                 {
                                     usage.TotalSeconds = totalSeconds;
                                 }
-                                var app = await _dapper.QueryFirstOrDefaultAsync<string>("GetApplicationCategoryAndProductivity", new { ApplicationName = usage.ApplicationName }, commandType: CommandType.StoredProcedure);
-                                if (app != null && app == "Productive")
+
+                                // Add OrganizationId parameter
+                                var parameterss = new
+                                {
+                                    ApplicationName = usage.ApplicationName,
+                                    OrganizationId = organizationId // Ensure this is properly set
+                                };
+
+                                // Use QueryAsync to retrieve multiple rows if needed
+                                var productivityNames = (await _dapper.QueryAsync<string>(
+                                    "sp_GetApplicationCategoryAndProductivity",
+                                    parameterss,
+                                    commandType: CommandType.StoredProcedure
+                                )).ToList();
+
+                                if (productivityNames.Any() && productivityNames.Contains("Productive"))
                                 {
                                     totalProductiveDurationInSeconds += usage.TotalSeconds;
                                 }
                             }
                         }
+
 
                         totalWorkingTimeInSeconds = results
                             .Where(u => u.UserId == userId && ((DateTime)u.AttendanceDate).Date == date.Date)

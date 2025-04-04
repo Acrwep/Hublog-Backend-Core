@@ -4,6 +4,7 @@ using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.ApplicationModel;
+using Hublog.Repository.Entities.Model.Organization;
 using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Entities.Model.UrlModel;
 using Hublog.Repository.Entities.Model.UserModels;
@@ -308,6 +309,7 @@ ORDER BY
                    .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
                    .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
 
+               
                 foreach (var usage in usages)
                 {
                     usage.Name = usage.Name.ToLower();
@@ -321,33 +323,49 @@ ORDER BY
                             usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
                         }
 
+                        // **Query all Category IDs associated with the application & organization**
                         var imbuildAppQuery = @"
-    SELECT CategoryId 
-    FROM ImbuildAppsAndUrls 
-    WHERE Name LIKE '%' + @ApplicationName + '%'";
-                        var categoryId = await _dapper.QueryFirstOrDefaultAsync<int?>(imbuildAppQuery, new { ApplicationName = usage.Name });
+                         SELECT CategoryId 
+                         FROM ImbuildAppsAndUrls 
+                         WHERE Name LIKE '%' + @ApplicationName + '%'
+                         AND OrganizationId = @OrganizationId"; 
+                
+                         var categoryIds = (await _dapper.QueryAsync<int?>(imbuildAppQuery, new
+                         {
+                            ApplicationName = usage.Name,
+                            OrganizationId = organizationId // Pass OrganizationId
+                         })).ToList();
 
-                        if (categoryId.HasValue)
+                        if (categoryIds.Any()) // Ensure we got results
                         {
-                            var categoryQuery = @"
-    SELECT CategoryName 
-    FROM Categories 
-    WHERE Id = @CategoryId";
-                            var categoryName = await _dapper.QueryFirstOrDefaultAsync<string>(categoryQuery, new { CategoryId = categoryId.Value });
-
-                            if (!string.IsNullOrEmpty(categoryName))
+                            foreach (var categoryId in categoryIds) // Loop through each CategoryId
                             {
-                                // Accumulate usage time by category
-                                if (!categoryTimeDictionary.ContainsKey(categoryName))
-                                {
-                                    categoryTimeDictionary[categoryName] = 0;
-                                }
+                                
+                                var categoryQuery = @"
+                                 SELECT CategoryName 
+                                 FROM Categories 
+                                 WHERE Id = @CategoryId";
 
-                                categoryTimeDictionary[categoryName] += usage.TotalSeconds;
+                                var categoryName = await _dapper.QueryFirstOrDefaultAsync<string>(categoryQuery, new { CategoryId = categoryId });
+
+                                if (!string.IsNullOrEmpty(categoryName))
+                                {
+                                    // Accumulate usage time by category
+                                    if (!categoryTimeDictionary.ContainsKey(categoryName))
+                                    {
+                                        categoryTimeDictionary[categoryName] = 0;
+                                    }
+
+                                    categoryTimeDictionary[categoryName] += usage.TotalSeconds;
+                                }
                             }
                         }
                     }
                 }
+
+
+
+
             }
             string FormatDuration(double totalSeconds)
             {
@@ -386,6 +404,22 @@ ORDER BY
             var parameters = new { OrganizationId = organizationId };
 
             await _dapper.ExecuteAsync(query, parameters,commandType: CommandType.StoredProcedure);
+        }
+
+        public async Task InsertDefaultCategoryRecordsAsync(int organizationId)
+        {
+            string checkQuery = "SELECT COUNT(*) FROM Categories WHERE OrganizationId = @OrganizationId";
+            int existingCount = await _dapper.ExecuteScalarAsync<int>(checkQuery, new { OrganizationId = organizationId });
+
+            if (existingCount > 0)
+            {
+                throw new InvalidOperationException("OrganizationId already exists.");
+            }
+
+            var query = "sp_InsertDefaultCategoriesRecords";
+            var parameters = new { OrganizationId = organizationId };
+
+            await _dapper.ExecuteAsync(query, parameters, commandType: CommandType.StoredProcedure);
         }
     }
 

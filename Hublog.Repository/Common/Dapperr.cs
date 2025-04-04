@@ -32,6 +32,7 @@ namespace Hublog.Repository.Common
         }
 
 
+
         public object ExecuteScalar(string query)
         {
             return _connection.ExecuteScalar(query);

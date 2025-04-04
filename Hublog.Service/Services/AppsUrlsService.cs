@@ -92,6 +92,16 @@ namespace Hublog.Service.Services
             
         }
 
-
+        public async Task InsertDefaultCategoryRecordsAsync(int organizationId)
+        {
+            try
+            {
+                await _appsUrlsRepository.InsertDefaultCategoryRecordsAsync(organizationId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException(ex.Message);
+            }
+        }
     }
 }
