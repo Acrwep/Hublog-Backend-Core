@@ -28,6 +28,50 @@ namespace Hublog.API.Controllers
 
             return Ok(categories);
         }
+
+
+        [HttpPost("InsertDefaultCategoryRecords/{organizationId}")]
+        public async Task<IActionResult> InsertDefaultCategoryRecords(int organizationId)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest("Please Give OrganizationId");
+                }
+                await _productivityService.InsertDefaultCategoryRecordsAsync(organizationId);
+                return Ok(new { message = "Default Category records inserted successfully." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Error Default Category records insert data: {ex.Message}");
+            }
+
+        }
+
+
+        [HttpDelete("DeleteCategory{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            try
+            {
+                var result = await _productivityService.DeleteByIdAsync(id);
+                if (result)
+                {
+                    return Ok(new { Message = "Imbuild AppsAndUrls deleted successfully" });
+                }
+                return BadRequest(new { Message = "Imbuild AppsAndUrls not found" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Internal server error", Error = ex.Message });
+            }
+        }
+
         [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpPut("UpdateProductivityId")]
         public async Task<IActionResult> UpdateProductivityId(int categoryId, int? productivityId)
@@ -90,24 +134,30 @@ namespace Hublog.API.Controllers
             }
         }
 
-        [HttpDelete("DeleteByIdAsync{id}")]
-        public async Task<IActionResult> DeleteByIDAsync(int id)
+        [HttpPost("InsertDefaultAppsAndUrlsRecords/{organizationId}")]
+        public async Task<IActionResult> InsertDefaultAppsAndUrlsRecords(int organizationId)
         {
             try
             {
-                var result = await _productivityService.DeleteByIdAsync(id);
-                if (result)
+                if (!ModelState.IsValid)
                 {
-                    return Ok(new { Message = "Imbuild AppsAndUrls deleted successfully" });
+                    return BadRequest("Please Give OrganizationId");
                 }
-                return BadRequest(new { Message = "Imbuild AppsAndUrls not found" });
+                await _productivityService.InsertDefaultRecordsAsync(organizationId);
+                return Ok(new { message = "Default records inserted successfully." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "Internal server error", Error = ex.Message });
+                return BadRequest($"Error Default records insert data: {ex.Message}");
             }
+
         }
 
+       
 
         [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpPut("InsertImbuildAppsAndUrls/{id}")]

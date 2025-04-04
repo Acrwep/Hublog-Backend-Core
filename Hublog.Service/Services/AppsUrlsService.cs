@@ -79,29 +79,8 @@ namespace Hublog.Service.Services
             };
         }
 
-        public async Task InsertDefaultRecordsAsync(int organizationId)
-        {
-            try
-            {
-                await _appsUrlsRepository.InsertDefaultRecordsAsync(organizationId);
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException(ex.Message);
-            }
-            
-        }
+       
 
-        public async Task InsertDefaultCategoryRecordsAsync(int organizationId)
-        {
-            try
-            {
-                await _appsUrlsRepository.InsertDefaultCategoryRecordsAsync(organizationId);
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException(ex.Message);
-            }
-        }
+       
     }
 }

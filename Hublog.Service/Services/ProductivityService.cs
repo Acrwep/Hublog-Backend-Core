@@ -1,6 +1,7 @@
 ﻿using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
+using Hublog.Repository.Repositories;
 using Hublog.Service.Interface;
 using Microsoft.AspNetCore.Mvc;
 
@@ -75,7 +76,30 @@ namespace Hublog.Service.Services
             return await _productivityRepository.GetEmployeeList(organizationId, teamId, userId, fromDate, toDate);
         }
 
-       
+        public async Task InsertDefaultCategoryRecordsAsync(int organizationId)
+        {
+            try
+            {
+                await _productivityRepository.InsertDefaultCategoryRecordsAsync(organizationId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException(ex.Message);
+            }
+        }
+
+        public async Task InsertDefaultRecordsAsync(int organizationId)
+        {
+            try
+            {
+                await _productivityRepository.InsertDefaultRecordsAsync(organizationId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException(ex.Message);
+            }
+
+        }
     }
 
 }

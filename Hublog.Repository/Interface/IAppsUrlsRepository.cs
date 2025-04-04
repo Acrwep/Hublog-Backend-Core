@@ -25,9 +25,7 @@ namespace Hublog.Repository.Interface
 
         Task<(string ApplicationName, string MaxUsage)> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
 
-        Task InsertDefaultRecordsAsync(int organizationId);
-
-        Task InsertDefaultCategoryRecordsAsync(int organizationId);
+       
 
     }
 }
