@@ -54,7 +54,7 @@ namespace Hublog.API.Controllers
         }
 
 
-        [HttpDelete("DeleteCategory{id}")]
+        [HttpDelete("DeleteImbuildAppOrUrl")]
         public async Task<IActionResult> DeleteCategory(int id)
         {
             try
