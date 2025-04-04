@@ -47,7 +47,7 @@ namespace Hublog.Repository.Repositories
             var image = builder.LinkedResources.Add(imagePath);
             image.ContentId = "logoImage";
 
-            builder.HtmlBody = getHtmlContent(users);
+            builder.HtmlBody = getUserHtmlContent(users);
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
@@ -84,7 +84,7 @@ namespace Hublog.Repository.Repositories
 
       
 
-        private string getHtmlContent(Users users)
+        private string getUserHtmlContent(Users users)
         {
             string response = $@"
 <table role=""presentation"" width=""100%"" height=""100%"" style=""background-color: #fafafa; min-height: 100vh; border-spacing: 0;"" cellpadding=""0"" cellspacing=""0"">
@@ -109,6 +109,12 @@ namespace Hublog.Repository.Repositories
             <ul style=""margin-top: 6px; padding-left: 20px;"">
               <li style=""margin-bottom: 6px;"">
                 <span style=""font-weight: 600;color:#222;"">Email:</span>   <span style=""color:#222;"">{users.Email}</span>
+              </li>
+             <li style=""margin-bottom: 6px;"">
+                <span style=""font-weight: 600;color:#222;"">Login URL:</span>
+                <a href=""https://hublog.org/setpassword"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
+                  https://hublog.org/setpassword
+                </a>
               </li>
               <li style=""margin-bottom: 6px;"">
                 <span style=""font-weight: 600;color:#222;"">Login URL:</span>
