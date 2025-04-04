@@ -89,6 +89,26 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpDelete("DeleteByIdAsync{id}")]
+        public async Task<IActionResult> DeleteByIDAsync(int id)
+        {
+            try
+            {
+                var result = await _productivityService.DeleteByIdAsync(id);
+                if (result)
+                {
+                    return Ok(new { Message = "Imbuild AppsAndUrls deleted successfully" });
+                }
+                return BadRequest(new { Message = "Imbuild AppsAndUrls not found" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "Internal server error", Error = ex.Message });
+            }
+        }
+
+
         [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpPut("InsertImbuildAppsAndUrls/{id}")]
         public async Task<IActionResult> InsertImbuildAppsAndUrls(int id, [FromBody] MappingModel model)

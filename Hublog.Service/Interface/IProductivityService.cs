@@ -9,6 +9,8 @@ namespace Hublog.Service.Interface
         Task<List<MappingModel>> GetByIdImbuildAppsAndUrls( int id);
         Task<bool> InsertImbuildAppsAndUrls(int id, MappingModel model);
         Task<bool> AddImbuildAppsAndUrls(MappingModel mappingModel);
+        Task<bool> DeleteByIdAsync(int id);
+
         Task<List<CategoryModel>> GetCategoryProductivity(string categoryName, int organizationId);
 
         Task<bool> UpdateProductivityId(int categoryId, int? productivityId);

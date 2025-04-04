@@ -39,6 +39,12 @@ namespace Hublog.Service.Services
         {
             return await _productivityRepository.AddImbuildAppsAndUrls(mappingModel);
         }
+
+        public async Task<bool> DeleteByIdAsync(int id)
+        {
+            return await _productivityRepository.DeleteByIdAsync(id);
+        }
+
         public async Task<ProductivityDurations> GetProductivityDurations(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate) 
         {
             return await _productivityRepository.GetProductivityDurations( organizationId,  teamId, userId, fromDate, toDate);
@@ -68,6 +74,8 @@ namespace Hublog.Service.Services
         {
             return await _productivityRepository.GetEmployeeList(organizationId, teamId, userId, fromDate, toDate);
         }
+
+       
     }
 
 }

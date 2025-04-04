@@ -12,6 +12,8 @@ namespace Hublog.Repository.Interface
         Task<List<MappingModel>> GetByIdImbuildAppsAndUrls(int id);
         Task<bool> InsertImbuildAppsAndUrls(int id, [FromBody] MappingModel model);
         Task<bool> AddImbuildAppsAndUrls(MappingModel mappingModel);
+        Task<bool> DeleteByIdAsync(int id);
+
         Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
         Task<ProductivityDurations> GetProductivityDurations(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
         Task<List<TeamProductivity>> TeamwiseProductivity(int organizationId, int? teamId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate);

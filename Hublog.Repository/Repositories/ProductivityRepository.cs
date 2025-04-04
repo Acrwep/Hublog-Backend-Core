@@ -127,6 +127,23 @@ namespace Hublog.Repository.Repositories
         }
 
 
+        public async Task<bool> DeleteByIdAsync(int id)
+        {
+            try
+            {
+                 var query = "DELETE FROM ImbuildAppsAndUrls WHERE Id = @Id";
+                var parameters = new { Id = id };
+
+                var result = await _dapper.ExecuteAsync(query, parameters);
+                return result > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error deleting API", ex);
+            }
+        }
+
+
         public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
             var parameters = new
@@ -1281,9 +1298,7 @@ WHERE O.Id = @organizationId
 
         }
 
-
-
-
+      
     }
 }
 
