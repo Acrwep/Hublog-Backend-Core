@@ -354,31 +354,58 @@ namespace Hublog.API.Controllers
             }
         }
 
+        //[HttpPost("InsertUser")]
+        //public async Task<IActionResult> InsertUser([FromBody] Users user)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            var createdUser = await _userService.InsertUser(user);
+        //            if (createdUser == null)
+        //            {
+        //                return Conflict("A user with this email already exists");
+        //            }
+
+        //            await _emailService.SendEmailAsync(user);
+
+        //            return CreatedAtAction(nameof(InsertUser), new { id = createdUser.Id }, createdUser);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Model State is Not Valid");
+        //    }
+        //}
+
         [HttpPost("InsertUser")]
         public async Task<IActionResult> InsertUser([FromBody] Users user)
         {
-            if (ModelState.IsValid)
+            try
             {
-                try
+                if (!ModelState.IsValid)
                 {
-                    var createdUser = await _userService.InsertUser(user);
-                    await _emailService.SendEmailAsync(user);
-
-                    if (createdUser == null)
-                    {
-                        return Conflict("A user with this email already exists");
-                    }
-
-                    return CreatedAtAction(nameof(InsertUser), new { id = createdUser.Id }, createdUser);
+                    return BadRequest("Model State is Not Valid");
                 }
-                catch (Exception ex)
+
+                var (createdUser, error) = await _userService.InsertUser(user);
+
+                if (error != null)
                 {
-                    return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+                    return BadRequest(error);
                 }
+
+                await _emailService.SendEmailAsync(user);
+                return CreatedAtAction(nameof(InsertUser), new { id = createdUser.Id }, createdUser);
             }
-            else
+            catch (Exception ex)
             {
-                return BadRequest("Model State is Not Valid");
+                // Log the exception here if needed
+                return StatusCode(StatusCodes.Status500InternalServerError, "An unexpected error occurred");
             }
         }
 

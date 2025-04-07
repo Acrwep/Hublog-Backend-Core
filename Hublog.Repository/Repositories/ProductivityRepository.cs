@@ -305,6 +305,7 @@ namespace Hublog.Repository.Repositories
 
         }
 
+        
         public async Task<List<AppUsage>> GetAppUsages(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
         {
             string appUsageQuery = "GetAppUsage";
@@ -326,11 +327,13 @@ namespace Hublog.Repository.Repositories
             var allUsages = appUsages.Concat(urlUsages).ToList();
             return allUsages;
         }
+
+
         public async Task<List<TeamProductivity>> TeamwiseProductivity(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
         {
             var teamQuery = @"
         SELECT T.Id, T.Name 
-        FROM Team T
+        FROM Team T 
         INNER JOIN Organization O ON T.OrganizationId = O.Id
         WHERE O.Id = @OrganizationId
               AND (@TeamId IS NULL OR T.Id = @TeamId) ";
@@ -375,7 +378,7 @@ namespace Hublog.Repository.Repositories
                         )).ToList();
 
                         if (apps.Any()) // Check if there are any results
-                         {
+                        {
                             foreach (var app in apps)
                             {
                                 switch (app)
@@ -410,6 +413,9 @@ namespace Hublog.Repository.Repositories
 
             return result;
         }
+
+
+
         private string FormatDuration(long totalSeconds)
         {
             var hours = totalSeconds / 3600;
@@ -417,6 +423,8 @@ namespace Hublog.Repository.Repositories
             var seconds = totalSeconds % 60;
             return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
         }
+
+
         public async Task<dynamic> MostTeamwiseProductivity(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
         {
             var teamQuery = @"

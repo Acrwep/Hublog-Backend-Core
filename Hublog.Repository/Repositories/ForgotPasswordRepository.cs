@@ -24,15 +24,31 @@ namespace Hublog.Repository.Repositories
             return count > 0;
         }
 
-        public async Task<bool> UpdatePasswordAsync(string email, string newPassword)
+        public async Task<(bool isUpdated, bool newUser)> UpdatePasswordAsync(string email, string newPassword)
         {
-            string query = "UPDATE Users SET Password = @Password WHERE Email = @Email";
 
+            string checkQuery = "SELECT Password FROM Users WHERE Email = @Email";
+            string currentPassword = await _dapper.QueryFirstOrDefaultAsync<string>(checkQuery, new { Email = email });
+
+            bool newUser = currentPassword == null;
+
+            string updateQuery = "UPDATE Users SET Password = @Password WHERE Email = @Email";
             var parameters = new { Email = email, Password = newPassword };
 
-            int rowsAffected = await _dapper.ExecuteAsync(query, parameters);
+            int rowsAffected = await _dapper.ExecuteAsync(updateQuery, parameters);
 
-            return rowsAffected > 0;
+            return (rowsAffected > 0, newUser);
         }
+
+        //public async Task<bool> UpdatePasswordAsync(string email, string newPassword)
+        //{
+        //    string query = "UPDATE Users SET Password = @Password WHERE Email = @Email";
+
+        //    var parameters = new { Email = email, Password = newPassword };
+
+        //    int rowsAffected = await _dapper.ExecuteAsync(query, parameters);
+
+        //    return rowsAffected > 0;
+        //}
     }
 }

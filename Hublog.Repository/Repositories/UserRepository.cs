@@ -631,6 +631,23 @@ namespace Hublog.Repository.Repositories
                 return -1;
             }
 
+            string licenseCheckQuery = @"
+        SELECT 
+            O.Licence AS LicenseCount,
+            (SELECT COUNT(*) FROM Users U WHERE U.OrganizationId = @OrganizationId AND U.Active = 1) AS ActiveUserCount
+        FROM Organization O
+        WHERE O.Id = @OrganizationId";
+
+            var licenseInfo = await _dapper.QueryFirstOrDefaultAsync<(int LicenseCount, int ActiveUserCount)>(
+                licenseCheckQuery,
+                new { user.OrganizationId });
+
+            // Check if we can add another active user
+            if (user.Active && licenseInfo.ActiveUserCount >= licenseInfo.LicenseCount)
+            {
+                return -2; // License limit reached
+            }
+
             string insertQuery = @"
                             INSERT INTO Users (First_Name, Last_Name, Email, DOB, DOJ, Phone, UsersName, Password, 
                                 Gender, OrganizationId, RoleId, DesignationId, TeamId, Active, EmployeeID, ManagerStatus) 
@@ -675,6 +692,27 @@ namespace Hublog.Repository.Repositories
             if (nameExists)
             {
                 return -1; // Returning null to indicate a duplicate
+            }
+            // Check license count if activating a user
+            if (user.Active)
+            {
+                string licenseCheckQuery = @"
+            SELECT 
+                O.Licence AS LicenseCount,
+                (SELECT COUNT(*) FROM Users U WHERE U.OrganizationId = @OrganizationId AND U.Active = 1) AS ActiveUserCount
+            FROM Organization O
+            WHERE O.Id = @OrganizationId";
+
+                var licenseInfo = await _dapper.QueryFirstOrDefaultAsync<(int LicenseCount, int ActiveUserCount)>(
+                    licenseCheckQuery,
+                    new { user.OrganizationId });
+
+                // Get current user's active status
+                var currentUser = await GetUserById(user.Id);
+                if (currentUser != null && !currentUser.Active && licenseInfo.ActiveUserCount >= licenseInfo.LicenseCount)
+                {
+                    return -2; // License limit reached
+                }
             }
 
             string query = @"

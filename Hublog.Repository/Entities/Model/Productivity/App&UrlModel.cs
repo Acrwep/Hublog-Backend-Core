@@ -12,5 +12,6 @@ namespace Hublog.Repository.Entities.Model.Productivity
         public string Name { get; set; }
         public int TotalSeconds { get; set; }
         public string TotalUsage { get; internal set; }
+      
     }
 }

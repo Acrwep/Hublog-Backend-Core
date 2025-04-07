@@ -236,27 +236,54 @@ namespace Hublog.Service.Services
         #endregion
 
         #region  InsertUser
-        public async Task<Users> InsertUser(Users user)
+        //public async Task<Users> InsertUser(Users user)
+        //{
+        //    var userId = await _userRepository.InsertUser(user);
+
+        //    if (userId > 0)
+        //    {
+        //        user.Id = userId;
+        //        return user;
+        //    }
+        //    else if (userId == -1)
+        //    {
+        //        return null; 
+        //    }
+        //    else if (userId == -2)
+        //    {
+        //        throw new Exception("Organization license count reached. Cannot add more active users.");
+        //    }
+        //    else
+        //    {
+        //        throw new Exception("Could not create user");
+        //    }
+        //}
+
+        public async Task<(Users User, string Error)> InsertUser(Users user)
         {
             var userId = await _userRepository.InsertUser(user);
 
             if (userId > 0)
             {
                 user.Id = userId;
-                return user;
+                return (user, null);
             }
             else if (userId == -1)
             {
-                return null; 
+                return (null, "A user with this email already exists");
+            }
+            else if (userId == -2)
+            {
+                return (null, "Organization license count reached. Cannot add more active users.");
             }
             else
             {
-                throw new Exception("Could not create user");
+                return (null, "Could not create user");
             }
         }
         #endregion
 
-       
+
 
         #region UpdateUser
         public async Task<Users> UpdateUser(Users user)
@@ -289,14 +316,21 @@ namespace Hublog.Service.Services
 
             if (rowsAffected > 0)
             {
-                return user;
+                return await _userRepository.GetUserById(user.Id);
             }
             else if (rowsAffected == -1)
             {
                 throw new InvalidOperationException("The Email is already exists");
             }
 
-            return null;
+            else if (rowsAffected == -2)
+            {
+                throw new InvalidOperationException("Organization license count reached. Cannot activate more users.");
+            }
+            else
+            {
+                return null;
+            }
         }
         #endregion
 

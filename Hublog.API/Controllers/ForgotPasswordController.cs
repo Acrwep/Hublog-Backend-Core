@@ -43,19 +43,39 @@ namespace Hublog.API.Controllers
         {
             if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.NewPassword))
             {
-                return BadRequest(new { message = "Email and password are required."});
+                return BadRequest(new { message = "Email and password are required." });
             }
 
-            bool isUpdated = await _forgotPasswordService.UpdatePasswordAsync(request.Email, request.NewPassword);
+            var updateResult = await _forgotPasswordService.UpdatePasswordAsync(request.Email, request.NewPassword);
 
-            if (isUpdated)
+            if (updateResult.isUpdated)
             {
-                return Ok(new { message = $"Your Password {request.NewPassword} updated successfully."});
+                return Ok(new { message = $"Your Password {request.NewPassword} updated successfully.", newUser = updateResult.newUser });
             }
             else
             {
-                return NotFound(new { message = $"Error!Your Email {request.Email} not found in the database."});
+                return NotFound(new { message = $"Error! Your Email {request.Email} not found in the database." });
             }
         }
+
+        //[HttpPut("update-password")]
+        //public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
+        //{
+        //    if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.NewPassword))
+        //    {
+        //        return BadRequest(new { message = "Email and password are required."});
+        //    }
+
+        //    bool isUpdated = await _forgotPasswordService.UpdatePasswordAsync(request.Email, request.NewPassword);
+
+        //    if (isUpdated)
+        //    {
+        //        return Ok(new { message = $"Your Password {request.NewPassword} updated successfully."});
+        //    }
+        //    else
+        //    {
+        //        return NotFound(new { message = $"Error!Your Email {request.Email} not found in the database."});
+        //    }
+        //}
     }
 }
