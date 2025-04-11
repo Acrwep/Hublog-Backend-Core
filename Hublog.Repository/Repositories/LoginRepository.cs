@@ -69,8 +69,8 @@ namespace Hublog.Repository.Repositories
             string query = "SELECT A.*, B.Name AS RoleName, B.AccessLevel, C.Name AS DesignationName, D.Name AS TeamName " +
                "FROM Users A WITH (NOLOCK) " +
                "INNER JOIN Role B WITH (NOLOCK) ON A.RoleId = B.Id " +
-               "INNER JOIN Designation C WITH (NOLOCK) ON A.DesignationId = C.Id " +
-               "INNER JOIN Team D WITH (NOLOCK) ON A.TeamId = D.Id " +
+               "LEFT JOIN Designation C WITH (NOLOCK) ON A.DesignationId = C.Id " +
+               "LEFT JOIN Team D WITH (NOLOCK) ON A.TeamId = D.Id " +
                "WHERE B.AccessLevel = 2 AND A.Email = @Email AND A.Password = @Password AND A.Active = 1";
 
             var parameters = new { Email = email, Password = password };

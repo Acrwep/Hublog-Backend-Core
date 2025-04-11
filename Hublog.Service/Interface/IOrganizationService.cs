@@ -13,5 +13,6 @@ namespace Hublog.Service.Interface
         Task<object> UpdateAsync(Organizations organization);
         Task<List<Organizations>> GetAllAsync();
         Task<bool> CheckDomainAvailabilityAsync(string domain);
+        Task<string> CheckOrganizationPlanAsync(int organizationId);
     }
 }

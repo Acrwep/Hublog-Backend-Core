@@ -1,4 +1,4 @@
-﻿using Hublog.Repository.Entities.Login;
+using Hublog.Repository.Entities.Login;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Hublog.Service.Interface;
@@ -122,7 +122,9 @@ namespace Hublog.Service.Services
         new Claim(ClaimTypes.Role, user.RoleName),
         new Claim("First_Name", user.First_Name),
         new Claim("Last_Name", user.Last_Name),
-        new Claim("ManagerStatus", user.ManagerStatus.ToString()), // Add ManagerStatus as a claim
+        new Claim("ManagerStatus", user.ManagerStatus.ToString()),
+        new Claim("OrganizationId", user.OrganizationId.ToString()),  // Add OrganizationId claim
+        new Claim("AccessLevel", user.AccessLevel.ToString()),         // Add AccessLevel claim
         new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(now).ToUnixTimeSeconds().ToString()),
         new Claim(JwtRegisteredClaimNames.Iat, new DateTimeOffset(now).ToUnixTimeSeconds().ToString())
     };

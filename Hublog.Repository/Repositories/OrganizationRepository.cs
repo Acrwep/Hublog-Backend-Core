@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -149,5 +149,15 @@ namespace Hublog.Repository.Repositories
             int count = await _dapper.ExecuteScalarAsync<int>(query, new { Domain = domain });
             return count > 0;
         }
+
+        public async Task<DateTime?> GetPlanEndDateAsync(int organizationId)
+        {
+            var query = @"select PlanEndDate from Organization where id=@Id";
+            var parameter = new { Id = organizationId };
+            var result = await _dapper.ExecuteScalarAsync<DateTime?>(query,parameter);
+            return result;
+        }
+
+       
     }
 }

@@ -106,7 +106,6 @@ namespace Hublog.API.Controllers
             }
         }
         [HttpGet("GetAlertRule")]
-        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         public async Task<IActionResult> GetAlertRule(int organizationId, string? seachQuery = "")
         {
             try

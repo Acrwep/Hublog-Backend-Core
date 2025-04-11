@@ -1,4 +1,4 @@
-﻿using Hublog.Repository.Entities.Model.Organization;
+using Hublog.Repository.Entities.Model.Organization;
 using Hublog.Repository.Entities.Model.OTPRequest;
 using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
@@ -107,6 +107,36 @@ namespace Hublog.API.Controllers
            
         }
 
-      
+        [HttpGet("check-plan")]
+        public async Task<IActionResult> CheckPlan(int organizationId)
+        {
+            try
+            {
+                var planStatus = await _organizationService.CheckOrganizationPlanAsync(organizationId);
+
+                if (planStatus == "active")
+                {
+                    return Ok("Organization plan is active");
+                }
+                else if (planStatus == "expiring_soon")
+                {
+                    return Ok(new { message = "Organization plan is expiring soon. Please renew to avoid interruption." });
+                }
+                else if (planStatus == "expired")
+                {
+                    return BadRequest(new { error = "Organization plan is expired" });
+                }
+                else
+                {
+                    return BadRequest(new { error = "Unknown plan status" });
+                }
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
+
     }
 }

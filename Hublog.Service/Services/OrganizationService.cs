@@ -51,5 +51,25 @@ namespace Hublog.Service.Services
             return await _organizationRepository.CheckDomainAvailabilityAsync(domain);
         }
 
+        public async Task<string> CheckOrganizationPlanAsync(int organizationId)
+        {
+            var planEndDate = await _organizationRepository.GetPlanEndDateAsync(organizationId);
+            if (planEndDate == null)
+            {
+                throw new InvalidOperationException("Organization not found");
+            }
+            else if (planEndDate < DateTime.UtcNow)
+            {
+                return "expired";
+            }
+            else if ((planEndDate - DateTime.UtcNow).Value.TotalDays <= 7)
+            {
+                return "expiring_soon";
+            }
+            else
+            {
+                return "active";
+            }
+        }
     }
 }
