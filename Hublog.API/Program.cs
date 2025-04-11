@@ -1,16 +1,7 @@
-using System.Data;
-using System.Data.SqlClient;
 using Hublog.API.Extensions;
 using Hublog.API.Hub;
 using Hublog.Repository.Entities.Model;
-using Hublog.Repository.Entities.Model.UserModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.Connections;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Options;
-using Microsoft.OpenApi.Models;
-using static Hublog.Repository.Common.Dapperr;
 
 var builder = WebApplication.CreateBuilder(args);
 

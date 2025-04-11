@@ -82,7 +82,7 @@ namespace Hublog.Repository.Repositories
             smtp.Disconnect(true);
         }
 
-      
+
 
         private string getUserHtmlContent(Users users)
         {
@@ -222,7 +222,7 @@ namespace Hublog.Repository.Repositories
             email.To.Add(MailboxAddress.Parse(otpRequest.Email));
             email.Subject = "Your OTP Code";
 
-            var builder = new BodyBuilder { HtmlBody = GetOtpHtmlContent(otp,userDetails.FirstName,userDetails.LastName) };
+            var builder = new BodyBuilder { HtmlBody = GetOtpHtmlContent(otp, userDetails.FirstName, userDetails.LastName) };
             email.Body = builder.ToMessageBody();
 
             using var smtp = new SmtpClient();
@@ -250,8 +250,7 @@ namespace Hublog.Repository.Repositories
             string query = "SELECT First_Name, Last_Name FROM Users WHERE Email = @Email";
 
             return await _dapper.QueryFirstOrDefaultAsync<(string, string)>(query, new { Email = email });
-            
+
         }
     }
-
 }

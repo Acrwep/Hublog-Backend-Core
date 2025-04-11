@@ -76,10 +76,10 @@ namespace Hublog.Repository.Repositories
                 int WorkingTime = activeTime;
 
                 // Update totals
-                totalActiveDuration += activeTime-(idleTime + BreakTime);
+                totalActiveDuration += activeTime - (idleTime + BreakTime);
                 totalIdealDuration += idleTime;
                 totalBreakDuration += BreakTime;
-                totalOnlineDuration += activeTime-BreakTime;
+                totalOnlineDuration += activeTime - BreakTime;
                 total_Duration += activeTime;
                 OnlineTime = activeTime - BreakTime;
                 activeTime -= (idleTime + BreakTime);
@@ -90,7 +90,7 @@ namespace Hublog.Repository.Repositories
                     TeamName = team.Name,
                     ActiveTime = activeTime,
                     IdleDuration = idleTime,
-                    BreakDuration= BreakTime,
+                    BreakDuration = BreakTime,
                     OnlineTime = OnlineTime,
                     Duration = WorkingTime
                 });
@@ -113,7 +113,7 @@ namespace Hublog.Repository.Repositories
         .OrderByDescending(team => team.ActiveTimePercent)
         .ToList();
 
-            var topTeams = sortedTeams .Where(team => team.ActiveTimePercent > 0).Take(3) .ToList();
+            var topTeams = sortedTeams.Where(team => team.ActiveTimePercent > 0).Take(3).ToList();
             var bottomTeams = sortedTeams.OrderBy(team => team.ActiveTimePercent).Take(3).ToList();
 
             var percentageStats = new
@@ -180,10 +180,10 @@ namespace Hublog.Repository.Repositories
 
             return result;
         }
-        public async Task<dynamic> Date_wise_Activity(int organizationId, int? teamId,int? userid, DateTime fromDate, DateTime toDate)
+        public async Task<dynamic> Date_wise_Activity(int organizationId, int? teamId, int? userid, DateTime fromDate, DateTime toDate)
         {
-                // Query to fetch teams
-                var teamQuery = @"
+            // Query to fetch teams
+            var teamQuery = @"
     SELECT T.Id, T.Name 
     FROM Team T
     INNER JOIN Organization O ON T.OrganizationId = O.Id
@@ -201,7 +201,7 @@ namespace Hublog.Repository.Repositories
                 {
                     OrganizationId = organizationId,
                     TeamId = team.TeamId,
-                    UserId= userid,
+                    UserId = userid,
                     FromDate = fromDate,
                     ToDate = toDate
                 };
@@ -218,8 +218,8 @@ namespace Hublog.Repository.Repositories
                             Date = g.Key,
                             OnlineTime = g.Sum(u => u.ActiveTime - u.BreakDuration),
                             IdleDuration = g.Sum(u => u.IdleDuration),
-                            BreakDuration=g.Sum(u => u.BreakDuration),
-                            ActiveDuration= g.Sum(u => u.ActiveTime - (u.IdleDuration + u.BreakDuration)),
+                            BreakDuration = g.Sum(u => u.BreakDuration),
+                            ActiveDuration = g.Sum(u => u.ActiveTime - (u.IdleDuration + u.BreakDuration)),
                             TotalDuration = g.Sum(u => u.ActiveTime)
                         });
 
@@ -235,8 +235,8 @@ namespace Hublog.Repository.Repositories
                     TotalDuration = g.Sum(d => d.TotalDuration),
                     OnlineTime = g.Sum(d => d.OnlineTime),
                     IdleDuration = g.Sum(d => d.IdleDuration),
-                    BreakDuration=g.Sum(d => d.BreakDuration),
-                    ActiveDuration=g.Sum(d=>d.ActiveDuration)
+                    BreakDuration = g.Sum(d => d.BreakDuration),
+                    ActiveDuration = g.Sum(d => d.ActiveDuration)
                 })
                 .Where(d => d.TotalDuration > 0)
                .OrderBy(d => DateTime.ParseExact(d.Date, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)) // Adjusted to match the full format
@@ -260,7 +260,7 @@ namespace Hublog.Repository.Repositories
                 Online_Time = d.Online_Time,
                 Idle_Duration = d.Idle_Duration,
                 Break_Duration = d.Break_Duration,
-                Active_Duration=d.Active_Duration
+                Active_Duration = d.Active_Duration
             }).ToList();
         }
         public async Task<dynamic> GetActivityEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
@@ -297,7 +297,7 @@ namespace Hublog.Repository.Repositories
                         ? Math.Round((double)r.ActiveTime.Value / r.TodalTime.Value * 100, 2)
                         : 0
             }).OrderByDescending(r => r.ActivePercentage)
-              .ThenByDescending(r => r.AttendanceCount) 
+              .ThenByDescending(r => r.AttendanceCount)
               .ToList();
 
             return data;
@@ -313,12 +313,12 @@ namespace Hublog.Repository.Repositories
                 Date = Date
             };
 
-                var timelineData = await _dapper.GetAllAsync<dynamic>(query, parameters);
+            var timelineData = await _dapper.GetAllAsync<dynamic>(query, parameters);
 
-                return new
-                {
-                    data = timelineData
-                };
+            return new
+            {
+                data = timelineData
+            };
 
         }
 

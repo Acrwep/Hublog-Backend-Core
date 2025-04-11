@@ -262,7 +262,7 @@ namespace Hublog.Repository.Repositories
             return new { top = topAchievers, least = leastAchievers };
         }
 
-       
+
         //public async Task<dynamic> GetGoalsDetails(int organizationId, int? teamId, DateTime fromDate, DateTime toDate)
         //{
         //    // Get goals data for thresholds

@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hublog.Repository.Common;
-using Hublog.Repository.Entities.Model.Break;
+﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Interface;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Mvc;
-using Hublog.Repository.Entities.Model.Activity;
-using Hublog.Repository.Entities.Model.UserModels;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Hublog.Repository.Entities.Model.WellNess_Model;
-using System.Globalization;
 using System.Data;
-using Hublog.Repository.Entities.Model.Organization;
 
 namespace Hublog.Repository.Repositories
 {
@@ -33,7 +21,7 @@ namespace Hublog.Repository.Repositories
             var seconds = totalSeconds % 60; // Remaining seconds
             return $"{hours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
         }
-       
+
 
         public async Task<object> InsertWellnessAsync(WellNess wellness)
         {
@@ -198,7 +186,7 @@ namespace Hublog.Repository.Repositories
             var teams = await _dapper.GetAllAsync<Team>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
 
             var wellnessSummaries = new List<WellNess>();
-            var wellnessHealthy = new List<dynamic>(); 
+            var wellnessHealthy = new List<dynamic>();
             var wellnessOverburdened = new List<dynamic>();
             var wellnessUnderutilized = new List<object>();
 
@@ -239,7 +227,7 @@ namespace Hublog.Repository.Repositories
                 foreach (var user in activityDurations)
                 {
                     int userId = user?.UserId ?? 0;
-                    string fullName = user.Fullname;  
+                    string fullName = user.Fullname;
                     int activeTimeSec = user?.ActiveTime ?? 0;
                     TotalactiveTimeSec += activeTimeSec;
                     int activeTime = activeTimeSec / 3600;
@@ -310,7 +298,7 @@ namespace Hublog.Repository.Repositories
 
             double CurrentHealthyPercentage = TotalactiveTimeSec == 0 ? 0 : ((double)totalHealthySec / TotalactiveTimeSec) * 100;
 
-            double HealthyPercentageDifference = CurrentHealthyPercentage- PreviousdateHealthyPercentage;
+            double HealthyPercentageDifference = CurrentHealthyPercentage - PreviousdateHealthyPercentage;
 
 
             string total_active_time = FormatDuration(TotalactiveTimeSec);
@@ -434,7 +422,7 @@ namespace Hublog.Repository.Repositories
                     OverburdenedCount = g.Count(u => (u.ActiveTime ?? 0) / 3600 >= healthyThreshold),
                     UnderutilizedCount = g.Count(u => (u.ActiveTime ?? 0) / 3600 < underutilizedThreshold)
                 })
-                .OrderBy(d => d.Date) 
+                .OrderBy(d => d.Date)
                 .ToList();
 
             return new
@@ -464,7 +452,7 @@ namespace Hublog.Repository.Repositories
                 u.UserId,
                 u.FullName,
                 ActiveTime = u.TotalTime.HasValue ? TimeSpan.FromSeconds(u.TotalTime.Value).ToString(@"hh\:mm\:ss") : "00:00:00",
-                AttendanceCount = u.TotalPresent, 
+                AttendanceCount = u.TotalPresent,
                 Underutilized = u.Underutilized,
                 Healthy = u.Healthy,
                 Overburdened = u.Overburdened,
@@ -478,7 +466,5 @@ namespace Hublog.Repository.Repositories
                 Employees = employees
             };
         }
-
-       
     }
 }

@@ -51,23 +51,23 @@ namespace Hublog.Repository.Repositories
             await _dapper.ExecuteAsync(query, parameters, commandType: CommandType.StoredProcedure);
 
             var selectQuery = @"
-    SELECT TOP (1) [id]
-      ,[OrganizationId]
-      ,[UserId]
-      ,[Date]
-      ,[StartTime]
-      ,[EndTime]
-      ,[Summary]
-      ,[FileName]
-    FROM Manual_Time
-    WHERE OrganizationId = @OrganizationId
-      AND UserId = @UserId
-      AND Date = @Date
-      AND StartTime = @StartTime
-      AND EndTime = @EndTime
-      AND Summary = @Summary
-      AND FileName = @FileName
-    ORDER BY Id DESC";
+                            SELECT TOP (1) [id]
+                              ,[OrganizationId]
+                              ,[UserId]
+                              ,[Date]
+                              ,[StartTime]
+                              ,[EndTime]
+                              ,[Summary]
+                              ,[FileName]
+                            FROM Manual_Time
+                            WHERE OrganizationId = @OrganizationId
+                              AND UserId = @UserId
+                              AND Date = @Date
+                              AND StartTime = @StartTime
+                              AND EndTime = @EndTime
+                              AND Summary = @Summary
+                              AND FileName = @FileName
+                            ORDER BY Id DESC";
             var insertedRecord = await _dapper.QueryFirstOrDefaultAsync<Manual_Time>(selectQuery, parameters);
 
             return insertedRecord;
