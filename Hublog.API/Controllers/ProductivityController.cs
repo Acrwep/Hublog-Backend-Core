@@ -233,7 +233,7 @@ namespace Hublog.API.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        //[Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
+        [Authorize(Policy = CommonConstant.Policies.AdminPolicy)]
         [HttpGet("GetProductivity_Trend")]
         public async Task<IActionResult> GetProductivity_Trend(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
