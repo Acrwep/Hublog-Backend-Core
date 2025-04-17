@@ -1,6 +1,7 @@
 ﻿using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.ApplicationModel;
+using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Entities.Model.UrlModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,9 +24,9 @@ namespace Hublog.Repository.Interface
         Task<(string Url, string UrlMaxUsage, string ApplicationName, string AppMaxUsage)> GetTopAppAndUrlsUsageAsync(
                int organizationId, int? teamId, int? userId, DateTime startDate, DateTime endDate);
 
-        Task<(string ApplicationName, string MaxUsage)> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
+        //Task<(string ApplicationName, string MaxUsage)> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
 
-       
+        Task<GetTopCategory> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
 
     }
 }

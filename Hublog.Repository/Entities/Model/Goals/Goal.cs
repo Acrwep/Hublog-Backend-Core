@@ -14,4 +14,14 @@ namespace Hublog.Repository.Entities.Model.Goals
         public int ProductiveTime { get; set; }
         
     }
+
+    public class GoalStatsDto
+    {
+        public int UserId { get; set; }
+        public string FullName { get; set; }
+        public int AchievedDays { get; set; }
+        public int TotalWorkingSeconds { get; set; }
+        public int TotalProductiveSeconds { get; set; }
+    }
+
 }

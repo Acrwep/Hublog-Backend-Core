@@ -88,8 +88,7 @@ namespace Hublog.Repository.Common
 
         public async Task<T> GetSingleAsync<T>(string query, object parameters = null, CommandType commandType = CommandType.Text)
         {
-                return await _connection.QueryFirstOrDefaultAsync<T>(query, parameters, commandType: commandType);
-
+            return await _connection.QueryFirstOrDefaultAsync<T>(query, parameters, commandType: commandType);
         }
 
         #endregion

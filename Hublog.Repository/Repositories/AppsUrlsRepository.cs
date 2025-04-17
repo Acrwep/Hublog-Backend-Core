@@ -1,17 +1,11 @@
-﻿using Dapper;
-using Hublog.Repository.Common;
+﻿using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
-using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.ApplicationModel;
-using Hublog.Repository.Entities.Model.Organization;
 using Hublog.Repository.Entities.Model.Productivity;
 using Hublog.Repository.Entities.Model.UrlModel;
-using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using System.Data;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Hublog.Repository.Repositories
 {
@@ -57,7 +51,7 @@ namespace Hublog.Repository.Repositories
 
             foreach (var record in rawData)
             {
-                record.TotalUsage = FormatDuration(long.Parse(record.TotalUsage)); 
+                record.TotalUsage = FormatDuration(long.Parse(record.TotalUsage));
             }
 
             return rawData;
@@ -208,10 +202,10 @@ ORDER BY
 
             string FormatDuration(long totalSeconds)
             {
-                var hours = totalSeconds / 3600;        
-                var minutes = (totalSeconds % 3600) / 60; 
-                var seconds = totalSeconds % 60;        
-                return $"{hours}:{minutes:D2}:{seconds:D2}"; 
+                var hours = totalSeconds / 3600;
+                var minutes = (totalSeconds % 3600) / 60;
+                var seconds = totalSeconds % 60;
+                return $"{hours}:{minutes:D2}:{seconds:D2}";
             }
 
             return (result.ApplicationName, FormatDuration(result.TotalUsageSeconds));
@@ -275,123 +269,133 @@ ORDER BY
             var allUsages = appUsages.Concat(urlUsages).ToList();
             return allUsages;
         }
-        public async Task<(string ApplicationName, string MaxUsage)> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
+
+
+        //public async Task<(string ApplicationName, string MaxUsage)> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
+        //{
+        //    var teamQuery = @"
+        //       SELECT T.Id
+        //        FROM Team T
+        //        INNER JOIN Organization O ON T.OrganizationId = O.Id
+        //        WHERE O.Id = @OrganizationId
+        //        AND (@TeamId IS NULL OR T.Id = @TeamId) ";
+
+        //    var teams = await _dapper.GetAllAsync<int>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
+
+        //    var categoryTimeDictionary = new Dictionary<string, int>();
+
+        //    foreach (var team in teams)
+        //    {
+        //        teamId = team;
+        //        var urlUsageQuery = "Get_CombinedUsageData";
+        //        var parameters = new
+        //        {
+        //            OrganizationId = organizationId,
+        //            TeamId = teamId,
+        //            UserId = userId,
+        //            FromDate = fromDate,
+        //            ToDate = toDate
+        //        };
+        //        IEnumerable<App_UrlModel> usages = await _dapper.GetAllAsync<App_UrlModel>(urlUsageQuery, parameters);
+
+        //        //var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
+
+        //        var totalUsages = usages
+        //            .GroupBy(u => u.Name)
+        //           .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
+        //           .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
+
+
+        //        foreach (var usage in usages)
+        //        {
+        //            usage.Name = usage.Name.ToLower();
+
+        //            if (usage.Name != "chrome" && usage.Name != "msedge")
+        //            {
+        //                // Update usage time
+        //                if (totalUsages.TryGetValue(usage.Name, out var totalSeconds))
+        //                {
+        //                    usage.TotalSeconds = totalSeconds;
+        //                    usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
+        //                }
+
+        //                // **Query all Category IDs associated with the application & organization**
+        //                var imbuildAppQuery = @"
+        //                 SELECT CategoryId 
+        //                 FROM ImbuildAppsAndUrls 
+        //                 WHERE Name LIKE '%' + @ApplicationName + '%'
+        //                 AND OrganizationId = @OrganizationId";
+
+        //                var categoryIds = (await _dapper.QueryAsync<int?>(imbuildAppQuery, new
+        //                {
+        //                    ApplicationName = usage.Name,
+        //                    OrganizationId = organizationId // Pass OrganizationId
+        //                })).ToList();
+
+        //                if (categoryIds.Any()) // Ensure we got results
+        //                {
+        //                    foreach (var categoryId in categoryIds) // Loop through each CategoryId
+        //                    {
+
+        //                        var categoryQuery = @"
+        //                         SELECT CategoryName 
+        //                         FROM Categories 
+        //                         WHERE Id = @CategoryId";
+
+        //                        var categoryName = await _dapper.QueryFirstOrDefaultAsync<string>(categoryQuery, new { CategoryId = categoryId });
+
+        //                        if (!string.IsNullOrEmpty(categoryName))
+        //                        {
+        //                            // Accumulate usage time by category
+        //                            if (!categoryTimeDictionary.ContainsKey(categoryName))
+        //                            {
+        //                                categoryTimeDictionary[categoryName] = 0;
+        //                            }
+
+        //                            categoryTimeDictionary[categoryName] += usage.TotalSeconds;
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    string FormatDuration(double totalSeconds)
+        //    {
+        //        var totalHours = (long)(totalSeconds / 3600); // Total hours
+        //        var minutes = (long)((totalSeconds % 3600) / 60); // Remaining minutes
+        //        var seconds = (long)(totalSeconds % 60); // Remaining seconds
+        //        return $"{totalHours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
+        //    }
+        //    // Determine the most-used category after processing all teams
+        //    string mostUsedCategoryName = null;
+        //    int mostUsedCategoryTime = 0;
+
+        //    if (categoryTimeDictionary.Any())
+        //    {
+        //        var mostUsedCategory = categoryTimeDictionary.OrderByDescending(kv => kv.Value).First();
+        //        mostUsedCategoryName = mostUsedCategory.Key;
+        //        mostUsedCategoryTime = mostUsedCategory.Value;
+        //    }
+
+        //    // Return the result after processing all teams
+        //    return (mostUsedCategoryName, FormatDuration(mostUsedCategoryTime));
+        //}
+
+
+        public async Task<GetTopCategory> GetTopCategory(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
         {
-            var teamQuery = @"
-               SELECT T.Id
-                FROM Team T
-                INNER JOIN Organization O ON T.OrganizationId = O.Id
-                WHERE O.Id = @OrganizationId
-                AND (@TeamId IS NULL OR T.Id = @TeamId) ";
-
-            var teams = await _dapper.GetAllAsync<int>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
-
-            var categoryTimeDictionary = new Dictionary<string, int>();
-
-            foreach (var team in teams)
+            var getTopGategory = await _dapper.GetAsync<GetTopCategory>("uspGetTopGategory", new
             {
-                teamId = team;
-                var urlUsageQuery = "Get_CombinedUsageData";
-                var parameters = new
-                {
-                    OrganizationId = organizationId,
-                    TeamId = teamId,
-                    UserId = userId,
-                    FromDate = fromDate,
-                    ToDate = toDate
-                };
-                IEnumerable<App_UrlModel> usages = await _dapper.GetAllAsync<App_UrlModel>(urlUsageQuery, parameters);
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                UserId = userId,
+                FromDate = fromDate,
+                ToDate = toDate
+            }, commandType: CommandType.StoredProcedure);
 
-                //var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
+            return getTopGategory ?? new GetTopCategory(); // or return a default object if null
 
-                var totalUsages = usages
-                    .GroupBy(u => u.Name)
-                   .Select(g => new { ApplicationName = g.Key, TotalSeconds = g.Sum(u => u.TotalSeconds) })
-                   .ToDictionary(t => t.ApplicationName, t => t.TotalSeconds);
-
-               
-                foreach (var usage in usages)
-                {
-                    usage.Name = usage.Name.ToLower();
-
-                    if (usage.Name != "chrome" && usage.Name != "msedge")
-                    {
-                        // Update usage time
-                        if (totalUsages.TryGetValue(usage.Name, out var totalSeconds))
-                        {
-                            usage.TotalSeconds = totalSeconds;
-                            usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
-                        }
-
-                        // **Query all Category IDs associated with the application & organization**
-                        var imbuildAppQuery = @"
-                         SELECT CategoryId 
-                         FROM ImbuildAppsAndUrls 
-                         WHERE Name LIKE '%' + @ApplicationName + '%'
-                         AND OrganizationId = @OrganizationId"; 
-                
-                         var categoryIds = (await _dapper.QueryAsync<int?>(imbuildAppQuery, new
-                         {
-                            ApplicationName = usage.Name,
-                            OrganizationId = organizationId // Pass OrganizationId
-                         })).ToList();
-
-                        if (categoryIds.Any()) // Ensure we got results
-                        {
-                            foreach (var categoryId in categoryIds) // Loop through each CategoryId
-                            {
-                                
-                                var categoryQuery = @"
-                                 SELECT CategoryName 
-                                 FROM Categories 
-                                 WHERE Id = @CategoryId";
-
-                                var categoryName = await _dapper.QueryFirstOrDefaultAsync<string>(categoryQuery, new { CategoryId = categoryId });
-
-                                if (!string.IsNullOrEmpty(categoryName))
-                                {
-                                    // Accumulate usage time by category
-                                    if (!categoryTimeDictionary.ContainsKey(categoryName))
-                                    {
-                                        categoryTimeDictionary[categoryName] = 0;
-                                    }
-
-                                    categoryTimeDictionary[categoryName] += usage.TotalSeconds;
-                                }
-                            }
-                        }
-                    }
-                }
-
-
-
-
-            }
-            string FormatDuration(double totalSeconds)
-            {
-                var totalHours = (long)(totalSeconds / 3600); // Total hours
-                var minutes = (long)((totalSeconds % 3600) / 60); // Remaining minutes
-                var seconds = (long)(totalSeconds % 60); // Remaining seconds
-                return $"{totalHours:D2}:{minutes:D2}:{seconds:D2}"; // Format as "HH:mm:ss"
-            }
-            // Determine the most-used category after processing all teams
-            string mostUsedCategoryName = null;
-            int mostUsedCategoryTime = 0;
-
-            if (categoryTimeDictionary.Any())
-            {
-                var mostUsedCategory = categoryTimeDictionary.OrderByDescending(kv => kv.Value).First();
-                mostUsedCategoryName = mostUsedCategory.Key;
-                mostUsedCategoryTime = mostUsedCategory.Value;
-            }
-
-            // Return the result after processing all teams
-            return(mostUsedCategoryName, FormatDuration(mostUsedCategoryTime));
         }
-
-       
-
-      
     }
-
 }

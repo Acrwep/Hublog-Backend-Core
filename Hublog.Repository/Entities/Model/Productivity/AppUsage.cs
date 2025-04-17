@@ -18,7 +18,11 @@ namespace Hublog.Repository.Entities.Model.Productivity
         public string ProductivityName { get; set; }
         public  string TotalUsage { get; set; }
         public int TotalSeconds { get; set; }
+    }
 
-
+    public class GetTopCategory
+    {
+        public string ApplicationName { get; set; }
+        public string MaxUsage { get; set; }
     }
 }
