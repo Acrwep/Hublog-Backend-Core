@@ -107,12 +107,16 @@ namespace Hublog.Repository.Repositories
                    .ThenByDescending(r => r.TotalProductiveSeconds)
                    .ToList();
 
-            var top = sorted.Take(3).Select(x => new
+            var top = sorted
+            .Where(x => x.AchievedDays > 0)
+            .Take(3)
+            .Select(x => new
             {
                 userId = x.UserId,
                 fullName = x.FullName,
                 achievedDays = x.AchievedDays
             });
+
 
             var least = sorted.TakeLast(3)
                   .OrderBy(x => x.AchievedDays)
