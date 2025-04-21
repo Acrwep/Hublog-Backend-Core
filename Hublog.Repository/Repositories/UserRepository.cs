@@ -1,9 +1,7 @@
 ﻿using Dapper;
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.DTO;
-using Hublog.Repository.Entities.Login;
 using Hublog.Repository.Entities.Model;
-using Hublog.Repository.Entities.Model.AlertModel;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
 using Hublog.Repository.Entities.Model.Shift;
@@ -12,16 +10,6 @@ using Hublog.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Data;
-using System.Diagnostics;
-using System.Net.Mail;
-using System.Net;
-using System.Text;
-using Microsoft.Extensions.Options;
-using MimeKit;
-using Microsoft.Extensions.Options;
-using MimeKit;
-using MailKit.Net.Smtp;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Hublog.Repository.Repositories
 {

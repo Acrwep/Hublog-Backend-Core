@@ -4,6 +4,6 @@ namespace Hublog.Service.Interface
 {
     public interface IScreenshotService
     {
-        Task<List<UserScreenShot>> GetUserScreenShots(int userId, int organizationId, DateTime date);
+        Task<List<UserScreenShotDTO>> GetUserScreenShots(int userId, int organizationId, DateTime date);
     }
 }

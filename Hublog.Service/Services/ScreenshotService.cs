@@ -12,7 +12,7 @@ namespace Hublog.Service.Services
             _screenshotRepository = screenshotRepository;
         }
 
-        public async Task<List<UserScreenShot>> GetUserScreenShots(int userId, int organizationId, DateTime date)
+        public async Task<List<UserScreenShotDTO>> GetUserScreenShots(int userId, int organizationId, DateTime date)
         {
             return await _screenshotRepository.GetUserScreenShots(userId, organizationId, date);
         }
