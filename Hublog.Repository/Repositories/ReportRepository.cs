@@ -3,14 +3,11 @@ using Hublog.Repository.Entities.DTO;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Attendance;
 using Hublog.Repository.Entities.Model.Break;
-using Hublog.Repository.Entities.Model.Organization;
 using Hublog.Repository.Entities.Model.Productivity;
-using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 using System.Dynamic;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Hublog.Repository.Repositories
 {
@@ -36,7 +33,7 @@ namespace Hublog.Repository.Repositories
                 TeamId = teamId
             };
 
-            var kk= await _dapper.GetAllAsyncs<AttendanceReport>(query, parameters, commandType: CommandType.StoredProcedure);
+            var kk = await _dapper.GetAllAsyncs<AttendanceReport>(query, parameters, commandType: CommandType.StoredProcedure);
             return kk;
         }
         #endregion
@@ -108,8 +105,8 @@ namespace Hublog.Repository.Repositories
                 AttendanceDate = date
             };
 
-           
-            var result= await _dapper.GetAllAsyncs<dynamic>(query, parameters, commandType: CommandType.StoredProcedure);
+
+            var result = await _dapper.GetAllAsyncs<dynamic>(query, parameters, commandType: CommandType.StoredProcedure);
             return result;
         }
 
@@ -236,6 +233,7 @@ namespace Hublog.Repository.Repositories
 
 
         }
+
         public async Task<List<dynamic>> DynamicReport([FromQuery] DynamicReportRequest request)
         {
             var query = "DynamicReport";
@@ -263,16 +261,33 @@ namespace Hublog.Repository.Repositories
                 TotalIdletime = request.TotalIdletime.HasValue && request.TotalIdletime.Value ? 1 : 0,
                 AverageIdletime = request.AverageIdletime.HasValue && request.AverageIdletime.Value ? 1 : 0
             };
+
             var result = new List<dynamic>();
-            var result2 = new List<dynamic>();
-            var result23 = new List<dynamic>();
             var result1 = await _dapper.GetAllAsync<DynamicReportRequest>(query, parameters);
+
+            var productivityData = await _dapper.GetAllAsyncs<dynamic>("uspGetDynamicProductivity", new
+            {
+                OrganizationId = request.OrganizationId,
+                TeamId = request.TeamId,
+                UserId = request.UserId,
+                FromDate = request.StartDate,
+                ToDate = request.EndDate
+            }, commandType: CommandType.StoredProcedure);
+
+            var productivityLookup = productivityData
+                .Where(x => x.UserID != null)
+                .GroupBy(x => (int)x.UserID)
+                .ToDictionary(g => g.Key, g => g.First());
+
+            var dateDifferenceInDays = (request.EndDate - request.StartDate).TotalDays;
+            if (dateDifferenceInDays <= 0) dateDifferenceInDays = 1;
+
             foreach (var record in result1)
             {
-                var dynamicItem = new ExpandoObject() as dynamic;  
-
+                var dynamicItem = new ExpandoObject() as dynamic;
                 dynamicItem.UserId = record.UserId;
                 dynamicItem.TeamId = record.TeamId;
+
                 if (request.FirstName == true)
                     dynamicItem.FirstName = record.FirstNameOutput;
 
@@ -301,7 +316,7 @@ namespace Hublog.Repository.Repositories
                     dynamicItem.AverageBreaktime = record.AverageBreaktimeOutput;
 
                 if (request.TotalActivetime == true)
-                    dynamicItem.TotalActivetime = record.TotalActivetimeOutput; 
+                    dynamicItem.TotalActivetime = record.TotalActivetimeOutput;
 
                 if (request.AverageActivetime == true)
                     dynamicItem.AverageActivetime = record.AverageActivetimeOutput;
@@ -315,385 +330,73 @@ namespace Hublog.Repository.Repositories
                 if (request.AverageIdletime == true)
                     dynamicItem.AverageIdletime = record.AverageIdletimeOutput;
 
-                result.Add(dynamicItem);
-            }
-
-            var teamQuery = @"
-                   SELECT T.Id,T.Name
-                    FROM Team T
-                    INNER JOIN Organization O ON T.OrganizationId = O.Id
-                    WHERE O.Id = @OrganizationId
-                    AND (@TeamId IS NULL OR T.Id = @TeamId) ";
-
-            var teams = await _dapper.GetAllAsync<(int TeamId, string TeamName)>(teamQuery, new { OrganizationId = request.OrganizationId, TeamId = request.TeamId });
-
-            List<dynamic> groupedUsages = new List<dynamic>();
-            if (request.UserId.HasValue)
-            {
-                foreach (var team in teams)
+                if (productivityLookup.TryGetValue((int)record.UserId, out var productivity))
                 {
-                    var TeamName = team.TeamName;
-                    var teamId = team.TeamId;
+                    int totalProductiveDuration = productivity.TotalProductiveDuration;
+                    int totalUnproductiveDuration = productivity.TotalUnproductiveDuration;
+                    int totalNeutralDuration = productivity.TotalNeutralDuration;
 
-                    var urlUsageQuery = "GetAppUsagesSS";
-                    var parameters1 = new
-                    {
-                        OrganizationId = request.OrganizationId,
-                        TeamId = teamId,
-                        UserId = request.UserId,
-                        FromDate = request.StartDate,
-                        ToDate = request.EndDate
-                    };
+                    double? activeDurationInSeconds = productivity.TotalWorkingTime ?? 0.0;
+                    double percentageProductiveDuration = activeDurationInSeconds > 0
+                        ? ((double)totalProductiveDuration / activeDurationInSeconds.Value) * 100
+                        : 0.0;
 
-                    IEnumerable<dynamic> results = await _dapper.GetAllAsync<dynamic>(urlUsageQuery, parameters1);
-                    var getUsers = @"
-                SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
-                FROM Users 
-                WHERE TeamId = @TeamId
-                AND Active = 1 -- Filter only active users
-                AND (@UserId IS NULL OR Id = @UserId)";
+                    double averageProductiveDuration = totalProductiveDuration / dateDifferenceInDays;
+                    double averageUnproductiveDuration = totalUnproductiveDuration / dateDifferenceInDays;
+                    double averageNeutralDuration = totalNeutralDuration / dateDifferenceInDays;
 
-                    var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters1);
-
-                    var combinedResults = results.Concat(getUsers1)
-                        .GroupBy(item => item.UserId)
-                        .Select(group =>
-                        {
-                            var usageEntry = results.FirstOrDefault(u => u.UserId == group.Key);
-                            return usageEntry ?? group.First();
-                        })
-                        .ToList();
-
-                    foreach (var us in combinedResults)
-                    {
-                        var userIdd = us.UserId;
-                        var FullName = us.FullName;
-                        int totalProductiveDuration = 0, totalUnproductiveDuration = 0, totalNeutralDuration = 0;
-                        var organizationId = request.OrganizationId;
-                        var userId = us.UserId;
-                        var fromDate = request.StartDate;
-                        var toDate = request.EndDate;
-                        // var usages = await GetAppUsages(request.OrganizationId, teamId, userIdd, request.StartDate, request.EndDate);
-                        var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
-
-                        
-
-                        foreach (var usage in usages)
-                        {
-                            var totalSeconds = usage.TotalSeconds;
-                            usage.ApplicationName = usage.ApplicationName.ToLower();
-
-                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
-                            {
-                                usage.TotalSeconds = totalSeconds;
-                                usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
-
-                                // Add OrganizationId parameter
-                                var parameters2 = new { ApplicationName = usage.ApplicationName.ToLower(), OrganizationId = request.OrganizationId };
-
-                                var productivityNames = (await _dapper.QueryAsync<string>(
-                                    "sp_GetApplicationCategoryAndProductivity",
-                                    parameters2,
-                                    commandType: CommandType.StoredProcedure
-                                )).ToList();
-
-                                if (productivityNames.Any()) // Ensure we process all matching productivity types
-                                {
-                                    foreach (var productivityName in productivityNames)
-                                    {
-                                        switch (productivityName)
-                                        {
-                                            case "Productive":
-                                                totalProductiveDuration += usage.TotalSeconds;
-                                                break;
-                                            case "Unproductive":
-                                                totalUnproductiveDuration += usage.TotalSeconds;
-                                                break;
-                                            case "Neutral":
-                                                totalNeutralDuration += usage.TotalSeconds;
-                                                break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0;
-                        double? activeDurationInSeconds = us.ActiveTimeInSeconds ?? 0.0;
-                        var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
-
-                        var dateDifferenceInDays = (request.EndDate - request.StartDate).TotalDays;
-                        if (dateDifferenceInDays <= 0)
-                        {
-                            dateDifferenceInDays = 1;
-                        }
-
-                        double percentageProductiveDuration = activeDurationInSeconds > 0 ? ((double)totalProductiveDuration / activeDurationInSeconds.Value) * 100 : 0.0;
-                        double averageProductiveDuration = dateDifferenceInDays > 0 ? (double)totalProductiveDuration / dateDifferenceInDays : 0.0;
-                        double averageUnproductiveDuration = dateDifferenceInDays > 0 ? (double)totalUnproductiveDuration / dateDifferenceInDays : 0.0;
-                        double averageNeutralDuration = dateDifferenceInDays > 0 ? (double)totalNeutralDuration / dateDifferenceInDays : 0.0;
-
-                        string FormatDuration(double totalSeconds)
-                        {
-                            var hours = (long)(totalSeconds / 3600);
-                            var minutes = (long)((totalSeconds % 3600) / 60);
-                            var seconds = (long)(totalSeconds % 60);
-                            return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
-                        }
-
-                        var dynamicItem = new ExpandoObject() as dynamic;
-                        dynamicItem.UserId = userIdd;
-                        //dynamicItem.Full_Name = FullName;
-                        //dynamicItem.Team_Name = TeamName;
-
-                        //dynamicItem.ActiveDuration = FormatDuration(activeDurationInSeconds ?? 0.0);
-                        //dynamicItem.OnlineDuration = FormatDuration(onlineDurationInSeconds);
-
-                        dynamicItem.Total_Productivetime = FormatDuration(totalProductiveDuration);
-                        dynamicItem.TotalUnproductiveDuration = FormatDuration(totalUnproductiveDuration);
-                        dynamicItem.TotalNeutralDuration = FormatDuration(totalNeutralDuration);
-                        dynamicItem.TotalDuration = FormatDuration(totalDurationInSeconds);
-                        dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
-                        dynamicItem.AverageProductiveDuration = FormatDuration(averageProductiveDuration);
-                        dynamicItem.AverageUnproductiveDuration = FormatDuration(averageUnproductiveDuration);
-                        dynamicItem.AverageNeutralDuration = FormatDuration(averageNeutralDuration);
-
-                        result23.Add(dynamicItem);
-                    }
-                }
-                foreach (var record in result23)
-                {
-                    var dynamicItem = new ExpandoObject() as dynamic;
-                    dynamicItem.UserId = record.UserId;
-
-                    // Check and add formatted durations and percentage
                     if (request.TotalProductivetime == true)
-                        dynamicItem.Total_Productivetime = record.Total_Productivetime;
+                        dynamicItem.Total_Productivetime = FormatDuration(totalProductiveDuration);
 
                     if (request.ProductivityPercent == true)
-                        dynamicItem.Productivity_Percent = record.PercentageProductiveDuration;
+                        dynamicItem.Productivity_Percent = percentageProductiveDuration;
 
                     if (request.AverageProductivetime == true)
-                        dynamicItem.Average_Productivetime = record.AverageProductiveDuration;
+                        dynamicItem.Average_Productivetime = FormatDuration((long)averageProductiveDuration);
 
                     if (request.Totalunproductivetime == true)
-                        dynamicItem.Total_unproductivetime = record.TotalUnproductiveDuration;
+                        dynamicItem.Total_unproductivetime = FormatDuration(totalUnproductiveDuration);
 
                     if (request.Averageunproductivetime == true)
-                        dynamicItem.Average_unproductivetime = record.AverageUnproductiveDuration;
+                        dynamicItem.Average_unproductivetime = FormatDuration((long)averageUnproductiveDuration);
 
                     if (request.Totalneutraltime == true)
-                        dynamicItem.Total_neutraltime = record.TotalNeutralDuration;
+                        dynamicItem.Total_neutraltime = FormatDuration(totalNeutralDuration);
 
                     if (request.Averageneutraltime == true)
-                        dynamicItem.Average_neutraltime =record.AverageNeutralDuration;
-
-                    result2.Add(dynamicItem);
+                        dynamicItem.Average_neutraltime = FormatDuration((long)averageNeutralDuration);
                 }
-
-                var cc = result.Concat(result2);
-                groupedUsages = cc
-                    .GroupBy(u => u.UserId) // Group by UserId
-                    .Select(g => new
-                    {
-                        Records = g.Aggregate(new ExpandoObject() as IDictionary<string, object>, (acc, item) =>
-                        {
-                            foreach (var prop in (IDictionary<string, object>)item)
-                            {
-                                // Add the property to the accumulator (ExpandoObject)
-                                if (!acc.ContainsKey(prop.Key))
-                                {
-                                    acc.Add(prop.Key, prop.Value);
-                                }
-                            }
-                            return acc;
-                        })
-                    })
-                    .Select(g => new
-                    {
-                        Records = g.Records // The merged records for each UserId
-                    })
-                    .ToList<dynamic>();
-            }
-            else
-            {
-                foreach (var team in teams)
+                else
                 {
-                    var TeamName = team.TeamName;
-                    var teamId = team.TeamId;
-
-                    var urlUsageQuery = "GetAppUsagesSS";
-                    var parameters1 = new
-                    {
-                        OrganizationId = request.OrganizationId,
-                        TeamId = teamId,
-                        UserId = request.UserId,
-                        FromDate = request.StartDate,
-                        ToDate = request.EndDate
-                    };
-
-                    IEnumerable<dynamic> results = await _dapper.GetAllAsync<dynamic>(urlUsageQuery, parameters1);
-                    var getUsers = @"
-                SELECT id AS UserId, CONCAT(First_Name, ' ', Last_Name) AS FullName 
-                FROM Users 
-                WHERE TeamId = @TeamId
-                AND Active = 1 -- Filter only active users
-                AND (@UserId IS NULL OR Id = @UserId)";
-
-                    var getUsers1 = await _dapper.GetAllAsync<dynamic>(getUsers, parameters1);
-
-                    var combinedResults = results.Concat(getUsers1)
-                        .GroupBy(item => item.UserId)
-                        .Select(group =>
-                        {
-                            var usageEntry = results.FirstOrDefault(u => u.UserId == group.Key);
-                            return usageEntry ?? group.First();
-                        })
-                        .ToList();
-
-                    foreach (var us in combinedResults)
-                    {
-                        var userIdd = us.UserId;
-                        var FullName = us.FullName;
-                        int totalProductiveDuration = 0, totalUnproductiveDuration = 0, totalNeutralDuration = 0;
-
-                        var usages = await GetAppUsages(request.OrganizationId, teamId, userIdd, request.StartDate, request.EndDate);
-
-                       
-                        foreach (var usage in usages)
-                        {
-                            var totalSeconds = usage.TotalSeconds;
-                            usage.ApplicationName = usage.ApplicationName.ToLower();
-
-                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
-                            {
-                                usage.TotalSeconds = totalSeconds;
-                                usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
-
-                               // Add OrganizationId parameter
-                               var parameters2 = new { ApplicationName = usage.ApplicationName.ToLower(), OrganizationId = request.OrganizationId };
-
-                                var productivityNames = (await _dapper.QueryAsync<string>(
-                                    "sp_GetApplicationCategoryAndProductivity",
-                                    parameters2,
-                                    commandType: CommandType.StoredProcedure
-                                )).ToList();
-
-                                if (productivityNames.Any()) // Ensure we process all matching productivity types
-                                {
-                                    foreach (var productivityName in productivityNames)
-                                    {
-                                        switch (productivityName)
-                                        {
-                                            case "Productive":
-                                                totalProductiveDuration += usage.TotalSeconds;
-                                                break;
-                                            case "Unproductive":
-                                                totalUnproductiveDuration += usage.TotalSeconds;
-                                                break;
-                                            case "Neutral":
-                                                totalNeutralDuration += usage.TotalSeconds;
-                                                break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-
-                        var AttendanceCount = us.AttendanceCount;
-                        var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0;
-                        double? activeDurationInSeconds = us.ActiveTimeInSeconds ?? 0.0;
-                        var breakDurationInSeconds = us.TotalBreakDurationInSeconds ?? 0.0;
-                        var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
-
-                        var dateDifferenceInDays = (request.EndDate - request.StartDate).TotalDays;
-                        if (dateDifferenceInDays <= 0)
-                        {
-                            dateDifferenceInDays = 1;
-                        }
-
-                        var percentageProductiveDuration = activeDurationInSeconds > 0 ? ((double)totalProductiveDuration / activeDurationInSeconds.Value) * 100 : 0.0;
-                        double averageProductiveDuration = dateDifferenceInDays > 0 ? (double)totalProductiveDuration / dateDifferenceInDays : 0.0;
-                        double averageUnproductiveDuration = dateDifferenceInDays > 0 ? (double)totalUnproductiveDuration / dateDifferenceInDays : 0.0;
-                        double averageNeutralDuration = dateDifferenceInDays > 0 ? (double)totalNeutralDuration / dateDifferenceInDays : 0.0;
-
-                        string FormatDuration(double totalSeconds)
-                        {
-                            var hours = (long)(totalSeconds / 3600);
-                            var minutes = (long)((totalSeconds % 3600) / 60);
-                            var seconds = (long)(totalSeconds % 60);
-                            return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
-                        }
-
-                        var dynamicItem = new ExpandoObject() as dynamic;
-                        dynamicItem.UserId = userIdd;
-                        dynamicItem.Total_Productivetime = FormatDuration(totalProductiveDuration);
-                        dynamicItem.TotalUnproductiveDuration = FormatDuration(totalUnproductiveDuration);
-                        dynamicItem.TotalNeutralDuration = FormatDuration(totalNeutralDuration);
-                        dynamicItem.TotalDuration = FormatDuration(totalDurationInSeconds);
-                        dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
-                        dynamicItem.AverageProductiveDuration = FormatDuration(averageProductiveDuration);
-                        dynamicItem.AverageUnproductiveDuration = FormatDuration(averageUnproductiveDuration);
-                        dynamicItem.AverageNeutralDuration = FormatDuration(averageNeutralDuration);
-
-                        result23.Add(dynamicItem);
-                    }
-
-                }
-                foreach (var record in result23)
-                {
-                    var dynamicItem = new ExpandoObject() as dynamic;
-                    dynamicItem.UserId = record.UserId;
-
-                    // Check and add formatted durations and percentage
                     if (request.TotalProductivetime == true)
-                        dynamicItem.Total_Productivetime = record.Total_Productivetime;
+                        dynamicItem.Total_Productivetime = FormatDuration(0);
 
                     if (request.ProductivityPercent == true)
-                        dynamicItem.Productivity_Percent = record.PercentageProductiveDuration;
+                        dynamicItem.Productivity_Percent = 0;
 
                     if (request.AverageProductivetime == true)
-                        dynamicItem.Average_Productivetime = record.AverageProductiveDuration;
+                        dynamicItem.Average_Productivetime = FormatDuration(0);
 
                     if (request.Totalunproductivetime == true)
-                        dynamicItem.Total_unproductivetime = record.TotalUnproductiveDuration;
+                        dynamicItem.Total_unproductivetime = FormatDuration(0);
 
                     if (request.Averageunproductivetime == true)
-                        dynamicItem.Average_unproductivetime = record.AverageUnproductiveDuration;
+                        dynamicItem.Average_unproductivetime = FormatDuration(0);
 
                     if (request.Totalneutraltime == true)
-                        dynamicItem.Total_neutraltime = record.TotalNeutralDuration;
+                        dynamicItem.Total_neutraltime = FormatDuration(0);
 
                     if (request.Averageneutraltime == true)
-                        dynamicItem.Average_neutraltime = record.AverageNeutralDuration;
-
-                    result2.Add(dynamicItem);
-                    result.Add(dynamicItem);
+                        dynamicItem.Average_neutraltime = FormatDuration(0);
                 }
-                var cc = result.Concat(result2);
-                groupedUsages = cc
-                    .GroupBy(u => u.UserId) // Group by UserId
-                    .Select(g => new
-                    {
-                        Records = g.Aggregate(new ExpandoObject() as IDictionary<string, object>, (acc, item) =>
-                        {
-                            foreach (var prop in (IDictionary<string, object>)item)
-                            {
-                                // Add the property to the accumulator (ExpandoObject)
-                                if (!acc.ContainsKey(prop.Key))
-                                {
-                                    acc.Add(prop.Key, prop.Value);
-                                }
-                            }
-                            return acc;
-                        })
-                    })
-                    .ToList<dynamic>();
+
+                result.Add(new { records = dynamicItem });
             }
 
-                return groupedUsages;
+            return result;
         }
+
+
         public async Task<List<dynamic>> DynamicDetailReport([FromQuery] DynamicReportRequest request)
         {
             var query = "DynamicDetailReport";
@@ -720,10 +423,33 @@ namespace Hublog.Repository.Repositories
                 PunchIntime = request.PunchIntime.HasValue && request.PunchIntime.Value ? 1 : 0,
                 PunchOuttime = request.PunchOuttime.HasValue && request.PunchOuttime.Value ? 1 : 0
             };
+
             var result = new List<dynamic>();
-            var result2 = new List<dynamic>();
-            var result23 = new List<dynamic>();
             var result1 = await _dapper.GetAllAsync<DynamicReportRequest>(query, parameters);
+
+            // Get all productivity data in one call
+            var productivityData = await _dapper.GetAllAsyncs<dynamic>("uspGetDynamicDetailProductivity", new
+            {
+                OrganizationId = request.OrganizationId,
+                TeamId = request.TeamId,
+                UserId = request.UserId,
+                FromDate = request.StartDate,
+                ToDate = request.EndDate
+            }, commandType: CommandType.StoredProcedure);
+
+            // Prepare a dictionary for fast lookup
+            var productivityLookup = productivityData
+            .Where(x => x.UserID != null && x.AttendanceDate != null) // <-- Filter nulls
+            .GroupBy(x => new { UserID = (int)x.UserID, Date = (DateTime)x.AttendanceDate })
+            .ToDictionary(
+                g => g.Key,
+                g => g.First()
+            );
+
+            // Pre-calculate date difference
+            var dateDifferenceInDays = (request.EndDate - request.StartDate).TotalDays;
+            if (dateDifferenceInDays <= 0) dateDifferenceInDays = 1;
+
             foreach (var record in result1)
             {
                 var dynamicItem = new ExpandoObject() as dynamic;
@@ -770,411 +496,69 @@ namespace Hublog.Repository.Repositories
                 if (request.PunchOuttime == true)
                     dynamicItem.PunchOuttime = record.PunchOuttimeOutput;
 
-                result.Add(dynamicItem);
-            }
-
-            var teamQuery = @"
-                   SELECT T.Id,T.Name
-                    FROM Team T
-                    INNER JOIN Organization O ON T.OrganizationId = O.Id
-                    WHERE O.Id = @OrganizationId
-                    AND (@TeamId IS NULL OR T.Id = @TeamId) ";
-
-            var teams = await _dapper.GetAllAsync<(int TeamId, string TeamName)>(teamQuery, new { OrganizationId = request.OrganizationId, TeamId = request.TeamId });
-
-            List<dynamic> groupedUsages = new List<dynamic>();
-            if (request.UserId.HasValue)
-            {
-                foreach (var team in teams)
+                var key = new { UserID = (int)record.UserId, Date = record.Date };
+                if (productivityLookup.TryGetValue(key, out var productivity))
                 {
-                    var TeamName = team.TeamName;
-                    var teamId = team.TeamId;
+                    int totalProductiveDuration = productivity.TotalProductiveDuration;
+                    int totalUnproductiveDuration = productivity.TotalUnproductiveDuration;
+                    int totalNeutralDuration = productivity.TotalNeutralDuration;
 
-                    var urlUsageQuery = "Datewise_Dynamic_Detail_Report";
-                    var parameters1 = new
-                    {
-                        OrganizationId = request.OrganizationId,
-                        TeamId = teamId,
-                        UserId = request.UserId,
-                        FromDate = request.StartDate,
-                        ToDate = request.EndDate
-                    };
+                    double? activeDurationInSeconds = productivity.TotalWorkingTime ?? 0.0;
+                    double percentageProductiveDuration = activeDurationInSeconds > 0
+                        ? ((double)totalProductiveDuration / activeDurationInSeconds.Value) * 100
+                        : 0.0;
 
-                    IEnumerable<dynamic> results = await _dapper.GetAllAsync<dynamic>(urlUsageQuery, parameters1);
+                    double averageProductiveDuration = totalProductiveDuration / dateDifferenceInDays;
+                    double averageUnproductiveDuration = totalUnproductiveDuration / dateDifferenceInDays;
+                    double averageNeutralDuration = totalNeutralDuration / dateDifferenceInDays;
 
-                    foreach (var us in results)
-                    {
-                        var userIdd = us.UserId;
-                        var FullName = us.FullName;
-                        int totalProductiveDuration = 0, totalUnproductiveDuration = 0, totalNeutralDuration = 0;
-                        var organizationId = request.OrganizationId;
-                        var userId = us.UserId;
-                        var fromDate = us.Date;
-                        var toDate = us.Date;
-                        // var usages = await GetAppUsages(request.OrganizationId, teamId, userIdd, request.StartDate, request.EndDate);
-                        var usages = await GetAppUsages(organizationId, teamId, userId, fromDate, toDate);
-
-
-                        foreach (var usage in usages)
-                        {
-                            var totalSeconds = usage.TotalSeconds;
-                            usage.ApplicationName = usage.ApplicationName.ToLower();
-
-                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
-                            {
-                                usage.TotalSeconds = totalSeconds;
-                                usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
-
-                                // Add OrganizationId parameter
-                                var parameters2 = new
-                                {
-                                    ApplicationName = usage.ApplicationName.ToLower(),
-                                    OrganizationId = request.OrganizationId // Ensure this variable is properly set
-                                };
-
-                                // Use QueryAsync instead of QueryFirstOrDefaultAsync to handle multiple results
-                                var productivityNames = (await _dapper.QueryAsync<string>(
-                                    "sp_GetApplicationCategoryAndProductivity",
-                                    parameters2,
-                                    commandType: CommandType.StoredProcedure
-                                )).ToList();
-
-                                // Ensure we process all matching productivity types
-                                if (productivityNames.Any())
-                                {
-                                    foreach (var productivityName in productivityNames)
-                                    {
-                                        switch (productivityName)
-                                        {
-                                            case "Productive":
-                                                totalProductiveDuration += usage.TotalSeconds;
-                                                break;
-                                            case "Unproductive":
-                                                totalUnproductiveDuration += usage.TotalSeconds;
-                                                break;
-                                            case "Neutral":
-                                                totalNeutralDuration += usage.TotalSeconds;
-                                                break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-
-                        var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0;
-                        double? activeDurationInSeconds = us.ActiveTimeInSeconds ?? 0.0;
-                        var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
-
-                        var dateDifferenceInDays = (request.EndDate - request.StartDate).TotalDays;
-                        if (dateDifferenceInDays <= 0)
-                        {
-                            dateDifferenceInDays = 1;
-                        }
-
-                        double percentageProductiveDuration = activeDurationInSeconds > 0 ? ((double)totalProductiveDuration / activeDurationInSeconds.Value) * 100 : 0.0;
-                        double averageProductiveDuration = dateDifferenceInDays > 0 ? (double)totalProductiveDuration / dateDifferenceInDays : 0.0;
-                        double averageUnproductiveDuration = dateDifferenceInDays > 0 ? (double)totalUnproductiveDuration / dateDifferenceInDays : 0.0;
-                        double averageNeutralDuration = dateDifferenceInDays > 0 ? (double)totalNeutralDuration / dateDifferenceInDays : 0.0;
-
-                        string FormatDuration(double totalSeconds)
-                        {
-                            var hours = (long)(totalSeconds / 3600);
-                            var minutes = (long)((totalSeconds % 3600) / 60);
-                            var seconds = (long)(totalSeconds % 60);
-                            return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
-                        }
-
-                        var dynamicItem = new ExpandoObject() as dynamic;
-                        dynamicItem.UserId = userIdd;
-                        dynamicItem.Date = fromDate;
-                        dynamicItem.Total_Productivetime = FormatDuration(totalProductiveDuration);
-                        dynamicItem.TotalUnproductiveDuration = FormatDuration(totalUnproductiveDuration);
-                        dynamicItem.TotalNeutralDuration = FormatDuration(totalNeutralDuration);
-                        dynamicItem.TotalDuration = FormatDuration(totalDurationInSeconds);
-                        dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
-                        dynamicItem.AverageProductiveDuration = FormatDuration(averageProductiveDuration);
-                        dynamicItem.AverageUnproductiveDuration = FormatDuration(averageUnproductiveDuration);
-                        dynamicItem.AverageNeutralDuration = FormatDuration(averageNeutralDuration);
-
-                        result23.Add(dynamicItem);
-                    }
-                }
-                foreach (var record in result23)
-                {
-                    var dynamicItem = new ExpandoObject() as dynamic;
-                    dynamicItem.UserId = record.UserId;
-                    dynamicItem.Date = record.Date;
-
-                    // Check and add formatted durations and percentage
                     if (request.TotalProductivetime == true)
-                        dynamicItem.Total_Productivetime = record.Total_Productivetime;
+                        dynamicItem.Total_Productivetime = FormatDuration(totalProductiveDuration);
 
                     if (request.ProductivityPercent == true)
-                        dynamicItem.Productivity_Percent = record.PercentageProductiveDuration;
+                        dynamicItem.Productivity_Percent = percentageProductiveDuration;
 
                     if (request.AverageProductivetime == true)
-                        dynamicItem.Average_Productivetime = record.AverageProductiveDuration;
+                        dynamicItem.Average_Productivetime = FormatDuration((long)averageProductiveDuration);
 
                     if (request.Totalunproductivetime == true)
-                        dynamicItem.Total_unproductivetime = record.TotalUnproductiveDuration;
+                        dynamicItem.Total_unproductivetime = FormatDuration(totalUnproductiveDuration);
 
                     if (request.Averageunproductivetime == true)
-                        dynamicItem.Average_unproductivetime = record.AverageUnproductiveDuration;
+                        dynamicItem.Average_unproductivetime = FormatDuration((long)averageUnproductiveDuration);
 
                     if (request.Totalneutraltime == true)
-                        dynamicItem.Total_neutraltime = record.TotalNeutralDuration;
+                        dynamicItem.Total_neutraltime = FormatDuration(totalNeutralDuration);
 
                     if (request.Averageneutraltime == true)
-                        dynamicItem.Average_neutraltime = record.AverageNeutralDuration;
-
-                    result2.Add(dynamicItem);
+                        dynamicItem.Average_neutraltime = FormatDuration((long)averageNeutralDuration);
                 }
-
-                var cc = result.Concat(result2);
-                var allKeys = cc
-                     .SelectMany(item => ((IDictionary<string, object>)item).Keys)
-                     .Distinct()
-                     .ToList();
-
-                // Clear the existing list if it has any previous values
-                groupedUsages.Clear();
-
-                // Group and aggregate data
-                groupedUsages.AddRange(cc
-                    .GroupBy(u => new { u.Date, u.UserId }) // Group by Date and UserId
-                    .Select(g =>
-                    {
-                        // Initialize a dictionary dynamically with default values for all keys
-                        var aggregatedRecord = new ExpandoObject() as IDictionary<string, object>;
-                        aggregatedRecord["Date"] = g.Key.Date;
-                        aggregatedRecord["UserId"] = g.Key.UserId;
-
-                        // Set default values for all keys
-                        foreach (var key in allKeys)
-                        {
-                            if (key != "Date" && key != "UserId") // Skip grouping keys
-                            {
-                                aggregatedRecord[key] = 0; // Default value
-                            }
-                        }
-
-                        // Merge properties from each item in the group
-                        foreach (var item in g)
-                        {
-                            foreach (var prop in (IDictionary<string, object>)item)
-                            {
-                                if (aggregatedRecord.ContainsKey(prop.Key))
-                                {
-                                    aggregatedRecord[prop.Key] = prop.Value; // Update value if key exists
-                                }
-                            }
-                        }
-
-                        return new { Records = aggregatedRecord };
-                    }));
-            }
-            else
-            {
-                foreach (var team in teams)
+                else
                 {
-                    var TeamName = team.TeamName;
-                    var teamId = team.TeamId;
-
-                    var urlUsageQuery = "Datewise_Dynamic_Detail_Report";
-                    var parameters1 = new
-                    {
-                        OrganizationId = request.OrganizationId,
-                        TeamId = teamId,
-                        UserId = request.UserId,
-                        FromDate = request.StartDate,
-                        ToDate = request.EndDate
-                    };
-
-                    IEnumerable<dynamic> results = await _dapper.GetAllAsync<dynamic>(urlUsageQuery, parameters1);
-               
-                    foreach (var us in results)
-                    {
-                        var userIdd = us.UserId;
-                        var FullName = us.FullName;
-                        var StartDate = us.Date;
-                        var EndDate = us.Date;
-                        int totalProductiveDuration = 0, totalUnproductiveDuration = 0, totalNeutralDuration = 0;
-
-                        var usages = await GetAppUsages(request.OrganizationId, teamId, userIdd, StartDate, EndDate);
-
-                        foreach (var usage in usages)
-                        {
-                            var totalSeconds = usage.TotalSeconds;
-                            usage.ApplicationName = usage.ApplicationName.ToLower();
-
-                            if (usage.ApplicationName != "chrome" && usage.ApplicationName != "msedge")
-                            {
-                                usage.TotalSeconds = totalSeconds;
-                                usage.TotalUsage = TimeSpan.FromSeconds(totalSeconds).ToString(@"hh\:mm\:ss");
-
-                                // Add OrganizationId parameter
-                                var parameters2 = new
-                                {
-                                    ApplicationName = usage.ApplicationName.ToLower(),
-                                    OrganizationId = request.OrganizationId // Ensure this variable is properly set
-                                };
-
-                                // Use QueryAsync instead of QueryFirstOrDefaultAsync to handle multiple results
-                                var productivityNames = (await _dapper.QueryAsync<string>(
-                                    "sp_GetApplicationCategoryAndProductivity",
-                                    parameters2,
-                                    commandType: CommandType.StoredProcedure
-                                )).ToList();
-
-                                // Ensure we process all matching productivity types
-                                if (productivityNames.Any())
-                                {
-                                    foreach (var productivityName in productivityNames)
-                                    {
-                                        switch (productivityName)
-                                        {
-                                            case "Productive":
-                                                totalProductiveDuration += usage.TotalSeconds;
-                                                break;
-                                            case "Unproductive":
-                                                totalUnproductiveDuration += usage.TotalSeconds;
-                                                break;
-                                            case "Neutral":
-                                                totalNeutralDuration += usage.TotalSeconds;
-                                                break;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-
-                        var AttendanceCount = us.AttendanceCount;
-                        var onlineDurationInSeconds = us.OnlineDurationInHours ?? 0.0;
-                        double? activeDurationInSeconds = us.ActiveTimeInSeconds ?? 0.0;
-                        var breakDurationInSeconds = us.TotalBreakDurationInSeconds ?? 0.0;
-                        var totalDurationInSeconds = totalProductiveDuration + totalUnproductiveDuration + totalNeutralDuration;
-
-                        var dateDifferenceInDays = (request.EndDate - request.StartDate).TotalDays;
-                        if (dateDifferenceInDays <= 0)
-                        {
-                            dateDifferenceInDays = 1;
-                        }
-
-                        var percentageProductiveDuration = activeDurationInSeconds > 0 ? ((double)totalProductiveDuration / activeDurationInSeconds.Value) * 100 : 0.0;
-                        double averageProductiveDuration = dateDifferenceInDays > 0 ? (double)totalProductiveDuration / dateDifferenceInDays : 0.0;
-                        double averageUnproductiveDuration = dateDifferenceInDays > 0 ? (double)totalUnproductiveDuration / dateDifferenceInDays : 0.0;
-                        double averageNeutralDuration = dateDifferenceInDays > 0 ? (double)totalNeutralDuration / dateDifferenceInDays : 0.0;
-
-                        string FormatDuration(double totalSeconds)
-                        {
-                            var hours = (long)(totalSeconds / 3600);
-                            var minutes = (long)((totalSeconds % 3600) / 60);
-                            var seconds = (long)(totalSeconds % 60);
-                            return $"{hours:D2}:{minutes:D2}:{seconds:D2}";
-                        }
-
-                        var dynamicItem = new ExpandoObject() as dynamic;
-                        dynamicItem.UserId = userIdd;
-                        dynamicItem.Date = StartDate;
-                        //dynamicItem.Full_Name = FullName;
-                        //dynamicItem.Team_Name = TeamName;
-                        //dynamicItem.AttendanceCount = AttendanceCount;
-
-                        //dynamicItem.ActiveDuration = FormatDuration(activeDurationInSeconds ?? 0.0);
-                        //dynamicItem.BreakDuration = FormatDuration(breakDurationInSeconds);
-                        //dynamicItem.OnlineDuration = FormatDuration(onlineDurationInSeconds);
-                        dynamicItem.Total_Productivetime = FormatDuration(totalProductiveDuration);
-                        dynamicItem.TotalUnproductiveDuration = FormatDuration(totalUnproductiveDuration);
-                        dynamicItem.TotalNeutralDuration = FormatDuration(totalNeutralDuration);
-                        dynamicItem.TotalDuration = FormatDuration(totalDurationInSeconds);
-                        dynamicItem.PercentageProductiveDuration = percentageProductiveDuration;
-                        dynamicItem.AverageProductiveDuration = FormatDuration(averageProductiveDuration);
-                        dynamicItem.AverageUnproductiveDuration = FormatDuration(averageUnproductiveDuration);
-                        dynamicItem.AverageNeutralDuration = FormatDuration(averageNeutralDuration);
-
-                        result23.Add(dynamicItem);
-                    }
-
-                }
-                foreach (var record in result23)
-                {
-                    var dynamicItem = new ExpandoObject() as dynamic;
-                    dynamicItem.UserId = record.UserId;
-                    dynamicItem.Date = record.Date;
-                    // Check and add formatted durations and percentage
                     if (request.TotalProductivetime == true)
-                        dynamicItem.Total_Productivetime = record.Total_Productivetime;
+                        dynamicItem.Total_Productivetime = FormatDuration(0);
 
                     if (request.ProductivityPercent == true)
-                        dynamicItem.Productivity_Percent = record.PercentageProductiveDuration;
+                        dynamicItem.Productivity_Percent = 0;
 
                     if (request.AverageProductivetime == true)
-                        dynamicItem.Average_Productivetime = record.AverageProductiveDuration;
+                        dynamicItem.Average_Productivetime = FormatDuration(0);
 
                     if (request.Totalunproductivetime == true)
-                        dynamicItem.Total_unproductivetime = record.TotalUnproductiveDuration;
+                        dynamicItem.Total_unproductivetime = FormatDuration(0);
 
                     if (request.Averageunproductivetime == true)
-                        dynamicItem.Average_unproductivetime = record.AverageUnproductiveDuration;
+                        dynamicItem.Average_unproductivetime = FormatDuration(0);
 
                     if (request.Totalneutraltime == true)
-                        dynamicItem.Total_neutraltime = record.TotalNeutralDuration;
+                        dynamicItem.Total_neutraltime = FormatDuration(0);
 
                     if (request.Averageneutraltime == true)
-                        dynamicItem.Average_neutraltime = record.AverageNeutralDuration;
-
-                    result2.Add(dynamicItem);
-                    result.Add(dynamicItem);
+                        dynamicItem.Average_neutraltime = FormatDuration(0);
                 }
-                var cc = result.Concat(result2);
-                // Determine all unique property names dynamically
-                var allKeys = cc
-                    .SelectMany(item => ((IDictionary<string, object>)item).Keys)
-                    .Distinct()
-                    .ToList();
-
-                // Clear the existing list if it has any previous values
-                groupedUsages.Clear();
-
-                // Group and aggregate data
-                groupedUsages.AddRange(cc
-                    .GroupBy(u => new { u.Date, u.UserId }) // Group by Date and UserId
-                    .Select(g =>
-                    {
-                        // Initialize a dictionary dynamically with default values for all keys
-                        var aggregatedRecord = new ExpandoObject() as IDictionary<string, object>;
-                        aggregatedRecord["Date"] = g.Key.Date;
-                        aggregatedRecord["UserId"] = g.Key.UserId;
-
-                        // Set default values for all keys
-                        foreach (var key in allKeys)
-                        {
-                            if (key != "Date" && key != "UserId") // Skip grouping keys
-                            {
-                                aggregatedRecord[key] = 0; // Default value
-                            }
-                        }
-
-                        // Merge properties from each item in the group
-                        foreach (var item in g)
-                        {
-                            foreach (var prop in (IDictionary<string, object>)item)
-                            {
-                                if (aggregatedRecord.ContainsKey(prop.Key))
-                                {
-                                    aggregatedRecord[prop.Key] = prop.Value; // Update value if key exists
-                                }
-                            }
-                        }
-
-                        return new { Records = aggregatedRecord };
-                    }));
+                result.Add(new { records = dynamicItem });
             }
-
-            return groupedUsages;
+            return result;
         }
-
-       
     }
 }

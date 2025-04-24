@@ -18,6 +18,7 @@ using System.Globalization;
 using Hublog.Repository.Entities.Model.DashboardModel;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.Data.SqlClient;
+using Hublog.Repository.Entities.Model.UserModels;
 
 namespace Hublog.Repository.Repositories
 {
@@ -180,89 +181,21 @@ namespace Hublog.Repository.Repositories
 
             return result;
         }
+
         public async Task<dynamic> Date_wise_Activity(int organizationId, int? teamId, int? userid, DateTime fromDate, DateTime toDate)
         {
-            // Query to fetch teams
-            var teamQuery = @"
-    SELECT T.Id, T.Name 
-    FROM Team T
-    INNER JOIN Organization O ON T.OrganizationId = O.Id
-    WHERE O.Id = @OrganizationId
-    AND (@TeamId IS NULL OR T.Id = @TeamId)";
-
-            // Get list of teams
-            var teams = await _dapper.GetAllAsync<(int TeamId, string TeamName)>(teamQuery, new { OrganizationId = organizationId, TeamId = teamId });
-            var dateWiseDurations = new List<DailyActivityDuration>();
-
-            foreach (var team in teams)
+            var activity = await _dapper.GetAllAsyncs<dynamic>("Datewise_Activity", new
             {
-                // Fetch usage data for each team
-                var parameters = new
-                {
-                    OrganizationId = organizationId,
-                    TeamId = team.TeamId,
-                    UserId = userid,
-                    FromDate = fromDate,
-                    ToDate = toDate
-                };
+                OrganizationId = organizationId,
+                TeamId = teamId,
+                UserId = userid,
+                FromDate = fromDate,
+                ToDate = toDate
+            }, commandType: CommandType.StoredProcedure);
 
-                var usages = await _dapper.GetAllAsync<DailyActivityDuration>("Datewise_Activity", parameters);
-
-                // Populate daily durations
-                var dailyDurations = usages
-                    .GroupBy(u => u.Date)
-                    .ToDictionary(
-                        g => g.Key,
-                        g => new DailyActivityDuration
-                        {
-                            Date = g.Key,
-                            OnlineTime = g.Sum(u => u.ActiveTime - u.BreakDuration),
-                            IdleDuration = g.Sum(u => u.IdleDuration),
-                            BreakDuration = g.Sum(u => u.BreakDuration),
-                            ActiveDuration = g.Sum(u => u.ActiveTime - (u.IdleDuration + u.BreakDuration)),
-                            TotalDuration = g.Sum(u => u.ActiveTime)
-                        });
-
-                dateWiseDurations.AddRange(dailyDurations.Values);
-            }
-
-            // Aggregate and format results
-            var filteredDurations = dateWiseDurations
-                .GroupBy(d => d.Date)
-                .Select(g => new DailyActivityDuration
-                {
-                    Date = g.Key,
-                    TotalDuration = g.Sum(d => d.TotalDuration),
-                    OnlineTime = g.Sum(d => d.OnlineTime),
-                    IdleDuration = g.Sum(d => d.IdleDuration),
-                    BreakDuration = g.Sum(d => d.BreakDuration),
-                    ActiveDuration = g.Sum(d => d.ActiveDuration)
-                })
-                .Where(d => d.TotalDuration > 0)
-               .OrderBy(d => DateTime.ParseExact(d.Date, "MM/dd/yyyy HH:mm:ss", CultureInfo.InvariantCulture)) // Adjusted to match the full format
-               .ToList();
-
-            // Format durations as "HH:mm:ss"
-            foreach (var duration in filteredDurations)
-            {
-                duration.Total_Duration = FormatDuration((long)Math.Round(duration.TotalDuration));
-                duration.Online_Time = FormatDuration((long)Math.Round(duration.OnlineTime));
-                duration.Idle_Duration = FormatDuration((long)Math.Round(duration.IdleDuration));
-                duration.Break_Duration = FormatDuration((long)Math.Round(duration.BreakDuration));
-                duration.Active_Duration = FormatDuration((long)Math.Round(duration.ActiveDuration));
-            }
-
-            // Return formatted results
-            return filteredDurations.Select(d => new
-            {
-                date = d.Date,
-                total_Duration = d.Total_Duration,
-                Online_Time = d.Online_Time,
-                Idle_Duration = d.Idle_Duration,
-                Break_Duration = d.Break_Duration,
-                Active_Duration = d.Active_Duration
-            }).ToList();
+            return activity;
         }
+
         public async Task<dynamic> GetActivityEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate)
         {
             // Define the query and parameters
@@ -276,31 +209,8 @@ namespace Hublog.Repository.Repositories
                 ToDate = toDate
             };
 
-            var result = await _dapper.GetAllAsyncs<User_Activity>(
-          urlUsageQuery,
-          parameters,
-          commandType: CommandType.StoredProcedure
-      );
-
-            var data = result.Select(r => new
-            {
-                UserID = r.UserId,
-                Team_Name = r.TeamName,
-                full_Name = r.FullName,
-                AttendanceCount = r.AttendanceCount,
-                total_wokingtime = FormatDuration(r.TodalTime ?? 0),
-                BreakDuration = FormatDuration(r.BreakDuration ?? 0),
-                IdleDuration = FormatDuration(r.IdleDuration ?? 0),
-                ActiveTime = FormatDuration(r.ActiveTime ?? 0),
-                online_duration = FormatDuration(r.OnlineTime ?? 0),
-                ActivePercentage = (r.TodalTime.HasValue && r.TodalTime.Value > 0)
-                        ? Math.Round((double)r.ActiveTime.Value / r.TodalTime.Value * 100, 2)
-                        : 0
-            }).OrderByDescending(r => r.ActivePercentage)
-              .ThenByDescending(r => r.AttendanceCount)
-              .ToList();
-
-            return data;
+            var users = await _dapper.GetAllAsyncs<dynamic>(urlUsageQuery, parameters, commandType: CommandType.StoredProcedure);
+            return users;
         }
 
         public async Task<dynamic> GetEmployeeTimeLine(int organizationId, [FromQuery] int? userId, [FromQuery] DateTime Date)
