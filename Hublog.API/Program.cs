@@ -1,5 +1,5 @@
 using Hublog.API.Extensions;
-using Hublog.API.Hub;
+//using Hublog.API.Hub;
 using Hublog.Repository.Entities.Model;
 using Microsoft.AspNetCore.Authorization;
 
@@ -37,7 +37,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigin", builder =>
     {
-        builder.WithOrigins("https://hublog.org", "http://localhost:3000")
+        builder.WithOrigins("https://workstatus.qubinex.com", "http://localhost:3000")
                .AllowAnyHeader()
                .AllowAnyMethod()
                .AllowCredentials();
@@ -47,7 +47,7 @@ var app = builder.Build();
 
 //app.UseCors(options =>
 //{
-//    options.WithOrigins("https://hublog.org", "http://localhost:3000") // Allow both production and local URLs
+//    options.WithOrigins("https://workstatus.qubinex.com", "http://localhost:3000") // Allow both production and local URLs
 //           .AllowAnyHeader()
 //           .AllowAnyMethod()
 //           .AllowCredentials();
@@ -57,7 +57,7 @@ app.UseStaticFiles();
 app.UseCors("AllowSpecificOrigin");
 
 
-app.MapHub<LiveStreamHub>("/livestreamHub");
+//app.MapHub<LiveStreamHub>("/livestreamHub");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

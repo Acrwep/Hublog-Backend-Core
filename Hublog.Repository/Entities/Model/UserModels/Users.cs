@@ -26,7 +26,7 @@
         public bool ManagerStatus { get; set; } 
 
 
-        public string Subject { get; set; } = "Welcome to Hublog!";
+        public string Subject { get; set; } = "Welcome to Workstatus!";
         //public string Body { get; set; }
 
     }

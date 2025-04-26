@@ -93,7 +93,7 @@ namespace Hublog.Repository.Repositories
       <table role=""presentation"" width=""70%"" style=""border: 1px solid #D2D1D6; padding: 19px 12px; color:#222; background-color: #ffffff;"" cellpadding=""0"" cellspacing=""0"">
         <tr>
           <td align=""center"">
-            <img src=""cid:logoImage"" style=""width: 120px;margin-top:6px"" />
+            <img src=""cid:logoImage"" style=""width: 130px;margin-top:6px"" />
           </td>
         </tr>
         <tr>
@@ -111,21 +111,21 @@ namespace Hublog.Repository.Repositories
                 <span style=""font-weight: 600;color:#222;"">Email:</span>   <span style=""color:#222;"">{users.Email}</span>
               </li>
              <li style=""margin-bottom: 6px;"">
-                <span style=""font-weight: 600;color:#222;"">Login URL:</span>
-                <a href=""https://hublog.org/setpassword"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
-                  https://hublog.org/setpassword
+                <span style=""font-weight: 600;color:#222;"">Set password:</span>
+                <a href=""https://workstatus.qubinex.com/setpassword"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
+                  https://workstatus.qubinex.com/setpassword
                 </a>
               </li>
               <li style=""margin-bottom: 6px;"">
                 <span style=""font-weight: 600;color:#222;"">Login URL:</span>
-                <a href=""https://hublog.org/login"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
-                  https://hublog.org/login
+                <a href=""https://workstatus.qubinex.com/login"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
+                  https://workstatus.qubinex.com/login
                 </a>
               </li>
               <li style=""margin-bottom: 6px;"">
                 <span style=""font-weight: 600;color:#222;"">Download App URL:</span>
-                <a href=""https://hublog.org/downloads"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
-                  https://hublog.org/downloads
+                <a href=""https://workstatus.qubinex.com/downloads"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
+                  https://workstatus.qubinex.com/downloads
                 </a>
               </li>
             </ul>
@@ -160,7 +160,7 @@ namespace Hublog.Repository.Repositories
       <table role=""presentation"" width=""70%"" style=""border: 1px solid #D2D1D6; padding: 19px 12px; color:#222; background-color: #ffffff;"" cellpadding=""0"" cellspacing=""0"">
         <tr>
           <td align=""center"">
-            <img src=""cid:logoImage"" style=""width: 120px;margin-top:6px"" />
+            <img src=""cid:logoImage"" style=""width: 130px;margin-top:6px"" />
           </td>
         </tr>
         <tr>
@@ -177,14 +177,14 @@ namespace Hublog.Repository.Repositories
               </li>
               <li style=""margin-bottom: 6px;"">
                 <span style=""font-weight: 600;color:#222;"">Password setup URL:</span>
-                <a href=""https://hublog.org/setpassword"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
-                  https://hublog.org/setpassword
+                <a href=""https://workstatus.qubinex.com/setpassword"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
+                  https://workstatus.qubinex.com/setpassword
                 </a>
               </li>
               <li style=""margin-bottom: 6px;"">
                 <span style=""font-weight: 600;color:#222;"">Login URL:</span>
-                <a href=""https://hublog.org/login"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
-                  https://hublog.org/login
+                <a href=""https://workstatus.qubinex.com/login"" target=""_blank"" style=""text-decoration: underline; color: #15c;"">
+                  https://workstatus.qubinex.com/login
                 </a>
               </li>
             </ul>
