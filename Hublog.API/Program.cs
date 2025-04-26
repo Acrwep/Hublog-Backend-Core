@@ -33,16 +33,41 @@ builder.Services.AddSignalR(options =>
     options.MaximumReceiveMessageSize = 1024 * 1024 * 10; // Example: 10 MB
 });
 
+var allowedRootDomains = builder.Configuration
+    .GetSection("CorsSettings:AllowedRootDomains")
+    .Get<List<string>>() ?? new List<string>();
+
+
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowSpecificOrigin", builder =>
+    options.AddPolicy("AllowMultipleOrgSubdomains", policy =>
     {
-        builder.WithOrigins("https://workstatus.qubinex.com", "http://localhost:3000")
-               .AllowAnyHeader()
-               .AllowAnyMethod()
-               .AllowCredentials();
+        policy
+            .SetIsOriginAllowed(origin =>
+            {
+                if (Uri.TryCreate(origin, UriKind.Absolute, out var uri))
+                {
+                    return allowedRootDomains.Any(domain =>
+                        uri.Host == domain || uri.Host.EndsWith("." + domain));
+                }
+                return false;
+            })
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
+
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowSpecificOrigin", builder =>
+//    {
+//        builder.WithOrigins("https://workstatus.qubinex.com", "http://localhost:3000")
+//               .AllowAnyHeader()
+//               .AllowAnyMethod()
+//               .AllowCredentials();
+//    });
+//});
 var app = builder.Build();
 
 //app.UseCors(options =>
@@ -54,7 +79,8 @@ var app = builder.Build();
 //});
 
 app.UseStaticFiles();
-app.UseCors("AllowSpecificOrigin");
+app.UseCors("AllowMultipleOrgSubdomains");
+//app.UseCors("AllowSpecificOrigin");
 
 
 //app.MapHub<LiveStreamHub>("/livestreamHub");
