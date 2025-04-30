@@ -264,5 +264,20 @@ namespace Hublog.API.Controllers
                return BadRequest(ex.Message);
            }
         }
+
+        [HttpGet("category-usage-percentage")]
+        public async Task<IActionResult> GetCategoryUsagePercentage(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
+        {
+            try
+            {
+                var categories = await _productivityService.GetCategoryUsagePercentage(organizationId, teamId, userId, fromDate, toDate);
+
+                return Ok(new { message = "Categories list data fetched successfully.", data = categories });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

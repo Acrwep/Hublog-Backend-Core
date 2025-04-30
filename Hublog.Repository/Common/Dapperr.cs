@@ -91,6 +91,11 @@ namespace Hublog.Repository.Common
             return await _connection.QueryFirstOrDefaultAsync<T>(query, parameters, commandType: commandType);
         }
 
+        public async Task<T> GetSingleValueAsycn<T>(string query, object parameters = null)
+        {
+            return await _connection.ExecuteScalarAsync<T>(query, parameters);
+        }
+
         #endregion
 
         public void Dispose()

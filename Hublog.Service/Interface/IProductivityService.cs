@@ -23,5 +23,7 @@ namespace Hublog.Service.Interface
         Task<dynamic> GetEmployeeList(int organizationId, int? teamId, [FromQuery] int? userId, [FromQuery] DateTime fromDate, [FromQuery] DateTime toDate);
         Task InsertDefaultCategoryRecordsAsync(int organizationId);
         Task InsertDefaultRecordsAsync(int organizationId);
+
+        Task<dynamic> GetCategoryUsagePercentage(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate);
     }
 }

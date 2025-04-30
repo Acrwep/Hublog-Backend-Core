@@ -100,6 +100,11 @@ namespace Hublog.Service.Services
             }
 
         }
+
+        public async Task<dynamic> GetCategoryUsagePercentage(int organizationId, int? teamId, int? userId, DateTime fromDate, DateTime toDate)
+        {
+            return await _productivityRepository.GetCategoryUsagePercentage(organizationId, teamId, userId, fromDate, toDate);
+        }
     }
 
 }
