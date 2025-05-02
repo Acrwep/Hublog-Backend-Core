@@ -1,6 +1,8 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
 using Hublog.API.Extensions;
+using Hublog.API.Hub;
+
 //using Hublog.API.Hub;
 using Hublog.Repository.Entities.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -103,42 +105,10 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 👇 Enable WebSockets
-var webSocketOptions = new WebSocketOptions
-{
-    KeepAliveInterval = TimeSpan.FromSeconds(120),
-    ReceiveBufferSize = 4 * 1024
-};
-app.UseWebSockets(webSocketOptions);
-app.Map("/ws/livestream", async context =>
-{
-    if (context.WebSockets.IsWebSocketRequest)
-    {
-        var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-        Console.WriteLine("WebSocket connected");
-
-        var buffer = new byte[1024 * 4];
-        while (webSocket.State == WebSocketState.Open)
-        {
-            var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-            var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-            Console.WriteLine($"Received: {message}");
-
-            var echoBytes = Encoding.UTF8.GetBytes("Echo: " + message);
-            await webSocket.SendAsync(new ArraySegment<byte>(echoBytes), WebSocketMessageType.Text, true, CancellationToken.None);
-        }
-
-        await webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closed by server", CancellationToken.None);
-    }
-    else
-    {
-        context.Response.StatusCode = 400;
-    }
-});
-
-
+// Add this before app.MapControllers() or app.UseEndpoints()
+app.UseWebSockets();
+app.UseMiddleware<LiveStreamWebSocketMiddleware>();
 
 app.MapControllers();
-
 
 app.Run();
