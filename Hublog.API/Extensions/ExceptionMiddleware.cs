@@ -1,6 +1,4 @@
-﻿using Dapper;
-using Hublog.Service.Model;
-using System.Data;
+﻿using Hublog.Service.Model;
 using System.Text.Json;
 
 namespace Hublog.API.Extensions

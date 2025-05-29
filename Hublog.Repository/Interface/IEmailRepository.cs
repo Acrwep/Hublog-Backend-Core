@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Hublog.Repository.Entities.Model;
-using Hublog.Repository.Entities.Model.Organization;
+﻿using Hublog.Repository.Entities.Model.Organization;
 using Hublog.Repository.Entities.Model.OTPRequest;
 using Hublog.Repository.Entities.Model.UserModels;
 
@@ -18,5 +12,7 @@ namespace Hublog.Repository.Interface
         Task SendOtpEmailAsync(OtpRequest otpRequest, string otp);
 
         Task<(string FirstName, string LastName)> GetUserDetailsByEmailAsync(string email);
+
+        Task<bool> ValidateOTP(OtpValidationRequest otpValidation);
     }
 }

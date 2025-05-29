@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Hublog.Repository.Common;
 using Hublog.Repository.Entities.Model;
 using Hublog.Repository.Entities.Model.Organization;
@@ -13,12 +7,8 @@ using Hublog.Repository.Entities.Model.UserModels;
 using Hublog.Repository.Interface;
 using MailKit.Net.Smtp;
 using MailKit.Security;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using MimeKit;
-using Org.BouncyCastle.Asn1.Ocsp;
-using Org.BouncyCastle.Utilities.Collections;
-using static Hublog.Repository.Common.CommonConstant;
 
 namespace Hublog.Repository.Repositories
 {
@@ -27,6 +17,7 @@ namespace Hublog.Repository.Repositories
         private readonly EmailSettings emailSettings;
         private readonly IOtpRepository _otpService;
         private readonly Dapperr _dapper;
+        private readonly TimeSpan _otpExpiry = TimeSpan.FromMinutes(5);
         public EmailRepository(IOptions<EmailSettings> options, IOtpRepository otpService, Dapperr dapper)
         {
             this.emailSettings = options.Value;
@@ -228,7 +219,16 @@ namespace Hublog.Repository.Repositories
             using var smtp = new SmtpClient();
             smtp.Connect(emailSettings.Host, emailSettings.Port, SecureSocketOptions.StartTls);
             smtp.Authenticate(emailSettings.Email, emailSettings.Password);
-            await smtp.SendAsync(email);
+            //await smtp.SendAsync(email);
+
+            string query = "INSERT INTO dbo.OTPLogs (Email, OTPCode, ExpireDate, CreatedDate) VALUES (@Email, @OTPCode, @ExpireDate, @CreatedDate);";
+            int affectedRow = await _dapper.ExecuteAsync(query, new {
+                Email =otpRequest.Email,
+                OTPCode = otp,
+                ExpireDate = DateTimeOffset.Now.Add(_otpExpiry),
+                CreatedDate = DateTimeOffset.Now
+            });
+
             smtp.Disconnect(true);
         }
         private string GetOtpHtmlContent(string otp, string firstName, string lastName)
@@ -247,10 +247,34 @@ namespace Hublog.Repository.Repositories
 
         public async Task<(string FirstName, string LastName)> GetUserDetailsByEmailAsync(string email)
         {
-            string query = "SELECT First_Name, Last_Name FROM Users WHERE Email = @Email";
+            string query = @"SELECT First_Name, Last_Name FROM Users WHERE Email = @Email";
 
             return await _dapper.QueryFirstOrDefaultAsync<(string, string)>(query, new { Email = email });
+        }
 
+        public async Task<bool> ValidateOTP(OtpValidationRequest otpValidation)
+        {
+            var query = @"select top 1 Id, Email, OTPCode, IsUsed, ExpireDate from dbo.OTPLogs where Email = @Email and OTPCode = @OTPCode order by CreatedDate desc";
+            var parameter = new { Email = otpValidation.EmailId,
+                                    OTPCode = otpValidation.Otp
+            };
+            var result = await _dapper.GetAsync<dynamic>(query, parameter);
+
+            if (result == null)
+                throw new Exception("Invalid OTP");
+
+            if (result.IsUsed)
+                throw new Exception("OTP already used");
+
+            if (DateTimeOffset.Now > result.ExpireDate)
+                throw new Exception("OTP expired. Please request a new one.");
+
+            string updateQuery = @"update dbo.OTPLogs set IsUsed = 1 where Id = @Id";
+            int count = await _dapper.ExecuteAsync(updateQuery, new { Id = result.Id });
+
+            if (count > 0)
+                return true;
+            return false;
         }
     }
 }

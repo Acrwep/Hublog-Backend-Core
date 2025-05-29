@@ -1,6 +1,5 @@
 ﻿using Hublog.Repository.Entities.Model.OTPRequest;
 using Hublog.Service.Interface;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hublog.API.Controllers
@@ -26,9 +25,9 @@ namespace Hublog.API.Controllers
         }
 
         [HttpPost("validate-otp")]
-        public IActionResult ValidateOtp([FromBody] OtpValidationRequest request)
+        public async Task<IActionResult> ValidateOtp([FromBody] OtpValidationRequest request)
         {
-            bool isValid = _otpService.ValidateOtp(request.EmailId, request.Otp);
+            bool isValid = await _emailService.ValidateOTP(request);
             return isValid ? Ok(new { Message = "OTP validated successfully" }) : BadRequest(new { Message = "Invalid or expired OTP" });
         }
     }
