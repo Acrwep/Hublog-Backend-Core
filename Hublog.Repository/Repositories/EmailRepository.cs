@@ -219,7 +219,7 @@ namespace Hublog.Repository.Repositories
             using var smtp = new SmtpClient();
             smtp.Connect(emailSettings.Host, emailSettings.Port, SecureSocketOptions.StartTls);
             smtp.Authenticate(emailSettings.Email, emailSettings.Password);
-            //await smtp.SendAsync(email);
+            await smtp.SendAsync(email);
 
             string query = "INSERT INTO dbo.OTPLogs (Email, OTPCode, ExpireDate, CreatedDate) VALUES (@Email, @OTPCode, @ExpireDate, @CreatedDate);";
             int affectedRow = await _dapper.ExecuteAsync(query, new {
