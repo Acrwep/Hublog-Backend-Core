@@ -1,19 +1,21 @@
-﻿using System.Net.WebSockets;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-using Hublog.Repository.Entities.Model.LivestreamModal;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace Hublog.API.Hub
 {
     public class LiveStreamWebSocketMiddleware
     {
-        private readonly RequestDelegate _next;
+        private static readonly object _clientsLock = new();
         private static readonly List<WebSocket> _connectedClients = new();
-        private static readonly JsonSerializerOptions _jsonOptions = new()
-        {
-            PropertyNameCaseInsensitive = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
+
+        private readonly RequestDelegate _next;
 
         public LiveStreamWebSocketMiddleware(RequestDelegate next)
         {
@@ -22,21 +24,30 @@ namespace Hublog.API.Hub
 
         public async Task InvokeAsync(HttpContext context)
         {
-            if (context.Request.Path == "/ws/livestream")
+            if (context.Request.Path.Equals("/ws/livestream", StringComparison.OrdinalIgnoreCase))
             {
                 if (context.WebSockets.IsWebSocketRequest)
                 {
                     using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-                    _connectedClients.Add(webSocket);
-                    
+                    Console.WriteLine($"WebSocket connected: {context.Connection.RemoteIpAddress}");
+
+                    lock (_clientsLock)
+                    {
+                        _connectedClients.Add(webSocket);
+                    }
+
                     try
                     {
                         await HandleWebSocketConnection(webSocket);
                     }
                     finally
                     {
-                        _connectedClients.Remove(webSocket);
+                        lock (_clientsLock)
+                        {
+                            _connectedClients.Remove(webSocket);
+                        }
                         await TryCloseSocket(webSocket);
+                        Console.WriteLine($"WebSocket disconnected: {context.Connection.RemoteIpAddress}");
                     }
                 }
                 else
@@ -52,155 +63,42 @@ namespace Hublog.API.Hub
 
         private async Task HandleWebSocketConnection(WebSocket webSocket)
         {
-            var buffer = new byte[1024 * 4]; // 4KB buffer
-            var messageStream = new MemoryStream();
-
-            try
+            var buffer = new byte[4096];
+            while (webSocket.State == WebSocketState.Open)
             {
-                while (webSocket.State == WebSocketState.Open)
+                var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+
+                if (result.MessageType == WebSocketMessageType.Close)
                 {
-                    var result = await webSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-
-                    if (result.MessageType == WebSocketMessageType.Close)
-                    {
-                        await TryCloseSocket(webSocket);
-                        break;
-                    }
-
-                    // Handle message chunks
-                    messageStream.Write(buffer, 0, result.Count);
-                    
-                    if (result.EndOfMessage)
-                    {
-                        messageStream.Position = 0;
-                        await ProcessMessage(messageStream, webSocket);
-                        messageStream.SetLength(0); // Reset for next message
-                    }
+                    await TryCloseSocket(webSocket);
+                    break;
                 }
-            }
-            catch (WebSocketException ex) when (ex.WebSocketErrorCode == WebSocketError.ConnectionClosedPrematurely)
-            {
-                // Client disconnected unexpectedly
-                Console.WriteLine("Client disconnected unexpectedly");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"WebSocket error: {ex.Message}");
-            }
-            finally
-            {
-                messageStream.Dispose();
-            }
-        }
-
-        private async Task ProcessMessage(MemoryStream messageStream, WebSocket senderSocket)
-        {
-            try
-            {
-                var jsonPayload = Encoding.UTF8.GetString(messageStream.ToArray());
-                var data = JsonSerializer.Deserialize<LivestreamModal>(jsonPayload, _jsonOptions);
-
-                if (data != null)
+                else if (result.MessageType == WebSocketMessageType.Text)
                 {
-                    Console.WriteLine($"Received data from {data.UserId}: {data.ActiveApp}");
+                    string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                    Console.WriteLine($"Received message from client: {message}");
 
-                    // Process and broadcast the message
-                    await BroadcastMessage(data);
-                }
-            }
-            catch (JsonException ex)
-            {
-                Console.WriteLine($"JSON error: {ex.Message}");
-                await SendError(senderSocket, "Invalid message format");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Processing error: {ex.Message}");
-            }
-        }
-
-        private async Task BroadcastMessage(LivestreamModal data)
-        {
-            try
-            {
-                var response = new
-                {
-                    data.UserId,
-                    data.OrganizationId,
-                    data.ActiveApp,
-                    data.ActiveUrl,
-                    data.LiveStreamStatus,
-                    data.ActiveAppLogo,
-                    data.ActiveScreenshot,
-                    data.Latitude,
-                    data.Longitude,
-                    Timestamp = DateTime.UtcNow
-                };
-
-                var jsonResponse = JsonSerializer.Serialize(response, _jsonOptions);
-                var responseBytes = Encoding.UTF8.GetBytes(jsonResponse);
-
-                foreach (var socket in _connectedClients.ToList())
-                {
-                    if (socket.State == WebSocketState.Open)
+                    // For demo, just broadcast back the same message with type metadata
+                    var response = new
                     {
-                        try
-                        {
-                            await socket.SendAsync(
-                                new ArraySegment<byte>(responseBytes),
-                                WebSocketMessageType.Text,
-                                true,
-                                CancellationToken.None);
-                        }
-                        catch (Exception ex)
-                        {
-                            Console.WriteLine($"Failed to send to client: {ex.Message}");
-                            _connectedClients.Remove(socket);
-                        }
-                    }
+                        type = "metadata",
+                        userId = 123,
+                        activeApp = "DemoApp",
+                        timestamp = DateTime.UtcNow.ToString("O")
+                    };
+                    string json = JsonSerializer.Serialize(response);
+                    var bytes = Encoding.UTF8.GetBytes(json);
+
+                    await webSocket.SendAsync(new ArraySegment<byte>(bytes), WebSocketMessageType.Text, true, CancellationToken.None);
                 }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Broadcast error: {ex.Message}");
-            }
-        }
-
-        private async Task SendError(WebSocket socket, string errorMessage)
-        {
-            try
-            {
-                var errorResponse = new { Error = errorMessage };
-                var jsonResponse = JsonSerializer.Serialize(errorResponse, _jsonOptions);
-                var responseBytes = Encoding.UTF8.GetBytes(jsonResponse);
-
-                await socket.SendAsync(
-                    new ArraySegment<byte>(responseBytes),
-                    WebSocketMessageType.Text,
-                    true,
-                    CancellationToken.None);
-            }
-            catch
-            {
-                // Ignore errors when sending error messages
             }
         }
 
         private async Task TryCloseSocket(WebSocket socket)
         {
-            try
+            if (socket.State == WebSocketState.Open || socket.State == WebSocketState.CloseReceived)
             {
-                if (socket.State == WebSocketState.Open || socket.State == WebSocketState.CloseReceived)
-                {
-                    await socket.CloseAsync(
-                        WebSocketCloseStatus.NormalClosure,
-                        "Closing",
-                        CancellationToken.None);
-                }
-            }
-            catch
-            {
-                // Ignore close errors
+                await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Closing", CancellationToken.None);
             }
         }
     }

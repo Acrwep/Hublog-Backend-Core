@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
 namespace Hublog.Repository.Entities.Model.LivestreamModal
 {
@@ -25,10 +21,10 @@ namespace Hublog.Repository.Entities.Model.LivestreamModal
         public bool LiveStreamStatus { get; set; }
 
         [JsonPropertyName("activeAppLogo")]
-        public string ActiveAppLogo { get; set; }
+        public byte[] ActiveAppLogo { get; set; }   // Changed from string to byte[]
 
         [JsonPropertyName("activeScreenshot")]
-        public string ActiveScreenshot { get; set; }
+        public byte[] ActiveScreenshot { get; set; }  // Changed from string to byte[]
 
         [JsonPropertyName("latitude")]
         public double Latitude { get; set; }
